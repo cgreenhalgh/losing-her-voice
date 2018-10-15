@@ -1,11 +1,14 @@
 # Losing Her Voice Local UI
 
-## Build / dev
+Angular web app.
 
-```
-sudo docker network create --driver bridge internal
-sudo docker build -t local-ui --network=internal .
-sudo docker run -it --rm --name=local-ui --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/../local-server/static:/root/work/static/ local-ui /bin/bash
-```
+purpose: show social-media type visual display
 
+views:
+- live, for projector
+- control, for on-site control/cue
+- moderation, for content moderation
 
+## Build dev
+
+See [../README.md](../README.md)

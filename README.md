@@ -20,3 +20,39 @@ vboxmanage list vms
 vboxmanage modifyvm "losing-her-voice_default_XXXX" --natdnshostresolver1 on
 vagrant up
 ```
+
+### one-time docker set-up
+
+```
+sudo docker network create --driver bridge internal
+```
+
+### local ui
+
+Build angular app and copy to ../local-server/static/ for serving.
+
+```
+sudo docker build -t local-ui --network=internal .
+sudo docker run --rm ---network=internal -v `pwd`/../local-server/static:/root/work/static/ local-ui
+```
+
+dev
+```
+sudo docker run -it --rm --name=local-ui --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/../local-server/static:/root/work/static/ local-ui /bin/bash
+`npm bin`/ng serve --host=0.0.0.0
+```
+View on localhost:4200
+
+### local server
+
+```
+sudo docker build -t local-server --network=internal .
+sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/static:/root/work/static/ local-server
+```
+
+Dev
+```
+sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/static:/root/work/static/ local-server /bin/bash
+node dist/index.js
+```
+

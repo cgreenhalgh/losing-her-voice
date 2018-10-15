@@ -1,0 +1,51 @@
+.feed {
+	width: 600px;
+}
+.feed_title {
+	font-size: 24px;
+}
+.item {
+	border: 1px solid black;
+	margin: 5px;
+	padding: 4px;
+}
+.item_header:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+div.item_user_icon {
+	float:left;
+	display: block;
+	width: 32px;
+	height: 32px;
+}
+img.item_user_icon {
+	width: 32px;
+	height: 32px;
+}
+.item_header2 {
+	float:left;
+	width:420px;
+}
+.item_header {
+	
+}
+.item_date {
+	color: grey;
+}
+.item_content {
+	margin: 5px;
+}
+div.item_image {
+	margin: 5px;
+}
+img.item_image {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+	min-width: 32px;
+	min-height: 32px;
+	
+}
