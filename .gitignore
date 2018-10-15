@@ -1,0 +1,4 @@
+.vagrant
+local-server/dist/
+.DS_Store
+
