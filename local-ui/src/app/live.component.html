@@ -1,14 +1,4 @@
 <div class='feed'>
 	<div class='feed_title'>Live component</div>
-	<div *ngFor="let item of items" class="item">
-		<div class="item_header">
-			<div class="item_user_icon"><img class="item_user_icon" [src]="item.user_icon"></div>
-			<div class="item_header2">
-				<div class="item_title">{{item.title}}</div>
-				<div class="item_date">{{item.date}}</div>
-			</div>
-		</div>
-		<div class="item_content">{{item.content}}</div>
-		<div class="item_image" *ngIf="item.image"><img class="item_image" [src]="item.image"></div>
-	</div>
+	<item-view *ngFor="let item of items" [item]="item"></item-view>
 </div>

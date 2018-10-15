@@ -1,0 +1,11 @@
+<div class='control'>
+	<h1>Control view</h1>
+	<p><a [routerLink]="['/live']">Live</a></p>
+	<div *ngFor="let controlItem of controlItems">
+		<div class="control-header">
+			<button (click)="postItem(controlItem)">Post</button> 
+			<span>Posted {{controlItem.postCount}} times</span>
+		</div>
+		<item-view [item]="controlItem.item"></item-view>
+	</div>
+</div>

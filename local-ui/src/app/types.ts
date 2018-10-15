@@ -6,3 +6,9 @@ export interface Item {
     image?:string;
     likes?:number;
 }
+
+export interface ControlItem {
+    id:string;
+    item:Item;
+    postCount:number;
+}
