@@ -1,6 +1,15 @@
 .feed {
-	width: 600px;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
 }
 .feed_title {
 	font-size: 24px;
+}
+.items {
+	width: 600px;
+	position: absolute;
+	/*top: 0px;*/
+	transition: top 1s;
 }

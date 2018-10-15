@@ -1,4 +1,6 @@
-<div class='feed'>
-	<div class='feed_title'>Live component</div>
-	<item-view *ngFor="let item of items" [item]="item"></item-view>
+<div #feedChild class='feed'>
+	<div #itemsChild class='items' [style.top.px]="top">
+		<div class='feed_title'>Live component</div>
+		<item-view *ngFor="let item of items" [item]="item"></item-view>
+	</div>
 </div>

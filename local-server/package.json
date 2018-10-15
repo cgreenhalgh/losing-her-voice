@@ -23,6 +23,7 @@
 	"homepage": "https://github.com/cgreenhalgh/losing-her-voice/#readme",
 	"dependencies": {
 		"@types/node": "^10.11.7",
-		"express": "^4.16.4"
+		"express": "^4.16.4",
+		"socket.io": "^2.1.1"
 	}
 }
