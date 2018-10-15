@@ -20,6 +20,37 @@ The web system (connected to by audience phones) consists of:
 
 - not sure if syphon can be done from within a docker container
 
+try https://github.com/glowbox/ChromeSyphon
+```
+git clone https://github.com/glowbox/ChromeSyphon.git
+cd ChromeSyphon
+```
+
+That used a pre-built release of CEF no longer available.
+
+Build CEF? https://bitbucket.org/chromiumembedded/cef/wiki/BranchesAndBuilding
+July 2018 release 3497
+downloads from http://opensource.spotify.com/cefbuilds/index.html
+try macos standard distribution
+cef_binary_3.3497.1840.gcd24143_macosx64.tar.bz2
+
+extract into CEF/
+
+Open the xcode project and build it.
+
+Fails: 
+
+Showing Recent Issues
+Error: There is no SDK with the name or path '/Users/cmg/workspace/losing-her-voice/ChromeSyphon/macosx10.11'
+
+CEF says XCode 9.3 - i have 8. something and latest is 10.something
+
+
+---
+
+Or try https://github.com/vibber/CefWithSyphon
+
+
 ## data model
 
 - list of items to display in "feed" (v1)
