@@ -18,9 +18,47 @@ The web system (connected to by audience phones) consists of:
 
 ## dev notes
 
+## Syphon
+
 - not sure if syphon can be done from within a docker container
 
+### CefWithSyphon
+
+Was https://github.com/vibber/CefWithSyphon
+newer, pre-built version
+https://github.com/marciot/CefWithSyphon
+https://github.com/marciot/CefWithSyphon/releases
+
+Note: works, but size is of cefclient window, not configurable.
+Defaults to 1600x1200 image with scale factor 2.
+
+Note: only sends a frame when view updates
+
+simple syphon test programs
+https://github.com/Syphon/Simple/releases/tag/version-3
+
+### ChromeSyphon
+
+version with config file...
+
 try https://github.com/glowbox/ChromeSyphon
+https://github.com/glowbox/ChromeSyphon/releases
+
+reads config.json
+- url
+- content-width
+- content-height
+- start-minimized
+- allow-window-resize
+- syphon-name
+
+Pre-built doesn't work with my app - just shows white screen. 
+Seems to be a relatively old browser version.
+
+### rebuild??
+
+hopefully not needed!
+
 ```
 git clone https://github.com/glowbox/ChromeSyphon.git
 cd ChromeSyphon
@@ -44,12 +82,6 @@ Showing Recent Issues
 Error: There is no SDK with the name or path '/Users/cmg/workspace/losing-her-voice/ChromeSyphon/macosx10.11'
 
 CEF says XCode 9.3 - i have 8. something and latest is 10.something
-
-
----
-
-Or try https://github.com/vibber/CefWithSyphon
-
 
 ## data model
 
