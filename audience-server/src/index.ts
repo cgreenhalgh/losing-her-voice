@@ -6,6 +6,7 @@ import * as path from 'path'
 import * as http from 'http'
 import * as socketio from 'socket.io'
 //import * as bodyParser from 'body-parser'
+import * as redis from 'redis'
 
 import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, MSG_CONFIGURATION, Configuration } from './types'
 
@@ -40,11 +41,15 @@ const server = http.createServer(app)
 let io = socketio(server)
 
 const UPDATE_ROOM = "room.currentState"
-
+let currentState:CurrentState = {
+  allowMenu:true,
+  postPerformance:false,
+}
 // TODO: external but watched
 let configuration:Configuration = {
   menuItems:[
     {
+      id: 'about.geraldine',
       title: 'About Geraldine',
       postPerformance: false,
       cards: [
@@ -79,17 +84,57 @@ io.on('connection', function (socket) {
     }
     console.log(`Add new client`,msg)
     socket.emit(MSG_CONFIGURATION, configuration)
-    // TODO: real
-    let reply:CurrentState = {
-      //forceView:string
-      allowMenu:true,
-      postPerformance:false,
-      //error:string
-    }
-    socket.emit(MSG_CURRENT_STATE, reply)
+    socket.emit(MSG_CURRENT_STATE, currentState)
     socket.join(UPDATE_ROOM)
   });
 });
+
+const STATE_POST = "POST"
+const STATE_INTERVAL = "INTERVAL"
+const STATE_RESET = "RESET"
+
+// redis set-up
+let redis_host = process.env.REDIS_HOST || '127.0.0.1';
+let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+if (process.env.REDIS_PASSWORD) {
+  redis_config.auth_pass = process.env.REDIS_PASSWORD;
+}
+console.log('using redis config ' + JSON.stringify(redis_config));
+
+let redisSub = redis.createClient(redis_config);
+redisSub.on("subscribe", function (channel, count) {
+  console.log(`subscribed to redis ${channel} (count ${count})`)
+});
+ 
+redisSub.on("message", function (channel, message) {
+  console.log("sub channel " + channel + ": " + message);
+  if (!message) 
+    return;
+  if (STATE_RESET == message) {
+    console.log('reset state')
+    currentState.forceView = null
+    currentState.allowMenu = true
+    currentState.postPerformance = false
+  } else if (STATE_INTERVAL == message) {
+    console.log('interval state')
+    currentState.forceView = null
+    currentState.allowMenu = true
+    currentState.postPerformance = false
+  } else if (STATE_POST == message) {
+    console.log('post state')
+    currentState.forceView = null
+    currentState.allowMenu = true
+    currentState.postPerformance = true
+  } else  {
+    console.log(`force state ${message}`)
+    currentState.forceView = message as string
+    currentState.allowMenu = false
+    currentState.postPerformance = false
+  }
+  io.to(UPDATE_ROOM).emit(MSG_CURRENT_STATE,currentState)
+});
+ 
+redisSub.subscribe("lhva.state");
 
 /**
  * Listen on provided port, on all network interfaces.

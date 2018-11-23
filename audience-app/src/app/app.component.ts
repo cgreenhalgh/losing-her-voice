@@ -15,8 +15,8 @@ export class AppComponent {
   menuItems:MenuItem[] = []
   views:View[]
   showMenu:boolean = false
-  forceView:string
-  showMenuItem
+  view:View
+  showMenuItem:MenuItem
   
   constructor(
     private syncService:SyncService,
@@ -32,11 +32,34 @@ export class AppComponent {
       console.log('home update current state', newState)
       this.currentState = newState
       this.loading = !this.currentState
-      if (this.currentState && this.currentState.allowMenu && !this.forceView) {
+      if (this.currentState && this.currentState.allowMenu) {
         this.showMenu = true
+      } else {
+        this.showMenu = false
       }
+      this.showMenuItem = null
       if (this.allMenuItems) {
         this.menuItems = this.allMenuItems.filter((item) => (this.currentState && this.currentState.postPerformance) || !item.postPerformance)
+      }
+      if (this.currentState && this.currentState.forceView) {
+        // force a view
+        this.showMenu = false
+        this.view = this.views.find((v) => this.currentState.forceView == v.id)
+        if (!this.view) {
+          console.log(`unknown view forced: ${this.currentState.forceView}`)
+          this.currentState.error = `there seems to be something wrong (I don't know how to show ${this.currentState.forceView}`
+        }
+      } else {
+        if (this.view) {
+          // stop forcing any view
+          if (this.view.defaultMenuId) {
+            this.showMenuItem = this.menuItems.find((item) => item.id == this.view.defaultMenuId)
+            if (this.showMenuItem) {
+              this.showMenu = false
+            }
+          } 
+          this.view = null
+        }
       }
     })
   }

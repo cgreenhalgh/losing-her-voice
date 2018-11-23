@@ -35,6 +35,7 @@ export interface Card {
 
 // menu item
 export interface MenuItem {
+  id:string
   title:string
   postPerformance:boolean
   cards:Card[]
@@ -45,6 +46,7 @@ export interface View {
   id:string
   cards:Card[]
   act:number // clue for styling?! (1 or 2)
+  defaultMenuId?:string
 }
 
 export interface Configuration {

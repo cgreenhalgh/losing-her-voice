@@ -27,6 +27,21 @@ vagrant up
 sudo docker network create --driver bridge internal
 ```
 
+### redis container
+
+Default for now - should secure.
+
+```
+LC_CTYPE=C < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32} > redis.password
+sed -e "s/PASSWORD/`cat redis.password`/" redis/redis.conf.template > redis/redis.conf
+
+sudo docker build -t store redis
+
+sudo docker run --name store -d --restart=always --network=internal \
+  -p :6379:6379 store
+```
+
+
 ### local ui
 
 Build angular app and copy to ../local-server/static/ for serving.
@@ -62,12 +77,18 @@ Build angular2 web app and copy to ../audience-server/static/ for serving.
 
 ```
 sudo docker build -t audience-app --network=internal audience-app
-sudo docker run --rm ---network=internal -v `pwd`/audience-server/static:/root/work/static/ audience-app
+sudo docker run --rm ---network=internal \
+  -v `pwd`/audience-server/static:/root/work/static/ \
+  -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  audience-app
 ```
 
 dev
 ```
-sudo docker run -it --rm --name=audience-app --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/audience-server/static:/root/work/static/ audience-app /bin/bash
+sudo docker run -it --rm --name=audience-app --network=internal \
+  -p :4200:4200 -p :9876:9876 \
+  -v `pwd`/audience-server/static:/root/work/static/ \
+  audience-app /bin/bash
 ng serve --host=0.0.0.0
 ng build
 ```
@@ -81,12 +102,29 @@ If seving from here, default is http://localhost:4200
 
 ```
 sudo docker build -t audience-server --network=internal audience-server
-sudo docker run -it --rm --name=audience-server --network=internal -p :8081:8081 -v `pwd`/audience-server/static:/root/work/static/ audience-server
+sudo docker run -it --rm --name=audience-server \
+  --network=internal -p :8081:8081 \
+  -v `pwd`/audience-server/static:/root/work/static/ \
+  -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  audience-server
 ```
 
 Dev
 ```
-sudo docker run -it --rm --name=audience-server --network=internal -p :8081:8081 -v `pwd`/audience-server/static:/root/work/static/ audience-server /bin/bash
+sudo docker run -it --rm --name=audience-server \
+  --network=internal -p :8081:8081 \
+  -v `pwd`/audience-server/static:/root/work/static/ \
+  -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  audience-server /bin/bash
 node dist/index.js
 ```
+
+control redis...
+```
+sudo docker exec -it store redis-cli
+auth PASSWORD (redis.password)
+publish lhva.state act1.scene1
+```
+
+publish POST, INTERVAL, RESET, act1.scene1, etc.
 

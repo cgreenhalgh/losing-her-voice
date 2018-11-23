@@ -19,3 +19,10 @@
     <div><hr></div>
   </div>
 </div>
+<div *ngIf="view">
+  <div><hr></div>
+  <div *ngFor="let card of view.cards">
+    <div [innerHTML]="card.html"></div>
+    <div><hr></div>
+  </div>
+</div>
