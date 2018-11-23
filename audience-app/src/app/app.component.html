@@ -6,3 +6,16 @@
 <div *ngIf="currentState && currentState.error" padding>
   Sorry, {{currentState.error}}
 </div>
+<div *ngIf="showMenu">
+  <div *ngFor="let menuItem of menuItems">
+    <button (click)="onShowMenuItem(menuItem)" type="button">{{menuItem.title}}</button>
+  </div>
+</div>
+<div *ngIf="showMenuItem">
+  <button (click)="onShowMenu()" type="button">Back</button>
+  <div><hr></div>
+  <div *ngFor="let card of showMenuItem.cards">
+    <div [innerHTML]="card.html"></div>
+    <div><hr></div>
+  </div>
+</div>
