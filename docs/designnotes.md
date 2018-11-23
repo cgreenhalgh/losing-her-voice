@@ -85,6 +85,10 @@ CEF says XCode 9.3 - i have 8. something and latest is 10.something
 
 ## data model
 
+### social media items
+
+For big screen (local-)
+
 - list of items to display in "feed" (v1)
 - add/scroll up
 

@@ -1,4 +1,4 @@
 .vagrant
 local-server/dist/
 .DS_Store
-
+audience-server/static/app/

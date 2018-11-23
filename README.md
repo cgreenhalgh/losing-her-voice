@@ -32,12 +32,13 @@ sudo docker network create --driver bridge internal
 Build angular app and copy to ../local-server/static/ for serving.
 
 ```
-sudo docker build -t local-ui --network=internal .
-sudo docker run --rm ---network=internal -v `pwd`/../local-server/static:/root/work/static/ local-ui
+sudo docker build -t local-ui --network=internal local-ui
+sudo docker run --rm ---network=internal -v `pwd`/local-server/static:/root/work/static/ local-ui
 ```
 
 dev
 ```
+cd local-ui
 sudo docker run -it --rm --name=local-ui --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/../local-server/static:/root/work/static/ local-ui /bin/bash
 `npm bin`/ng serve --host=0.0.0.0
 ```
@@ -46,7 +47,7 @@ View on localhost:4200
 ### local server
 
 ```
-sudo docker build -t local-server --network=internal .
+sudo docker build -t local-server --network=internal local-server
 sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/static:/root/work/static/ local-server
 ```
 
@@ -54,5 +55,21 @@ Dev
 ```
 sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/static:/root/work/static/ local-server /bin/bash
 node dist/index.js
+```
+
+### audience ui
+
+Build ionic progressive web app and copy to ../audience-server/static/ for serving.
+
+```
+sudo docker build -t audience-app --network=internal audience-app
+sudo docker run --rm ---network=internal -v `pwd`/audience-server/static:/root/work/static/ audience-app
+```
+
+dev
+```
+sudo docker run -it --rm --name=audience-app --network=internal -p :8100:8100 -v `pwd`/audience-server/static:/root/work/static/ audience-app /bin/bash
+ionic serve
+ionic build
 ```
 

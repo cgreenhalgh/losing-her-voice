@@ -30,6 +30,8 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 9876, host: 9876
   # dyn content server - for social media
   config.vm.network "forwarded_port", guest: 8080, host: 8080
+  # ionic dev - audience app dev
+  config.vm.network "forwarded_port", guest: 8100, host: 8100
   
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
