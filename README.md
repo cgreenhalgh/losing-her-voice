@@ -72,7 +72,10 @@ ionic serve
 ionic build
 ```
 
-Note: fix base href in index.html or 'ionic build'
+Note: if building and using elsewhere fix base href in index.html or 'ionic build'.
+Also probably add production flag(s).
+
+If seving from here, default is http://localhost:8100
 
 ### audience server
 
