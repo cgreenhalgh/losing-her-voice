@@ -1,3 +1,8 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
-</ion-app>
+<h1>Losing Her Voice</h1>
+
+<div *ngIf="loading" padding>
+  Loading...
+</div>
+<div *ngIf="currentState && currentState.error" padding>
+  Sorry, {{currentState.error}}
+</div>

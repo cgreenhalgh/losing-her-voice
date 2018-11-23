@@ -58,7 +58,7 @@ node dist/index.js
 
 ### audience ui
 
-Build ionic progressive web app and copy to ../audience-server/static/ for serving.
+Build angular2 web app and copy to ../audience-server/static/ for serving.
 
 ```
 sudo docker build -t audience-app --network=internal audience-app
@@ -67,15 +67,15 @@ sudo docker run --rm ---network=internal -v `pwd`/audience-server/static:/root/w
 
 dev
 ```
-sudo docker run -it --rm --name=audience-app --network=internal -p :8100:8100 -v `pwd`/audience-server/static:/root/work/static/ audience-app /bin/bash
-ionic serve
-ionic build
+sudo docker run -it --rm --name=audience-app --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/audience-server/static:/root/work/static/ audience-app /bin/bash
+ng serve --host=0.0.0.0
+ng build
 ```
 
 Note: if building and using elsewhere fix base href in index.html or 'ionic build'.
 Also probably add production flag(s).
 
-If seving from here, default is http://localhost:8100
+If seving from here, default is http://localhost:4200
 
 ### audience server
 
