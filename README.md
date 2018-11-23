@@ -38,8 +38,7 @@ sudo docker run --rm ---network=internal -v `pwd`/local-server/static:/root/work
 
 dev
 ```
-cd local-ui
-sudo docker run -it --rm --name=local-ui --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/../local-server/static:/root/work/static/ local-ui /bin/bash
+sudo docker run -it --rm --name=local-ui --network=internal -p :4200:4200 -p :9876:9876 -v `pwd`/local-server/static:/root/work/static/ local-ui /bin/bash
 `npm bin`/ng serve --host=0.0.0.0
 ```
 View on localhost:4200
@@ -48,12 +47,12 @@ View on localhost:4200
 
 ```
 sudo docker build -t local-server --network=internal local-server
-sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/static:/root/work/static/ local-server
+sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/local-server/static:/root/work/static/ local-server
 ```
 
 Dev
 ```
-sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/static:/root/work/static/ local-server /bin/bash
+sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/local-server/static:/root/work/static/ local-server /bin/bash
 node dist/index.js
 ```
 
@@ -71,5 +70,20 @@ dev
 sudo docker run -it --rm --name=audience-app --network=internal -p :8100:8100 -v `pwd`/audience-server/static:/root/work/static/ audience-app /bin/bash
 ionic serve
 ionic build
+```
+
+Note: fix base href in index.html or 'ionic build'
+
+### audience server
+
+```
+sudo docker build -t audience-server --network=internal audience-server
+sudo docker run -it --rm --name=audience-server --network=internal -p :8081:8081 -v `pwd`/audience-server/static:/root/work/static/ audience-server
+```
+
+Dev
+```
+sudo docker run -it --rm --name=audience-server --network=internal -p :8081:8081 -v `pwd`/audience-server/static:/root/work/static/ audience-server /bin/bash
+node dist/index.js
 ```
 
