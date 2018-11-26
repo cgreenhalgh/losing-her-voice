@@ -79,7 +79,6 @@ Build angular2 web app and copy to ../audience-server/static/ for serving.
 sudo docker build -t audience-app --network=internal audience-app
 sudo docker run --rm ---network=internal \
   -v `pwd`/audience-server/static:/root/work/static/ \
-  -v `pwd`/audience-server/data:/root/work/data/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   audience-app
 ```
@@ -97,7 +96,7 @@ ng build
 Note: if building and using elsewhere fix base href in index.html or 'ionic build'.
 Also probably add production flag(s).
 
-If seving from here, default is http://localhost:4200
+If serving from here, default is http://localhost:4200
 
 ### audience server
 
@@ -106,6 +105,7 @@ sudo docker build -t audience-server --network=internal audience-server
 sudo docker run -it --rm --name=audience-server \
   --network=internal -p :8081:8081 \
   -v `pwd`/audience-server/static:/root/work/static/ \
+  -v `pwd`/audience-server/data:/root/work/data/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   audience-server
 ```

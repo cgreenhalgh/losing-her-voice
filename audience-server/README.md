@@ -17,6 +17,7 @@ Technical
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
 - [ ] synced audio play/stop (act 2 scene 5a)
+- [ ] check/fix blocked autoplay/failed initial play policy enforcement
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] unsynced audio & flickering images (act 2 scene 5b)
 - [ ] "show about to begin" audio? (should not be triggered by app (re)load when view current, only by initial triggering of view)
