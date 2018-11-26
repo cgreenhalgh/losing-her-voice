@@ -49,7 +49,14 @@ export interface View {
   defaultMenuId?:string
 }
 
+export interface ConfigurationMetadata {
+  title:string
+  description?:string
+  author?:string
+  version:string
+}
 export interface Configuration {
+  metadata:ConfigurationMetadata
   menuItems:MenuItem[]
   views:View[]
 }

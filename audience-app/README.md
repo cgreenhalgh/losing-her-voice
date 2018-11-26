@@ -3,4 +3,6 @@
 ionic 4 beta app, intended mostly as progressive web app but with option for 
 Android/iOS native to give access to (e.g.) notifications on iOS.
 
-See [top-level README](../README.md)
+See [top-level README](../README.md) for build/dev info
+
+See [audience server README)(../audience-server/README.md) for configuration, to dos

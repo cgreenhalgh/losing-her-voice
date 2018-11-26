@@ -7,6 +7,7 @@ import * as http from 'http'
 import * as socketio from 'socket.io'
 //import * as bodyParser from 'body-parser'
 import * as redis from 'redis'
+import * as fs from 'fs'
 
 import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, MSG_CONFIGURATION, Configuration } from './types'
 
@@ -45,29 +46,55 @@ let currentState:CurrentState = {
   allowMenu:true,
   postPerformance:false,
 }
-// TODO: external but watched
+
+let configFile = path.join(__dirname, '..', 'data', 'audience-config.json');
+
+
+// external but watched - empty default
 let configuration:Configuration = {
-  menuItems:[
-    {
-      id: 'about.geraldine',
-      title: 'About Geraldine',
-      postPerformance: false,
-      cards: [
-        { html: '<h1>About Geraldine</h1><p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>' },
-      ]
-    }
-  ],
-  views:[
-    {
-      id:'act1.scene1',
-      act:1,
-      cards:[
-        { html: '<h1>Act 1, Scene 1<h1><h2><em>Carmen</em>, The Opera</h2><p>A series of intertitles sets the scene as the curtain opens. Lilli makes a dramatic entrance from behind the screen as ‘Carmen’. The two Journalists sing their reviews of her performance in counterpoint from amidst the chorus who sit in the wings as ‘audience’. (Their reviews are adapted from actual reviews of Lehmann’s Metropolitan Opera ‘Carmen’ performance in New York newspapers.) Geraldine jumps up to applaud Lilli from the audience at the end of the scene.</p>' },
-      ]
-    }
-  ],
+  metadata: {
+    title:'empty (builtin)',
+    version: '0'
+  },
+  menuItems:[],
+  views:[]
 }
 
+function readConfig() {
+  fs.readFile(configFile, 'utf8', (err,data) => {
+    if (err) {
+      console.log(`ERROR reading config file ${configFile}: ${err.message}`, err)
+      return
+    }
+    try {
+      let json:any = JSON.parse(data)
+      if (json.menuItems && json.views && json.metadata) {
+        configuration = json as Configuration
+        console.log(`read config ${configFile}: "${configuration.metadata.title}" version ${configuration.metadata.version}`)
+        return
+      } else {
+        console.log(`ERROR reading config file ${configFile}: does not appear to have correct type`)
+      }
+    }
+    catch (err2) {
+      console.log(`ERROR parsing config file ${configFile}: ${err2.message}`, err)
+    }
+  })
+}
+readConfig()
+
+// will watch work? - didn't seem to work either (after first time)
+fs.watch(configFile, {persistent:true}, () => {
+  readConfig()
+})
+
+// fallback?! - didn't seem to work using docker cp (after first time) or with mount from vagrant/windows (at all)
+/*
+fs.watchFile(configFile, {persistent:true}, (curr, prev) => {
+  if (curr.mtime > prev.mtime)
+    readConfig()
+})
+*/
 io.on('connection', function (socket) {
   console.log('new socket io connection...')
   //socket.emit('news', { hello: 'world' });
@@ -92,6 +119,7 @@ io.on('connection', function (socket) {
 const STATE_POST = "POST"
 const STATE_INTERVAL = "INTERVAL"
 const STATE_RESET = "RESET"
+const SERVER_RELOAD = "RELOAD"
 
 // redis set-up
 let redis_host = process.env.REDIS_HOST || '127.0.0.1';
@@ -102,6 +130,9 @@ if (process.env.REDIS_PASSWORD) {
 console.log('using redis config ' + JSON.stringify(redis_config));
 
 let redisSub = redis.createClient(redis_config);
+redisSub.on("error", function (err) {
+    console.log(`ERROR redis error ${err}`, err);
+});
 redisSub.on("subscribe", function (channel, count) {
   console.log(`subscribed to redis ${channel} (count ${count})`)
 });
@@ -125,6 +156,10 @@ redisSub.on("message", function (channel, message) {
     currentState.forceView = null
     currentState.allowMenu = true
     currentState.postPerformance = true
+  } else if (SERVER_RELOAD == message) {
+    console.log('NOTE: reload configuration!')
+    readConfig()
+    return
   } else  {
     console.log(`force state ${message}`)
     currentState.forceView = message as string

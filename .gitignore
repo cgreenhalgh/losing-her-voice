@@ -2,3 +2,5 @@
 local-server/dist/
 .DS_Store
 audience-server/static/app/
+redis/redis.conf
+redis.password

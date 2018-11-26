@@ -79,6 +79,7 @@ Build angular2 web app and copy to ../audience-server/static/ for serving.
 sudo docker build -t audience-app --network=internal audience-app
 sudo docker run --rm ---network=internal \
   -v `pwd`/audience-server/static:/root/work/static/ \
+  -v `pwd`/audience-server/data:/root/work/data/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   audience-app
 ```
@@ -114,6 +115,7 @@ Dev
 sudo docker run -it --rm --name=audience-server \
   --network=internal -p :8081:8081 \
   -v `pwd`/audience-server/static:/root/work/static/ \
+  -v `pwd`/audience-server/data:/root/work/data/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   audience-server /bin/bash
 node dist/index.js
@@ -126,5 +128,5 @@ auth PASSWORD (redis.password)
 publish lhva.state act1.scene1
 ```
 
-publish POST, INTERVAL, RESET, act1.scene1, etc.
+publish POST, INTERVAL, RESET, act1.scene1, etc. (RELOAD - re-read config)
 
