@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 import { SyncService } from './sync.service';
 import { CurrentState, Configuration, MenuItem, View } from './types';
@@ -8,7 +8,8 @@ import { CurrentState, Configuration, MenuItem, View } from './types';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+  @ViewChild('audio') audio: ElementRef
   loading:boolean = true
   currentState:CurrentState = null
   allMenuItems:MenuItem[]
@@ -17,6 +18,8 @@ export class AppComponent {
   showMenu:boolean = false
   view:View
   showMenuItem:MenuItem
+  showPlay:boolean
+  playWhenReady:boolean
   
   constructor(
     private syncService:SyncService,
@@ -61,6 +64,7 @@ export class AppComponent {
           this.view = null
         }
       }
+      this.updateAudio()
     })
   }
   onShowMenuItem(menuItem:MenuItem):void {
@@ -72,5 +76,80 @@ export class AppComponent {
     console.log('show menu')
     this.showMenu = true
     this.showMenuItem = null
+  }
+  ngAfterViewInit() {
+    console.log(`audio component`, this.audio)
+    this.updateAudio()
+  }
+  updateAudio():void {
+    this.showPlay = false
+    if (!this.audio)
+      return
+    let audio = this.audio.nativeElement
+    audio.pause()
+    if (!this.view || !this.view.audioFile)
+      return
+    console.log(`play audio ${this.view.audioFile}`)
+    audio.setAttribute('src', 'assets/'+this.view.audioFile)
+    audio.load()
+    this.playAudio()
+  }
+  playAudio() {
+    // TODO audioDelay
+    if (!this.audio || !this.audio.nativeElement || !this.view || !this.view.audioFile) 
+      return
+    this.showPlay = false
+    this.playWhenReady = false
+    // timing?
+    let audio = this.audio.nativeElement
+    let clientStartTime = this.syncService.getClientTime(this.currentState.serverStartTime)
+    let now = (new Date()).getTime()
+    let elapsed = (now - clientStartTime)*0.001
+    if (audio.readyState < 1) {
+      // no metadata
+      // TODO
+      console.log(`no metadata for audio (readyState ${audio.readyState})`)
+      audio.load()
+      this.playWhenReady = true
+      return
+    }
+    if (elapsed > 0) {
+      if (elapsed > audio.duration) {
+        console.log(`audio has finished (elapsed ${elapsed} vs duration ${audio.duration})`)
+        return
+      }
+      audio.currentTime = elapsed
+    } else {
+      audio.currentTime = 0
+    }
+    // TODO past end?
+    console.log(`play audio from ${elapsed}`)
+    audio.play()
+      .then(() => { console.log('play audio ok') })
+      .catch((err) => { 
+        console.log(`play audio error ${err.messsage}`, err);
+        // not interacted??
+        this.showPlay = true
+      })
+  }
+  onAudioReadyStateChange():void {
+    // why isn't this called in chrome??
+    console.log(`audio readystate change to ${this.audio.nativeElement.readyState}`)
+    if (this.playWhenReady)
+      this.playAudio()
+  }
+  onCanPlay():void {
+    console.log(`audio canplay, readyState ${this.audio.nativeElement.readyState}`)
+    if (this.playWhenReady)
+      this.playAudio()
+  }
+  onLoad():void {
+    console.log(`audio load, readyState ${this.audio.nativeElement.readyState}`)
+    if (this.playWhenReady)
+      this.playAudio()
+  }
+  onPlayAudio():void {
+    console.log(`play (button)`)
+    this.playAudio()
   }
 }

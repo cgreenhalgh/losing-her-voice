@@ -8,15 +8,47 @@ Node.js, at least for for now.
 
 See [../README.md](../README.md)
 
+## File format
+
+Audience app configuration file, [data/audience-config.json](data/audience-config.json).
+Object with:
+- `metadata`, see below
+- `menuItems`, array of Menu Items, see below
+- `views`, array of Views, see below
+
+Metadata, config file metadata; object with:
+- `title` (string) - configuration title
+- `description` (string, optional) - description
+- `author` (string, optional) - creator of configuration
+- `version` (string) - version identifier for configuration file (advisory only)
+
+Menu Item, i.e. entry in normal navigational menu such as "About Geraldine"; object with:
+- `id` (string) - unique internal ID, referred to from View `defaultMenuId`
+- `title` (string) - menu item text and page title
+- `postPerformance` (boolean, default false) - item is only visible after performance
+- `cards`, array of Cards, see below
+
+Card, i.e. page of content in a Menu Item or View, object with:
+- `html` (string) - HTML-marked up page content. For now use standard tags: H1, H2, P
+
+View, i.e. app state/view associated with a particular part (e.g. scene) of the peformance; object with:
+- `id` (string) - unique internal ID, referred to from QLab cues, e.g. 'act1.scene1'
+- `cards`, array of Cards with view content (see above)
+- `act` (nubmer) - act number (1 or 2), used as clue for CSS styling (in future)
+- `defaultMenuId` (string, optional) - if act ends with this view showing, which menu item should be the default (e.g. questionnaire after act 2 or take selfie after act 1)
+- `audioFile` (string, optional) - name of file (in `src/assets`) to play during view
+- `audioDelaySeconds` (number, optional, default 0) - delay to start of audio (`audioFile`) compared to start of view
+
 ## To do
 
 Technical
 
 - [x] move app config to external (watched) file - note watch didn't work; reload with redis RELOAD message
+- [x] synced audio play/stop (act 2 scene 5c)
+- [ ] audioDelay option for synced audio play/stop 
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
-- [ ] synced audio play/stop (act 2 scene 5a)
 - [ ] check/fix blocked autoplay/failed initial play policy enforcement
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] unsynced audio & flickering images (act 2 scene 5b)
@@ -33,6 +65,7 @@ Technical
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
+- [ ] moderation...
 
 Content
 
@@ -40,3 +73,5 @@ Content
 - [ ] views and associated cards/content
 - [ ] social media activities/etc
 - [ ] CSS/images for newspaper, social media, scrapbook (or whatever)
+- [ ] name options for profile
+- [ ] image options for profile?

@@ -2,7 +2,7 @@
   "metadata": {
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
-    "version": "0.1",
+    "version": "0.2",
     "author": "Chris Greenhalgh"
   },
   "menuItems":[
@@ -22,6 +22,22 @@
       "cards":[
         { "html": "<h1>Act 1, Scene 1<h1><h2><em>Carmen</em>, The Opera</h2><p>A series of intertitles sets the scene as the curtain opens. Lilli makes a dramatic entrance from behind the screen as ‘Carmen’. The two Journalists sing their reviews of her performance in counterpoint from amidst the chorus who sit in the wings as ‘audience’. (Their reviews are adapted from actual reviews of Lehmann’s Metropolitan Opera ‘Carmen’ performance in New York newspapers.) Geraldine jumps up to applaud Lilli from the audience at the end of the scene.</p>" }
       ]
+    },
+    {
+      "id":"act2.scene5a",
+      "act":1,
+      "cards":[
+        { "html": "<h1>Act 2, Scene 5<h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [debug:a]</p>" }
+      ]
+    },
+    {
+      "id":"act2.scene5c",
+      "act":1,
+      "cards":[
+        { "html": "<h1>Act 2, Scene 5<h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [debug:c]</p>" }
+      ],
+      "audioFile": "habanera-sample-20.mp3",
+      "audioDelaySeconds": 3
     }
   ]
 }

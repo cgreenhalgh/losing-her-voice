@@ -25,4 +25,8 @@
     <div [innerHTML]="card.html"></div>
     <div><hr></div>
   </div>
+  <div *ngIf="showPlay">
+    <button type="button" (click)="onPlayAudio()">Play</button>
+  </div>
 </div>
+<audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>

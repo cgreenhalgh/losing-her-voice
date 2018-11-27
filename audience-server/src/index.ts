@@ -9,7 +9,7 @@ import * as socketio from 'socket.io'
 import * as redis from 'redis'
 import * as fs from 'fs'
 
-import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, MSG_CONFIGURATION, Configuration } from './types'
+import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, MSG_CONFIGURATION, Configuration, ConfigurationMsg, ServerTiming, ClientTiming } from './types'
 
 const app = express()
 
@@ -45,6 +45,8 @@ const UPDATE_ROOM = "room.currentState"
 let currentState:CurrentState = {
   allowMenu:true,
   postPerformance:false,
+  serverStartTime:(new Date()).getTime(),
+  serverSendTime:(new Date()).getTime(),
 }
 
 let configFile = path.join(__dirname, '..', 'data', 'audience-config.json');
@@ -95,8 +97,17 @@ fs.watchFile(configFile, {persistent:true}, (curr, prev) => {
     readConfig()
 })
 */
+var sockets = {}
+
+interface ClientInfo {
+  version:number
+  clientType:string // e.g. web/pwa, ios, android ??
+  clientId:string
+  timing:ServerTiming
+}
+
 io.on('connection', function (socket) {
-  console.log('new socket io connection...')
+  console.log(`new socket io connection ${socket.id}...`)
   //socket.emit('news', { hello: 'world' });
   socket.on(MSG_CLIENT_HELLO, (data) => {
     let msg = data as ClientHello
@@ -109,11 +120,40 @@ io.on('connection', function (socket) {
       socket.emit(MSG_OUT_OF_DATE, err)
       return
     }
-    console.log(`Add new client`,msg)
-    socket.emit(MSG_CONFIGURATION, configuration)
-    socket.emit(MSG_CURRENT_STATE, currentState)
-    socket.join(UPDATE_ROOM)
+    console.log(`Add new client type ${msg.clientType} id ${msg.clientId} (version ${msg.version})`,msg)
+    // update client state / timing
+    let now = (new Date()).getTime()
+    let timing:ServerTiming = {
+      lastClientSendTime: msg.clientSendTime,
+      lastServerRecvTime: now,
+      serverSendTime: now // immediate response(s)
+    }
+    // init client state
+    let clientInfo:ClientInfo = {
+      version:msg.version,
+      clientType:msg.clientType,
+      clientId:msg.clientId,
+      timing:timing,
+    }
+    socket.myClientInfo = clientInfo
+    socket.emit(MSG_CONFIGURATION, {
+      configuration:configuration,
+      timing: timing,
+    })
+    currentState.serverSendTime = now
+    socket.emit(MSG_CURRENT_STATE, {
+      currentState: currentState,
+      timing: timing,
+    })
+    sockets[socket.id] = socket
   });
+  socket.on('disconnecting', (reason) => {
+    console.log(`socket.io client ${socket.id} disconnecting`)
+    delete sockets[socket.id]
+  })
+  socket.on('error', (err) => {
+    console.log(`Warning: socket.io client ${socket.id} error ${err.message}`, err)
+  })
 });
 
 const STATE_POST = "POST"
@@ -141,6 +181,7 @@ redisSub.on("message", function (channel, message) {
   console.log("sub channel " + channel + ": " + message);
   if (!message) 
     return;
+  let now = (new Date()).getTime()
   if (STATE_RESET == message) {
     console.log('reset state')
     currentState.forceView = null
@@ -166,7 +207,18 @@ redisSub.on("message", function (channel, message) {
     currentState.allowMenu = false
     currentState.postPerformance = false
   }
-  io.to(UPDATE_ROOM).emit(MSG_CURRENT_STATE,currentState)
+  currentState.serverStartTime = now
+  currentState.serverSendTime = now
+  for (let socketId in sockets) {
+    let socket = sockets[socketId]
+    let clientInfo:ClientInfo = socket.myClientInfo
+    clientInfo.timing.serverSendTime = now
+    let msg:CurrentStateMsg = {
+      currentState:currentState,
+      timing: clientInfo.timing
+    }
+    socket.emit(MSG_CURRENT_STATE, msg)
+  }
 });
  
 redisSub.subscribe("lhva.state");
