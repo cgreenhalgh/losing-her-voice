@@ -70,6 +70,7 @@ export interface View {
   defaultMenuId?:string
   audioFile?:string
   audioDelaySeconds?:number
+  audioVolume?:number
 }
 
 export interface ConfigurationMetadata {

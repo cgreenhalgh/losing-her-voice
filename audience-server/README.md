@@ -38,6 +38,7 @@ View, i.e. app state/view associated with a particular part (e.g. scene) of the 
 - `defaultMenuId` (string, optional) - if act ends with this view showing, which menu item should be the default (e.g. questionnaire after act 2 or take selfie after act 1)
 - `audioFile` (string, optional) - name of file (in `src/assets`) to play during view
 - `audioDelaySeconds` (number, optional, default 0) - delay to start of audio (`audioFile`) compared to start of view
+- `audioVolume` (number, optional, default 1) - volume of audio
 
 ## To do
 
@@ -45,6 +46,7 @@ Technical
 
 - [x] move app config to external (watched) file - note watch didn't work; reload with redis RELOAD message
 - [x] synced audio play/stop (act 2 scene 5c)
+- [x] volume option for synced audio play/stop 
 - [ ] audioDelay option for synced audio play/stop 
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page

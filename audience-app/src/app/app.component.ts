@@ -91,6 +91,12 @@ export class AppComponent implements AfterViewInit {
       return
     console.log(`play audio ${this.view.audioFile}`)
     audio.setAttribute('src', 'assets/'+this.view.audioFile)
+    let volume:number = this.view.audioVolume!==null && this.view.audioVolume!==undefined ? this.view.audioVolume : 1
+    if (volume<0)
+      volume = 0
+    else if (volume>1)
+      volume = 1
+    audio.volume = volume
     audio.load()
     this.playAudio()
   }
