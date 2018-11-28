@@ -47,7 +47,7 @@ Technical
 - [x] move app config to external (watched) file - note watch didn't work; reload with redis RELOAD message
 - [x] synced audio play/stop (act 2 scene 5c)
 - [x] volume option for synced audio play/stop 
-- [ ] audioDelay option for synced audio play/stop 
+- [x] audioDelay option for synced audio play/stop 
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book

@@ -1,14 +1,16 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 
 import { SyncService } from './sync.service';
 import { CurrentState, Configuration, MenuItem, View } from './types';
+
+const SMALL_DELAY:number = 0.01
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('audio') audio: ElementRef
   loading:boolean = true
   currentState:CurrentState = null
@@ -20,6 +22,7 @@ export class AppComponent implements AfterViewInit {
   showMenuItem:MenuItem
   showPlay:boolean
   playWhenReady:boolean
+  audioTimeout:any = null
   
   constructor(
     private syncService:SyncService,
@@ -101,25 +104,30 @@ export class AppComponent implements AfterViewInit {
     this.playAudio()
   }
   playAudio() {
-    // TODO audioDelay
     if (!this.audio || !this.audio.nativeElement || !this.view || !this.view.audioFile) 
       return
     this.showPlay = false
     this.playWhenReady = false
+    this.clearAudioTimeout()
     // timing?
     let audio = this.audio.nativeElement
     let clientStartTime = this.syncService.getClientTime(this.currentState.serverStartTime)
     let now = (new Date()).getTime()
     let elapsed = (now - clientStartTime)*0.001
-    if (audio.readyState < 1) {
-      // no metadata
-      // TODO
-      console.log(`no metadata for audio (readyState ${audio.readyState})`)
-      audio.load()
-      this.playWhenReady = true
+    if (this.view.audioDelaySeconds)
+      elapsed -= this.view.audioDelaySeconds
+    if (elapsed < 0) {
+      console.log(`delay audio ${-elapsed}`)
+      this.audioTimeout = setTimeout(() => this.playAudio(), -1000*elapsed)
       return
-    }
-    if (elapsed > 0) {
+    } else if (elapsed > SMALL_DELAY) {
+      if (audio.readyState < 1) {
+        // no metadata
+        console.log(`no metadata for audio (readyState ${audio.readyState})`)
+        audio.load()
+        this.playWhenReady = true
+        return
+      }
       if (elapsed > audio.duration) {
         console.log(`audio has finished (elapsed ${elapsed} vs duration ${audio.duration})`)
         return
@@ -157,5 +165,14 @@ export class AppComponent implements AfterViewInit {
   onPlayAudio():void {
     console.log(`play (button)`)
     this.playAudio()
+  }
+  ngOnDestroy() {
+    this.clearAudioTimeout()
+  }
+  clearAudioTimeout(): void {
+    if (this.audioTimeout) {
+      clearTimeout(this.audioTimeout)
+      this.audioTimeout = null
+    }
   }
 }
