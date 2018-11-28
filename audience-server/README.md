@@ -48,13 +48,14 @@ Technical
 - [x] synced audio play/stop (act 2 scene 5c)
 - [x] volume option for synced audio play/stop 
 - [x] audioDelay option for synced audio play/stop 
+- [x] check/fix blocked autoplay/failed initial play policy enforcement
+- [x] "show about to begin" audio? (should not be triggered by app (re)load when view current, only by initial triggering of view)
+- [x] link to Qlab (via local server & OSC)
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
-- [ ] check/fix blocked autoplay/failed initial play policy enforcement
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] unsynced audio & flickering images (act 2 scene 5b)
-- [ ] "show about to begin" audio? (should not be triggered by app (re)load when view current, only by initial triggering of view)
 - [ ] profile - set/choose name
 - [ ] take selfie photo 
 - [ ] add Geraldine to selfie

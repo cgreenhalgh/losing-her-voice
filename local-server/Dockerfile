@@ -15,6 +15,9 @@ RUN tsc
 
 COPY static/ /root/work/static/
 
+# http
 EXPOSE 8080
+# OSC
+EXPOSE 9123
 
 CMD ["node","server/dist/index.js"]

@@ -6,6 +6,12 @@ Copyright (c) 2018, The University of Nottingham
 
 Status: just starting...
 
+Overview:
+- local-server - runs on in-theatre laptop, alongside qlab, serves local-app; also forwards OSC to audience-server 
+- local-app - browser UI (angular) to manage social media/etc and generate projection view (via CEF/Syphon)
+- audience-server - runs on externally accessible server, serves audience-app; receives updates via redis
+- audience-app - webapp (angular) for audience; configured via audience-config.json file from audience-server
+
 ## Build dev
 
 if using Vagrant
@@ -60,14 +66,28 @@ View on localhost:4200
 
 ### local server
 
+Note: redis in the following should probably be the remote server
+(or perhaps another redis server should also be configured)
+
 ```
 sudo docker build -t local-server --network=internal local-server
-sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/local-server/static:/root/work/static/ local-server
+sudo docker run -it --rm --name=local-server --network=internal \
+  -p :8080:8080 -p 9123:9123/udp \
+  -v `pwd`/local-server/static:/root/work/static/ \
+  -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  local-server
 ```
+
+Note, forwards OSC message '/lhva/state' to audience-server via redis. 
+Only (string) argument is the audience app state (see below).
 
 Dev
 ```
-sudo docker run -it --rm --name=local-server --network=internal -p :8080:8080 -v `pwd`/local-server/static:/root/work/static/ local-server /bin/bash
+sudo docker run -it --rm --name=local-server --network=internal \
+  -p :8080:8080 -p 9123:9123/udp \
+  -v `pwd`/local-server/static:/root/work/static/ \
+  -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  local-server /bin/bash
 node dist/index.js
 ```
 

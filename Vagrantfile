@@ -34,6 +34,8 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 8100, host: 8100
   # audience app sync server 
   config.vm.network "forwarded_port", guest: 8081, host: 8081
+  # OSC bridge (via local-server)
+  config.vm.network "forwarded_port", guest: 9123, host: 9123, protocol: "udp"
   
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access

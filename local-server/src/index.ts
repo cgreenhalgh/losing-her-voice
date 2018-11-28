@@ -6,6 +6,7 @@ import * as path from 'path'
 import * as http from 'http'
 import * as socketio from 'socket.io'
 //import * as bodyParser from 'body-parser'
+import { startOSCBridge } from './osc-bridge'
 
 import { Item, ControlItem, MSG_CLIENT_HELLO, ClientHello, MSG_ANNOUNCE_CONTROL_ITEMS, AnnounceControlItems, MSG_ANNOUNCE_ITEMS, AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem } from './types';
 
@@ -96,6 +97,10 @@ io.on('connection', function (socket) {
     })
 });
 
+/** 
+ * OSC bridge
+ */
+startOSCBridge()
 /**
  * Listen on provided port, on all network interfaces.
  */
