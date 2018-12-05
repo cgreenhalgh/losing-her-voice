@@ -16,6 +16,19 @@ The web system (connected to by audience phones) consists of:
 - socket.io-based live state/notification broadcaster (behind reverse proxy)
 - ? local database (Redis), to link to socker.io-based broadcaster
 
+## socket.io comms
+
+Socket.io handshakes with HTTP then switches to websockets.
+
+Socket io connection reports disconnect after being in background/phone off for a while (10+ seconds with no messages).
+
+Sending a new message (to the old connection) provokes (after a few seconds) a new connection. But this has a different connection (socket.id) ID and client doesn't send hello so it doesn't get sent new messages.
+
+Viewing the app/browser provokes a new connection with about 1 second.
+
+=> client should emit hello on connect
+=> client should monitor for disconnect and (a) attempt to re-connect (b) switch to loading/error state until reconnected
+
 ## dev notes
 
 ## Syphon
