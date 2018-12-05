@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { SyncService } from './sync.service';
@@ -11,7 +12,7 @@ import { SyncService } from './sync.service';
   imports: [
     BrowserModule
   ],
-  providers: [SyncService],
+  providers: [{provide: DOCUMENT, useValue: document }, SyncService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

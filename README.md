@@ -97,9 +97,8 @@ Build angular2 web app and copy to ../audience-server/static/ for serving.
 
 ```
 sudo docker build -t audience-app --network=internal audience-app
-sudo docker run --rm ---network=internal \
-  -v `pwd`/audience-server/static:/root/work/static/ \
-  -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+sudo docker run --rm --network=internal \
+  -v `pwd`/html/2/:/root/work/static/ \
   audience-app
 ```
 
@@ -107,10 +106,12 @@ dev
 ```
 sudo docker run -it --rm --name=audience-app --network=internal \
   -p :4200:4200 -p :9876:9876 \
-  -v `pwd`/audience-server/static:/root/work/static/ \
+  -v `pwd`/html/2/:/root/work/static/ \
   audience-app /bin/bash
+ng build --output-path=static --watch --base-href=/2/losing-her-voice/
 ng serve --host=0.0.0.0
-ng build
+ng build --prod --base-href=/2/losing-her-voice/
+cp -r dist/losing-her-voice static/
 ```
 
 Note: if building and using elsewhere fix base href in index.html or 'ionic build'.
@@ -150,3 +151,18 @@ publish lhva.state act1.scene1
 
 publish POST, INTERVAL, RESET, act1.scene1, etc. (RELOAD - re-read config)
 
+### Redis public frontend
+
+one-time...
+```
+sudo docker build -t frontend nginx
+mkdir -p logs/nginx
+```
+Note: will fail on start-up if audience-server is not running.
+```
+sudo docker run --name frontend -d --restart=always --network=internal \
+  -p :80:80 -p :443:443 -v `pwd`/html:/usr/share/nginx/html \
+  -v `pwd`/logs/nginx:/var/log/nginx/log frontend 
+```
+
+open (if in vagrant) [http://localhost:8000](http://localhost:8000)

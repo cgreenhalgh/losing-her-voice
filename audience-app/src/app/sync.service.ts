@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Observable } from "rxjs";
 
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
@@ -7,8 +8,7 @@ import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE,
   ConfigurationMsg } from './types';
 import * as io from 'socket.io-client';
 
-// TODO: configure me
-const SOCKET_IO_SERVER:string = 'http://localhost:8081'
+const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
 
 @Injectable()
 export class SyncService {
@@ -22,12 +22,36 @@ export class SyncService {
   RTT_ALPHA:number = 0.3 // smoothing coefficient for RTT estimator
   rtt:number = 0
   
-  constructor() {
+  constructor(@Inject(DOCUMENT) private document: any) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
     this.configuration = new BehaviorSubject(null)
-    console.log(`say hello to socket.io on ${SOCKET_IO_SERVER}`)
-    this.socket = io(SOCKET_IO_SERVER)
+    // base href?
+    let baseHref = (document.getElementsByTagName('base')[0] || {}).href
+    console.log(`base href = ${baseHref}`)
+    let socketioPath = null
+    let socketioServer = null
+    if (baseHref) {
+      let hix = baseHref.indexOf('//')
+      if (hix<0)
+        hix = 0
+      else
+        hix = hix+2
+      let pix = baseHref.indexOf('/', hix)
+      if (pix<0)
+        pix = 0
+      let baseHrefPath = baseHref.substring(pix)
+      //console.log(`base href path = ${baseHref} (pix=${pix} & hix=${hix})`)
+      if ('/' != baseHrefPath) {
+        socketioPath = baseHrefPath+'socket.io'
+        socketioServer = baseHref.substring(0,pix)
+      }
+    }
+    if (!socketioPath) {
+      socketioServer = SOCKET_IO_TEST_SERVER
+    } 
+    console.log(`say hello to socket.io on server ${socketioServer} path ${socketioPath}`)
+    this.socket = io(socketioServer, { path: socketioPath })
     let now = (new Date()).getTime()
     let msg:ClientHello = {
       version:CURRENT_VERSION,

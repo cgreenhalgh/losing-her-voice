@@ -16,8 +16,8 @@ VOLUME /root/work/static/
 
 COPY . /root/work/
 
-#RUN ng build
+RUN ng build --prod --base-href=/2/losing-her-voice/
 
 #EXPOSE 8100
 
-#CMD [ "cp", "-r", "www/*", "static/app/" ]
+CMD [ "cp", "-r", "dist/losing-her-voice", "static/" ]

@@ -18,4 +18,4 @@ COPY data/ /root/work/data/
 
 EXPOSE 8081
 
-CMD ["node","server/dist/index.js"]
+CMD ["node","dist/index.js"]
