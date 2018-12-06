@@ -3,9 +3,10 @@ export const MSG_CLIENT_HELLO = 'lhva.client.hello'
 export const MSG_CONFIGURATION = 'lhva.server.configuration'
 export const MSG_CURRENT_STATE = 'lhva.server.state'
 export const MSG_OUT_OF_DATE = 'lhva.server.outofdate'
+export const MSG_CLIENT_PING = 'lhva.client.ping'
 
 // protocol version number
-export const CURRENT_VERSION:number = 3
+export const CURRENT_VERSION:number = 4
 
 export interface ClientTiming {
   clientSendTime:number
@@ -27,6 +28,13 @@ export interface ClientHello {
   clientType:string // e.g. web/pwa, ios, android ??
   clientId:string
   clientSendTime:number
+  timing?:ClientTiming
+  configurationVersion?:string // if already configured
+}
+
+// body of MSG_PING
+export interface ClientPing {
+  timing:ClientTiming
 }
 
 // body of MSG_OUT_OF_DATE
@@ -68,6 +76,9 @@ export interface View {
   cards:Card[]
   act:number // clue for styling?! (1 or 2)
   defaultMenuId?:string
+  audioFile?:string
+  audioDelaySeconds?:number
+  audioVolume?:number
 }
 
 export interface ConfigurationMetadata {

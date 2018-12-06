@@ -9,7 +9,7 @@ import * as socketio from 'socket.io'
 import * as redis from 'redis'
 import * as fs from 'fs'
 
-import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, MSG_CONFIGURATION, Configuration, ConfigurationMsg, ServerTiming, ClientTiming } from './types'
+import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, MSG_CONFIGURATION, Configuration, ConfigurationMsg, ServerTiming, ClientTiming } from './types'
 
 const app = express()
 
@@ -136,14 +136,25 @@ io.on('connection', function (socket) {
       timing:timing,
     }
     socket.myClientInfo = clientInfo
-    socket.emit(MSG_CONFIGURATION, {
-      configuration:configuration,
-      timing: timing,
-    })
+    if (!msg.configurationVersion || !configuration.metadata || msg.configurationVersion != configuration.metadata.version) {
+      console.log(`sending configuration ${configuration.metadata.version} to client with ${msg.configurationVersion}`)
+      socket.emit(MSG_CONFIGURATION, {
+        configuration:configuration,
+        timing: timing,
+      })
+    }
     currentState.serverSendTime = now
     socket.emit(MSG_CURRENT_STATE, {
       currentState: currentState,
       timing: timing,
+    })
+    socket.on(MSG_CLIENT_PING, (data2) => {
+      let ping:ClientPing = data2 as ClientPing
+      let now = (new Date()).getTime()
+      if (ping.timing) {
+        clientInfo.timing.lastClientSendTime = ping.timing.clientSendTime
+        clientInfo.timing.lastServerRecvTime = now
+      }
     })
     sockets[socket.id] = socket
   });

@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
   MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, Configuration, 
-  ConfigurationMsg } from './types';
+  ConfigurationMsg, MSG_CLIENT_PING, ClientPing } from './types';
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
@@ -21,7 +21,10 @@ export class SyncService {
   rttSqCount:number = 0
   RTT_ALPHA:number = 0.3 // smoothing coefficient for RTT estimator
   rtt:number = 0
-  
+  outOfDate:boolean = false
+  clientTiming:ClientTiming = null
+  pingCount:number = 0
+    
   constructor(@Inject(DOCUMENT) private document: any) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
@@ -52,15 +55,45 @@ export class SyncService {
     } 
     console.log(`say hello to socket.io on server ${socketioServer} path ${socketioPath}`)
     this.socket = io(socketioServer, { path: socketioPath })
-    let now = (new Date()).getTime()
-    let msg:ClientHello = {
-      version:CURRENT_VERSION,
-      clientType:'default', // TODO: fix clientType
-      clientId:'?', // TODO: fix clientId - persistent??
-      clientSendTime: now,
-    }
-    
-    this.socket.emit(MSG_CLIENT_HELLO, msg)
+    this.socket.on('connect', () => {
+      console.log(`socket.io connected`)
+      // reset
+      this.pingCount = 0
+      let now = (new Date()).getTime()
+      if (this.clientTiming) {
+        this.clientTiming.clientSendTime = now
+      }
+      let msg:ClientHello = {
+        version:CURRENT_VERSION,
+        clientType:'default', // TODO: fix clientType
+        clientId:'?', // TODO: fix clientId - persistent??
+        clientSendTime: now,
+        timing:this.clientTiming,
+        configurationVersion:this.configuration.value && this.configuration.value.metadata ? this.configuration.value.metadata.version : null,
+      }
+      this.socket.emit(MSG_CLIENT_HELLO, msg)
+    })
+    this.socket.on('error', (error) => {
+      console.log(`socket.io error: ${error.message}`, error)
+    })
+    this.socket.on('disconnect', (reason) => {
+      if (reason === 'io server disconnect') {
+        // the disconnection was initiated by the server, you need to reconnect manually
+        this.socket.connect();
+      }
+      // else the socket will automatically try to reconnect
+      console.log(`socket.io disconnect (${reason})`)
+      if (!this.outOfDate) {
+        // signal problem to UI
+        this.currentState.next({
+          allowMenu:false,
+          postPerformance:false,
+          error:`trying to re-connect...`,
+          serverSendTime:0,
+          serverStartTime:0,
+        })
+      }
+    })
     this.socket.on(MSG_CONFIGURATION, (data) => {
       let msg = data as ConfigurationMsg
       console.log('got configuration from server', msg)
@@ -72,6 +105,7 @@ export class SyncService {
       console.log('got current state from server', msg)
       this.updateTiming(msg.timing)
       this.currentState.next(msg.currentState)
+      this.maybePing()
     })
     this.socket.on(MSG_OUT_OF_DATE, (data) => {
       let msg = data as OutOfDate
@@ -83,7 +117,19 @@ export class SyncService {
         serverSendTime:0,
         serverStartTime:0,
       })
+      this.outOfDate = true
     })
+  }
+  maybePing():void {
+    if (this.pingCount>0 || !this.clientTiming)
+      return
+    let now = (new Date()).getTime()
+    this.clientTiming.clientSendTime = now
+    let msg:ClientPing = {
+      timing:this.clientTiming,
+    }
+    this.socket.emit(MSG_CLIENT_PING, msg)
+    this.pingCount++
   }
   updateTiming(timing:ServerTiming): void {
     let now = (new Date()).getTime()
@@ -110,6 +156,13 @@ export class SyncService {
       this.rtt = Math.sqrt(this.rttSqSum / this.rttSqCount)
     }
     console.log(`timing, ${timing.lastClientSendTime} -> ${timing.lastServerRecvTime} / ${timing.serverSendTime} -> ${now}: sendOffset ${sendOffset}, recvOffset ${recvOffset}, clientTimeOffset ${this.minClientTimeOffset}-${this.maxClientTimeOffset}, rtt ${this.rtt} (from ${this.rttSqSum} / ${this.rttSqCount})`)
+    this.clientTiming = {
+      clientSendTime:0,
+      lastServerSendTime:timing.serverSendTime,
+      lastClientRecvTime:now,
+      clientOffset:this.getClientTime(0),
+      roundTrip:this.rtt
+    }
   }
   getConfiguration(): Observable<Configuration> {
     return this.configuration;
