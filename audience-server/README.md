@@ -53,6 +53,7 @@ Technical
 - [x] link to Qlab (via local server & OSC)
 - [x] initial page to prompt click on app
 - [x] reconnect if disconnected
+- [x] make full screen
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book

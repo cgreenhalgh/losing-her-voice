@@ -1,4 +1,5 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 import { SyncService } from './sync.service';
 import { CurrentState, Configuration, MenuItem, View } from './types';
@@ -28,6 +29,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   
   constructor(
     private syncService:SyncService,
+    @Inject(DOCUMENT) private document: any
   ) 
   {
     syncService.getConfiguration().subscribe((configuration) => {
@@ -181,8 +183,31 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.landingTouched = true
     //this.playAudio()
   }
-  onDismissLanding() {
+  onDismissLanding($event:Event) {
+    $event.preventDefault()
     this.showLanding = false;
     this.playAudio()
+    // dodgy?!
+    this.toggleFullScreen()
+  }
+  toggleFullScreen() {    
+    // https://developers.google.com/web/fundamentals/native-hardware/fullscreen/
+    var doc = this.document;
+    var docEl = doc.documentElement;
+    var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+  
+    if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+      console.log(`request full screen`)
+      if (requestFullScreen)
+        requestFullScreen.call(docEl);
+      else
+        window.scrollTo(0,1)
+    }
+    else {
+      console.log(`cancel full screen`)
+      if (cancelFullScreen)
+        cancelFullScreen.call(doc);
+    }
   }
 }

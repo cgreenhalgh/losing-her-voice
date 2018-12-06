@@ -1,4 +1,4 @@
-<h1>Losing Her Voice</h1>
+<h1 (click)="toggleFullScreen()">Losing Her Voice <span class="toggleFullscreen"><mat-icon>fullscreen</mat-icon><!-- (toggle fullscreen) --></span></h1>
 
 <div *ngIf="loading" padding>
   Loading...
@@ -31,6 +31,6 @@
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
 
-<div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (touchstart)="onTouchLanding()" (touchend)="onDismissLanding()" (mousedown)="onTouchLanding()" (mouseup)="onDismissLanding()">
+<div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (touchstart)="onTouchLanding()" (touchend)="onDismissLanding($event)" (mousedown)="onTouchLanding()" (mouseup)="onDismissLanding($event)">
   <p>Touch to start...</p>
 </div>
