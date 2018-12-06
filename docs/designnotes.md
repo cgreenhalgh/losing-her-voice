@@ -105,11 +105,18 @@ For big screen (local-)
 - list of items to display in "feed" (v1)
 - add/scroll up
 
-Item has:
-- title (string)
+Simple item has:
+- id (string)
+- title (user_name?!) (string)
 - user_icon (url)
 - content (string) - html??
 - image (url, optional)
-- date (string)
+- date? (string)
 - likes (number)
+- type (string) - simple item, selfie, etc
 
+Other display objects:
+- re-post - id?, username, date, user_icon?, simple item, comment?
+- selfie - like simple item, tagged as selfie
+- quiz - like simple item plus status (open, closed) and list of options (content, image?, count, correct)
+- poll - like quiz but no option "correct" info
