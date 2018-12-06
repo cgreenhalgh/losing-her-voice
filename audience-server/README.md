@@ -51,6 +51,8 @@ Technical
 - [x] check/fix blocked autoplay/failed initial play policy enforcement
 - [x] "show about to begin" audio? (should not be triggered by app (re)load when view current, only by initial triggering of view)
 - [x] link to Qlab (via local server & OSC)
+- [x] initial page to prompt click on app
+- [ ] reconnect if disconnected
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book

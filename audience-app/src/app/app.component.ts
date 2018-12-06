@@ -23,6 +23,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   showPlay:boolean
   playWhenReady:boolean
   audioTimeout:any = null
+  showLanding:boolean = true
+  landingTouched:boolean = false
   
   constructor(
     private syncService:SyncService,
@@ -174,5 +176,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       clearTimeout(this.audioTimeout)
       this.audioTimeout = null
     }
+  }
+  onTouchLanding() {
+    this.landingTouched = true
+    //this.playAudio()
+  }
+  onDismissLanding() {
+    this.showLanding = false;
+    this.playAudio()
   }
 }

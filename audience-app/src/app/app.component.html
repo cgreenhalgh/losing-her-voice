@@ -8,11 +8,11 @@
 </div>
 <div *ngIf="showMenu">
   <div *ngFor="let menuItem of menuItems">
-    <button (click)="onShowMenuItem(menuItem)" type="button">{{menuItem.title}}</button>
+    <div class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}</div>
   </div>
 </div>
 <div *ngIf="showMenuItem">
-  <button (click)="onShowMenu()" type="button">Back</button>
+  <div class="button" (click)="onShowMenu()">Back</div>
   <div><hr></div>
   <div *ngFor="let card of showMenuItem.cards">
     <div [innerHTML]="card.html"></div>
@@ -26,7 +26,11 @@
     <div><hr></div>
   </div>
   <div *ngIf="showPlay">
-    <button type="button" (click)="onPlayAudio()">Play</button>
+    <div class="button" (click)="onPlayAudio()">Play</div>
   </div>
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
+
+<div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (touchstart)="onTouchLanding()" (touchend)="onDismissLanding()" (mousedown)="onTouchLanding()" (mouseup)="onDismissLanding()">
+  <p>Touch to start...</p>
+</div>
