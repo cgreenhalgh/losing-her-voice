@@ -54,7 +54,7 @@ Build angular app and copy to ../local-server/static/ for serving.
 
 ```
 sudo docker build -t local-ui --network=internal local-ui
-sudo docker run --rm ---network=internal -v `pwd`/local-server/static:/root/work/static/ local-ui
+sudo docker run --rm --network=internal -v `pwd`/local-server/static:/root/work/static/ local-ui
 ```
 
 dev

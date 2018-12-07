@@ -6,6 +6,6 @@
 				<div class="item_date">{{item.date}}</div>
 			</div>
 		</div>
-		<div class="item_content">{{item.content}}</div>
-		<div class="item_image" *ngIf="item.image"><img class="item_image" [src]="item.image"></div>
+		<div *ngIf="simpleItem" class="item_content">{{simpleItem.content}}</div>
+		<div *ngIf="simpleItem && simpleItem.image" class="item_image"><img class="item_image" [src]="simpleItem.image"></div>
 </div>

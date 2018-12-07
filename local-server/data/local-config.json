@@ -13,7 +13,7 @@
       "description": "just for initial tech testing",
       "closePolls": true,
       "item": {
-        "type": "simple",
+        "itemType": "simple",
         "user_name": "A.N.Admirer", 
         "user_icon": "user_icon/default_user.png", 
         "content": "this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... ",
@@ -27,7 +27,7 @@
       "description": "just for initial tech testing",
       "closePolls": true,
       "item": {
-        "type": "simple",
+        "itemType": "simple",
         "user_name": "A.N.Other-Admirer", 
         "user_icon": "user_icon/default_user.png", 
         "content": "this and this and the other... ",

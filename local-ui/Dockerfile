@@ -15,9 +15,9 @@ VOLUME /root/work/static/
 
 COPY . /root/work/
 
-RUN `npm bin`/ng build
+RUN `npm bin`/ng build --prod
 
 EXPOSE 4200
 EXPOSE 9876
 
-CMD [ "cp", "dist/local-ui/*", "static/" ]
+CMD [ "/bin/sh", "-c", "cp -R dist/local-ui/* static/" ]
