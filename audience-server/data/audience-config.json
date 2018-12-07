@@ -2,7 +2,7 @@
   "metadata": {
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
-    "version": "0.4",
+    "version": "0.5",
     "author": "Chris Greenhalgh"
   },
   "menuItems":[
@@ -168,7 +168,8 @@
       "act":2,
       "cards":[
         { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2><p>[social media activities]</p>" }
-      ]
+      ],
+      "showItems": true
     },
     {
       "id":"act2.scene4c",

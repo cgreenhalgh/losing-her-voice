@@ -68,6 +68,9 @@ Management UI post:
 - (not repost?)
 - (not selfie?)
 
+Use redis channel 'lhva.announce.v1'.
+Send JSON-encoded Item (subtype).
+
 ### Messages from audience server to local server
 
 - like simple item

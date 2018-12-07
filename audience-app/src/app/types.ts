@@ -1,12 +1,15 @@
+import { Item } from './socialtypes'
+
 // protocol message IDs
 export const MSG_CLIENT_HELLO = 'lhva.client.hello'
 export const MSG_CONFIGURATION = 'lhva.server.configuration'
 export const MSG_CURRENT_STATE = 'lhva.server.state'
 export const MSG_OUT_OF_DATE = 'lhva.server.outofdate'
 export const MSG_CLIENT_PING = 'lhva.client.ping'
+export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 
 // protocol version number
-export const CURRENT_VERSION:number = 4
+export const CURRENT_VERSION:number = 5
 
 export interface ClientTiming {
   clientSendTime:number
@@ -79,6 +82,7 @@ export interface View {
   audioFile?:string
   audioDelaySeconds?:number
   audioVolume?:number
+  showItems?:boolean // social media stuff...
 }
 
 export interface ConfigurationMetadata {
@@ -96,3 +100,9 @@ export interface ConfigurationMsg {
   configuration:Configuration
   timing:ServerTiming
 }
+
+export interface AnnounceItem {
+  item:Item
+  timing:ServerTiming
+}
+

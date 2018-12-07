@@ -1,11 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Subject, Observable } from "rxjs";
 
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
   MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, Configuration, 
-  ConfigurationMsg, MSG_CLIENT_PING, ClientPing } from './types';
+  ConfigurationMsg, MSG_CLIENT_PING, ClientPing, MSG_ANNOUNCE_ITEM, 
+  AnnounceItem } from './types';
+import { Item } from './socialtypes'
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
@@ -14,6 +16,7 @@ const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
 export class SyncService {
   currentState:BehaviorSubject<CurrentState>
   configuration:BehaviorSubject<Configuration>
+  item:Subject<Item>
   socket:any
   minClientTimeOffset:number = Number.MIN_SAFE_INTEGER
   maxClientTimeOffset:number = Number.MAX_SAFE_INTEGER
@@ -29,6 +32,7 @@ export class SyncService {
     // loading state...
     this.currentState = new BehaviorSubject(null)
     this.configuration = new BehaviorSubject(null)
+    this.item = new Subject()
     // base href?
     let baseHref = (document.getElementsByTagName('base')[0] || {}).href
     console.log(`base href = ${baseHref}`)
@@ -107,6 +111,13 @@ export class SyncService {
       this.currentState.next(msg.currentState)
       this.maybePing()
     })
+    this.socket.on(MSG_ANNOUNCE_ITEM, (data) => {
+      let msg = data as AnnounceItem
+      console.log('got item from server', msg)
+      this.updateTiming(msg.timing)
+      this.item.next(msg.item)
+      this.maybePing()
+    })
     this.socket.on(MSG_OUT_OF_DATE, (data) => {
       let msg = data as OutOfDate
       console.log(`got outofdate from server (our version ${CURRENT_VERSION})`, msg)
@@ -169,6 +180,9 @@ export class SyncService {
   }
   getCurrentState() : Observable<CurrentState> {
     return this.currentState;
+  }
+  getItem() : Observable<Item> {
+    return this.item;
   }
   getClientTime(serverTime:number) : number {
     if (this.rttSqCount<=0) {

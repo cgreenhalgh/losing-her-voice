@@ -19,7 +19,7 @@
     <div><hr></div>
   </div>
 </div>
-<div *ngIf="view">
+<div *ngIf="view && (!view.showItems || !currentItem)">
   <div><hr></div>
   <div *ngFor="let card of view.cards">
     <div [innerHTML]="card.html"></div>
@@ -27,6 +27,19 @@
   </div>
   <div *ngIf="showPlay">
     <div class="button" (click)="onPlayAudio()">Play</div>
+  </div>
+</div>
+<div *ngIf="view && view.showItems">
+  <div *ngIf="currentItem" class="item">
+		<div class="item_header">
+			<div class="item_user_icon"><img class="item_user_icon" [src]="currentItem.user_icon"></div>
+			<div class="item_header2">
+				<div class="item_title">{{currentItem.user_name}}</div>
+				<div class="item_date">{{currentItem.date}}</div>
+			</div>
+		</div>
+		<div *ngIf="currentSimpleItem" class="item_content">{{currentSimpleItem.content}}</div>
+		<div *ngIf="currentSimpleItem && currentSimpleItem.image" class="item_image"><img class="item_image" [src]="currentSimpleItem.image"></div>
   </div>
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>

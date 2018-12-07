@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { SyncService } from './sync.service';
 import { CurrentState, Configuration, MenuItem, View } from './types';
+import { Item, SimpleItem, ItemType } from './socialtypes';
 
 const SMALL_DELAY:number = 0.01
 
@@ -26,6 +27,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   audioTimeout:any = null
   showLanding:boolean = true
   landingTouched:boolean = false
+  currentItem:Item
+  currentSimpleItem:SimpleItem
   
   constructor(
     private syncService:SyncService,
@@ -72,6 +75,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         }
       }
       this.updateAudio()
+    })
+    syncService.getItem().subscribe((item) => {
+      this.currentItem = item
+      if (item && ItemType.SIMPLE == item.itemType)
+        this.currentSimpleItem = item as SimpleItem
+      else
+        this.currentSimpleItem = null
     })
   }
   onShowMenuItem(menuItem:MenuItem):void {

@@ -9,8 +9,8 @@ import * as socketio from 'socket.io'
 import * as redis from 'redis'
 import * as fs from 'fs'
 
-import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, MSG_CONFIGURATION, Configuration, ConfigurationMsg, ServerTiming, ClientTiming } from './types'
-
+import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, MSG_CONFIGURATION, Configuration, ConfigurationMsg, ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, AnnounceItem } from './types'
+import { REDIS_CHANNEL_ANNOUNCE, Item } from './socialtypes'
 const app = express()
 
 // Parsers for POST data
@@ -233,6 +233,39 @@ redisSub.on("message", function (channel, message) {
 });
  
 redisSub.subscribe("lhva.state");
+
+// social media
+let redisSub2 = redis.createClient(redis_config);
+redisSub.on("error", function (err) {
+    console.log(`ERROR redis2 error ${err}`, err);
+});
+redisSub2.on("subscribe", function (channel, count) {
+  console.log(`subscribed to redis2 ${channel} (count ${count})`)
+});
+ 
+redisSub2.on("message", function (channel, message) {
+  if (!message) 
+    return;
+  let now = (new Date()).getTime()
+  try {
+    let item = JSON.parse(message) as Item
+    console.log(`announce item ${item.id} (${item.itemType})`);
+    for (let socketId in sockets) {
+      let socket = sockets[socketId]
+      let clientInfo:ClientInfo = socket.myClientInfo
+      clientInfo.timing.serverSendTime = now
+      let msg:AnnounceItem = {
+        item:item,
+        timing: clientInfo.timing
+      }
+      socket.emit(MSG_ANNOUNCE_ITEM, msg)
+    }
+  } catch (err) {
+    console.log(`error parsing incoming item: ${err.message}`)
+  }
+});
+ 
+redisSub2.subscribe(REDIS_CHANNEL_ANNOUNCE);
 
 /**
  * Listen on provided port, on all network interfaces.

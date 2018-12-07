@@ -33,6 +33,19 @@
         "content": "this and this and the other... ",
         "toAudience": true
       }
+    },
+    {
+      "itemType": "simple",
+      "title": "a simple post just to the screen (not audience)",
+      "description": "just for initial tech testing",
+      "closePolls": true,
+      "item": {
+        "itemType": "simple",
+        "user_name": "A.N.Other-Admirer", 
+        "user_icon": "user_icon/default_user.png", 
+        "content": "only on the screen, this and this and the other... ",
+        "toAudience": false
+      }
     }
   ],
   "selfies": [

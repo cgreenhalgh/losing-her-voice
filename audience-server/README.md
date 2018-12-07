@@ -63,7 +63,7 @@ Technical
 - [ ] profile - set/choose name
 - [ ] take selfie photo 
 - [ ] add Geraldine to selfie
-- [ ] social media post display (from server)
+- [x] social media post display (from server)
 - [ ] social media likes (to server -> local server)
 - [ ] social media quiz (to server -> local server)
 - [ ] social media share selfie (to server -> local server) (= "publish" ?!)

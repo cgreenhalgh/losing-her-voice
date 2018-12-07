@@ -7,10 +7,34 @@ import * as http from 'http'
 import * as fs from 'fs'
 import * as socketio from 'socket.io'
 //import * as bodyParser from 'body-parser'
+import * as redis from 'redis'
 import { startOSCBridge } from './osc-bridge'
 
 import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO, LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem } from './types';
-import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, QuizOrPollItem, QuizOption, ItemType } from './socialtypes'
+import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE } from './socialtypes'
+
+function startRedisPub() {
+  // redis set-up
+  let redis_host = process.env.REDIS_HOST || '127.0.0.1';
+  let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+  if (process.env.REDIS_PASSWORD) {
+    redis_config.auth_pass = process.env.REDIS_PASSWORD;
+  }
+
+  console.log('using redis config ' + JSON.stringify(redis_config));
+  console.log(`publish announcements on ${REDIS_CHANNEL_ANNOUNCE}`)
+  let redisPub = redis.createClient(redis_config);
+  redisPub.on("error", function (err) {
+    console.log(`ERROR redis error ${err}`, err);
+  });
+  return redisPub
+}
+let redisPub = startRedisPub()
+
+function announceItem(item:Item) {
+  let msg = JSON.stringify(item)
+  redisPub.publish(REDIS_CHANNEL_ANNOUNCE, msg)
+}
 
 const app = express()
 
@@ -170,6 +194,9 @@ io.on('connection', function (socket) {
         items.push(msg.item);
         let msgai:AnnounceItem = { item: msg.item }
         io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_ITEM, msgai)
+        if (msg.item.toAudience) {
+          announceItem(msg.item)
+        }
     })
 });
 
