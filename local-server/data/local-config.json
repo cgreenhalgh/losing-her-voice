@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "title": "losing her voice local metadata",
+    "description": "just initial testing placeholders",
+    "version": "0.1",
+    "author": "Chris Greenhalgh",
+    "fileVersion": "lhv/local/v1"
+  },
+  "scheduleItems": [
+    {
+      "itemType": "simple",
+      "title": "a first simple post (to audience)",
+      "description": "just for initial tech testing",
+      "closePolls": true,
+      "item": {
+        "type": "simple",
+        "user_name": "A.N.Admirer", 
+        "user_icon": "user_icon/default_user.png", 
+        "content": "this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... ",
+        "image": "user_icon/default_user.png",
+        "toAudience": true
+      }
+    },
+    {
+      "itemType": "simple",
+      "title": "a second simple post (to audience)",
+      "description": "just for initial tech testing",
+      "closePolls": true,
+      "item": {
+        "type": "simple",
+        "user_name": "A.N.Other-Admirer", 
+        "user_icon": "user_icon/default_user.png", 
+        "content": "this and this and the other... ",
+        "toAudience": true
+      }
+    }
+  ],
+  "selfies": [
+    {
+      "type": "selfie",
+      "user_name": "A.N.Admirer", 
+      "user_icon": "user_icon/default_user.png", 
+      "image": "user_icon/default_user.png"
+    }
+  ],
+  "reposters": [
+    {
+      "user_name": "A.N.Admirer", 
+      "user_icon": "user_icon/default_user.png"
+    },
+    {
+      "user_name": "A.N.Other-Admirer", 
+      "user_icon": "user_icon/default_user.png"
+    }
+  ]
+}

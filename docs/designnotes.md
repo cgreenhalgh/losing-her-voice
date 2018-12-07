@@ -107,7 +107,7 @@ For big screen (local-)
 
 Item has:
 - id (string)
-- type (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie'
+- itemType (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie'
 - user_name (string)
 - user_icon (url)
 - date (string)

@@ -20,6 +20,7 @@ Metadata, config file metadata; object with:
 - `description` (string, optional) - description
 - `author` (string, optional) - creator of configuration
 - `version` (string) - version identifier for configuration file (advisory only)
+- `fileVersion`, currently 'lhv/local/v1'
 
 Schedule Item is object with:
 - `itemType` (string), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie'
@@ -31,7 +32,7 @@ Schedule Item is object with:
 
 Item has:
 - `id` (string)
-- `type` (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie'
+- `itemType` (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie'
 - `user_name` (string)
 - `user_icon` (url)
 - `toAudience` (boolean)
@@ -70,11 +71,11 @@ Server needs to maintain:
 
 ### To do
 
-- [ ] local server protocol version & check
-- [ ] control UI schedule (order of post type, timing?)
-- [ ] schedule in external file (reload option)
+- [x] local server protocol version & check
+- [x] control UI schedule (order of post type, timing?)
+- [x] schedule in external file (reload option)
 - [ ] server reset schedule??
-- [ ] item -> simple item, title -> user_name, add item type
+- [x] item -> simple item, title -> user_name, add item type
 - [ ] "announce" item selectively to audience as well as screen/live view (via redis)
 - [ ] audience app like simple item -> relay through redis -> update server item -> announce item update (live only??)
 - [ ] add poll item type
@@ -90,4 +91,5 @@ Server needs to maintain:
 - [ ] moderation UI view - view server selfie image pool
 - [ ] moderate selfie image -> update server selfie image pool
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
-
+- [ ] app disconnect warning
+- [ ] app smoother reconnect support

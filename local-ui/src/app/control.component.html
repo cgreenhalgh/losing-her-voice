@@ -1,11 +1,17 @@
 <div class='control'>
 	<h1>Control view</h1>
 	<p><a [routerLink]="['/live']">Live</a></p>
-	<div *ngFor="let controlItem of controlItems">
-		<div class="control-header">
-			<button (click)="postItem(controlItem)">Post</button> 
-			<span>Posted {{controlItem.postCount}} times</span>
+	<div *ngIf="!configuration">Waiting for configuration...</div>
+	<div *ngIf="configuration">
+		<div *ngFor="let scheduleItem of configuration.scheduleItems">
+			<div class="control-header">
+				<button (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-post' : 'Post'}}</button>
+				<span>{{scheduleItem.title}}</span>: <span>{{scheduleItem.itemType}}</span>
+				<span>(Posted {{scheduleItem.postCount}} times)</span>
+			</div>
+			<div class="item-preview" *ngIf="scheduleItem.item" >
+				<item-view [item]="scheduleItem.item"></item-view>
+			</div>
 		</div>
-		<item-view [item]="controlItem.item"></item-view>
 	</div>
 </div>

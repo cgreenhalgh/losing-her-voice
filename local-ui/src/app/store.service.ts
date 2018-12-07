@@ -1,50 +1,47 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Observable } from "rxjs";
+import { ReplaySubject, Observable, BehaviorSubject } from "rxjs";
 
-import { Item, ControlItem, MSG_CLIENT_HELLO, ClientHello, MSG_ANNOUNCE_CONTROL_ITEMS, AnnounceControlItems, MSG_ANNOUNCE_ITEMS, AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem } from './types';
+import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION, MSG_CONFIGURATION, Configuration, ScheduleItem, ConfigurationMsg, MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem } from './types';
+import { Item } from './socialtypes';
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_SERVER:string = 'http://localhost:8080'
 
 @Injectable()
 export class StoreService {
-    controlItems:ControlItem[]
     items:ReplaySubject<Item>
     socket:any
-    controlItemsPromise:Promise<ControlItem[]>
-    
+    configuration:BehaviorSubject<Configuration>
+    outOfDate:boolean = false
+  
     constructor() {
         this.items = new ReplaySubject()
+        this.configuration = new BehaviorSubject(null)
         console.log(`say hello to socket.io on ${SOCKET_IO_SERVER}`)
         this.socket = io(SOCKET_IO_SERVER)
-        let msg:ClientHello = {}
+        this.socket.on('connect', () => {
+          console.log(`connected to socket.io`)
+        })
+        this.socket.on('disconnect', (reason) => {
+          console.log(`socket.io disconnected: ${reason}`)
+        })
+        this.socket.on('connect', () => {
+          let msg:ClientHello = {
+            version:LOCAL_PROTOCOL_VERSION
+          }
         
-        this.socket.emit(MSG_CLIENT_HELLO, msg)
-        
-        this.controlItemsPromise = new Promise((resolve, reject) => {
-            /*
-            let DEFAULT_USER_ICON = '/assets/images/default_user.png'
-            this.controlItems = [
-                { id: '1',
-                  item: { title: 'Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1 Item 1', 
-                     user_icon: DEFAULT_USER_ICON, 
-                     date: 'Jul 13 20:42', 
-                     content: 'this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... ', 
-                     image: '/assets/images/default_user.png' },
-                  postCount: 0 },
-                { id: '2',
-                  item: { title: 'Item 2', user_icon: DEFAULT_USER_ICON, date: 'Jul 13 20:45', content: 'this and this and the other... ' },
-                  postCount: 1 },
-            ]
-            
-            resolve(this.controlItems)
-            */
-            this.socket.on(MSG_ANNOUNCE_CONTROL_ITEMS, (data) => {
-                let msg = data as AnnounceControlItems
-                console.log('got control items from server')
-                this.controlItems = msg.controlItems
-                resolve(this.controlItems)
-            })
+          this.socket.emit(MSG_CLIENT_HELLO, msg)
+        })
+        this.socket.on(MSG_OUT_OF_DATE, (msg) => {
+          this.outOfDate = true
+          let report = `client/server version incompatiable ${LOCAL_PROTOCOL_VERSION} vs ${msg.serverVersion}`
+          console.log(report)
+          alert(report)
+        })
+        this.socket.on(MSG_CONFIGURATION, (data) => {
+          let msg = data as ConfigurationMsg
+          console.log('got configuration ${msg.configuration.metadata.version} from server')
+          this.configuration.next(msg.configuration)
         })
         this.socket.on(MSG_ANNOUNCE_ITEMS, (data) => {
             let msg = data as AnnounceItems
@@ -63,13 +60,16 @@ export class StoreService {
         return this.items;
     }
     
-    getControlItems() : Promise<ControlItem[]> {
-        return this.controlItemsPromise
+    getConfiguration() : Observable<Configuration> {
+        return this.configuration
     }
-    postItem(controlItem:ControlItem) {
-        let msg:PostItem = { controlItem: controlItem }
+    postItem(scheduleItem:ScheduleItem, item:Item) {
+        let msg:PostItem = { scheduleId: scheduleItem.id, item: item }
+        if (!scheduleItem.postCount)
+          scheduleItem.postCount = 1
+        else
+          scheduleItem.postCount = 1+scheduleItem.postCount
         this.socket.emit(MSG_POST_ITEM, msg)
         //this.items.next(controlItem.item);
-        controlItem.postCount++;
     }
 }

@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { Item } from './types';
+import { Item } from './socialtypes';
 import { StoreService } from './store.service';
 
 @Component({

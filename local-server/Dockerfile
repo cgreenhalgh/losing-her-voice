@@ -20,4 +20,4 @@ EXPOSE 8080
 # OSC
 EXPOSE 9123
 
-CMD ["node","server/dist/index.js"]
+CMD ["node","dist/index.js"]

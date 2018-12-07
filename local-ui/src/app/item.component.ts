@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Item } from './types';
+import { Item } from './socialtypes';
 
 @Component({
   selector: 'item-view',

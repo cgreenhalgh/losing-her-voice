@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Item, ControlItem } from './types';
+import { Configuration, ScheduleItem } from './types';
+import { Item } from './socialtypes';
 
 import { StoreService } from './store.service';
 
@@ -9,13 +10,18 @@ import { StoreService } from './store.service';
   styleUrls: ['./control.component.css']
 })
 export class ControlComponent {
-    controlItems: ControlItem[];
+    configuration: Configuration;
     
     constructor(private store:StoreService) {
-        this.store.getControlItems().then(items => this.controlItems = items);
+        this.store.getConfiguration().subscribe((config) => this.configuration = config)
     }
-    postItem(controlItem:ControlItem) {
-        console.log(`post item ${controlItem.id}`);
-        this.store.postItem(controlItem);
+    postItem(scheduleItem:ScheduleItem) {
+      console.log(`post item ${scheduleItem.id} '${scheduleItem.title}'`);
+      if (scheduleItem.item) {
+        this.store.postItem(scheduleItem, scheduleItem.item);
+      } else {
+        // TODO
+        console.log(`ERROR: cannout post undefined item ${scheduleItem.id} '${scheduleItem.title}'`);
+      } 
     }
 }
