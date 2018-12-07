@@ -105,18 +105,45 @@ For big screen (local-)
 - list of items to display in "feed" (v1)
 - add/scroll up
 
-Simple item has:
+Item has:
 - id (string)
-- title (user_name?!) (string)
+- type (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie'
+- user_name (string)
 - user_icon (url)
+- date (string)
+- toAudience (boolean)
+
+Simple item has (extends Item):
 - content (string) - html??
 - image (url, optional)
-- date? (string)
 - likes (number)
-- type (string) - simple item, selfie, etc
 
-Other display objects:
-- re-post - id?, username, date, user_icon?, simple item, comment?
-- selfie - like simple item, tagged as selfie
-- quiz - like simple item plus status (open, closed) and list of options (content, image?, count, correct)
-- poll - like quiz but no option "correct" info
+Selfie image (note, this is internal to the moderation process - exposed via Selfie item):
+- image (data url or base64 encoded?)
+- hash (string) as id? (generated in client or server?)
+- rejected (boolean) - server-side
+- approved (boolean) - server-side
+- moderator (string) - name
+
+Selfie item has (extends Item):
+- content? (string) - html??
+- image_hash (string) (or image to rehash in server?)
+- rejected (boolean) - server-side, from image
+- approved (boolean) - server-side, from image
+- moderator (string) - name, from image
+
+Repost item has (extends Item):
+- item (SimpleItem)
+
+Quiz(/Poll) item has (extends Item):
+- content (string) - html??
+- image (url, optional)
+- options (list of Option)
+- open (boolean) - is quiz/poll open to responses?
+- totalCount? (number) - across all options
+
+Option:
+- content (string) - html?
+- image? (url, optional)
+- count? (string/number?) - feedback text or count?? (e.g. formatting percentage?)
+- correct (boolean, quiz item option only)
