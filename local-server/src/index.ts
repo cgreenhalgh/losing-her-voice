@@ -10,10 +10,17 @@ import * as socketio from 'socket.io'
 import * as redis from 'redis'
 import { startOSCBridge } from './osc-bridge'
 
-import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO, LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem } from './types';
-import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE } from './socialtypes'
+import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO, 
+  LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, 
+  MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, 
+  AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, 
+  PostItem, MSG_UPDATE_ITEM, UpdateItem } from './types';
+import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
+  QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
+  REDIS_CHANNEL_FEEDBACK, Feedback
+} from './socialtypes'
 
-function startRedisPub() {
+function startRedisPubSub() {
   // redis set-up
   let redis_host = process.env.REDIS_HOST || '127.0.0.1';
   let redis_config = { host: redis_host, port: 6379, auth_pass:null };
@@ -27,14 +34,26 @@ function startRedisPub() {
   redisPub.on("error", function (err) {
     console.log(`ERROR redis error ${err}`, err);
   });
-  return redisPub
+    
+  console.log(`subscribe to feedback on ${REDIS_CHANNEL_FEEDBACK}`)
+  let redisSub = redis.createClient(redis_config);
+  redisSub.on("error", function (err) {
+    console.log(`ERROR redis sub error ${err}`, err);
+  });
+  redisSub.subscribe(REDIS_CHANNEL_FEEDBACK)
+  redisSub.on("subscribe", function (channel, count) {
+    console.log(`subscribed to redis ${channel} (count ${count})`)
+  });
+ 
+  return [redisPub, redisSub]
 }
-let redisPub = startRedisPub()
+let [redisPub, redisSub] = startRedisPubSub()
 
 function announceItem(item:Item) {
   let msg = JSON.stringify(item)
   redisPub.publish(REDIS_CHANNEL_ANNOUNCE, msg)
 }
+
 
 const app = express()
 
@@ -148,6 +167,35 @@ const ITEM_ID_PREFIX = '_server_'
 let nextItemId = 1
 
 const ITEM_ROOM = 'items'
+
+redisSub.on("message", function (channel, message) {
+  console.log(`feedback: ${message}`)
+  try {
+    let feedback = JSON.parse(message) as Feedback
+    if (feedback.likeItem) {
+      // like (simple message)
+      if (!feedback.likeItem.likes)
+        feedback.likeItem.likes = 1
+      let item = items.find((item) => feedback.likeItem.id == item.id)
+      if (item && item.itemType == ItemType.SIMPLE) {
+        let simple = item as SimpleItem
+        if (!simple.likes)
+          simple.likes = feedback.likeItem.likes
+        else
+          simple.likes += feedback.likeItem.likes
+        console.log(`likes for ${item.id} now ${simple.likes}`)
+        let msgui:UpdateItem = {
+          item:simple
+        }
+        io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
+      } else {
+        console.log(`warning: could not find liked item ${feedback.likeItem.id}`)
+      }
+    }
+  } catch (err) {
+    console.log(`error parsing feedback: {err.message}`)
+  }
+})
 
 io.on('connection', function (socket) {
     console.log('new socket io connection...')

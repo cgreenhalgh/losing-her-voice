@@ -9,8 +9,13 @@ import * as socketio from 'socket.io'
 import * as redis from 'redis'
 import * as fs from 'fs'
 
-import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, MSG_CONFIGURATION, Configuration, ConfigurationMsg, ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, AnnounceItem } from './types'
-import { REDIS_CHANNEL_ANNOUNCE, Item } from './socialtypes'
+import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, 
+  MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, 
+  MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, 
+  MSG_CONFIGURATION, Configuration, ConfigurationMsg, 
+  ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
+  AnnounceItem, MSG_FEEDBACK, FeedbackMsg } from './types'
+import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK } from './socialtypes'
 const app = express()
 
 // Parsers for POST data
@@ -106,6 +111,19 @@ interface ClientInfo {
   timing:ServerTiming
 }
 
+// redis set-up
+let redis_host = process.env.REDIS_HOST || '127.0.0.1';
+let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+if (process.env.REDIS_PASSWORD) {
+  redis_config.auth_pass = process.env.REDIS_PASSWORD;
+}
+console.log('using redis config ' + JSON.stringify(redis_config));
+
+let redisPub = redis.createClient(redis_config);
+redisPub.on("error", function (err) {
+    console.log(`ERROR redisPub error ${err}`, err);
+});
+
 io.on('connection', function (socket) {
   console.log(`new socket io connection ${socket.id}...`)
   //socket.emit('news', { hello: 'world' });
@@ -156,6 +174,19 @@ io.on('connection', function (socket) {
         clientInfo.timing.lastServerRecvTime = now
       }
     })
+    socket.on(MSG_FEEDBACK, (data2) => {
+      let fb:FeedbackMsg = data2 as FeedbackMsg
+      let now = (new Date()).getTime()
+      if (fb.timing) {
+        clientInfo.timing.lastClientSendTime = fb.timing.clientSendTime
+        clientInfo.timing.lastServerRecvTime = now
+      }
+      if (fb.feedback) {
+        let msg = JSON.stringify(fb.feedback)
+        console.log(`relay feedback ${msg}`)
+        redisPub.publish(REDIS_CHANNEL_FEEDBACK, msg)
+      }
+    })
     sockets[socket.id] = socket
   });
   socket.on('disconnecting', (reason) => {
@@ -171,14 +202,6 @@ const STATE_POST = "POST"
 const STATE_INTERVAL = "INTERVAL"
 const STATE_RESET = "RESET"
 const SERVER_RELOAD = "RELOAD"
-
-// redis set-up
-let redis_host = process.env.REDIS_HOST || '127.0.0.1';
-let redis_config = { host: redis_host, port: 6379, auth_pass:null };
-if (process.env.REDIS_PASSWORD) {
-  redis_config.auth_pass = process.env.REDIS_PASSWORD;
-}
-console.log('using redis config ' + JSON.stringify(redis_config));
 
 let redisSub = redis.createClient(redis_config);
 redisSub.on("error", function (err) {

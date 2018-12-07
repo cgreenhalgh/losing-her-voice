@@ -77,7 +77,7 @@ Server needs to maintain:
 - [ ] server reset schedule??
 - [x] item -> simple item, title -> user_name, add item type
 - [x] "announce" item selectively to audience as well as screen/live view (via redis)
-- [ ] audience app like simple item -> relay through redis -> update server item -> announce item update (live only??)
+- [x] audience app like simple item -> relay through redis -> update server item -> announce item update (live only??)
 - [ ] add poll item type
 - [ ] control UI poll open & close -> live view & audience app
 - [ ] audience app select -> relay through redis -> update server item -> announce item update (live only)

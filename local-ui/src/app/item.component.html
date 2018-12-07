@@ -8,4 +8,5 @@
 		</div>
 		<div *ngIf="simpleItem" class="item_content">{{simpleItem.content}}</div>
 		<div *ngIf="simpleItem && simpleItem.image" class="item_image"><img class="item_image" [src]="simpleItem.image"></div>
+		<div *ngIf="simpleItem" class="item_likes">{{simpleItem.likes}} Likes</div>
 </div>

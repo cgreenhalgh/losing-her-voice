@@ -6,7 +6,7 @@ import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE,
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
   MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, Configuration, 
   ConfigurationMsg, MSG_CLIENT_PING, ClientPing, MSG_ANNOUNCE_ITEM, 
-  AnnounceItem } from './types';
+  AnnounceItem, FeedbackMsg, MSG_FEEDBACK } from './types';
 import { Item } from './socialtypes'
 import * as io from 'socket.io-client';
 
@@ -191,5 +191,19 @@ export class SyncService {
     }
     // assume for now that server -> client time is short? and go with max offset
     return serverTime + this.maxClientTimeOffset
+  }
+  likeItem(item:Item): void {
+    console.log(`like item ${item.id}`)
+    let now = (new Date()).getTime()
+    this.clientTiming.clientSendTime = now
+    let msg:FeedbackMsg = {
+      feedback: {
+        likeItem: {
+          id: item.id
+        }
+      },
+      timing:this.clientTiming,
+    }
+    this.socket.emit(MSG_FEEDBACK, msg)
   }
 }

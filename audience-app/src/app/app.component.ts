@@ -29,6 +29,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   landingTouched:boolean = false
   currentItem:Item
   currentSimpleItem:SimpleItem
+  currentItemLiked:boolean
   
   constructor(
     private syncService:SyncService,
@@ -78,6 +79,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     })
     syncService.getItem().subscribe((item) => {
       this.currentItem = item
+      this.currentItemLiked = false
       if (item && ItemType.SIMPLE == item.itemType)
         this.currentSimpleItem = item as SimpleItem
       else
@@ -218,6 +220,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       console.log(`cancel full screen`)
       if (cancelFullScreen)
         cancelFullScreen.call(doc);
+    }
+  }
+  onLikeCurrentItem() {
+    this.currentItemLiked = true
+    if (this.currentItem) {
+      this.syncService.likeItem(this.currentItem)
     }
   }
 }

@@ -41,6 +41,7 @@
 		<div *ngIf="currentSimpleItem" class="item_content">{{currentSimpleItem.content}}</div>
 		<div *ngIf="currentSimpleItem && currentSimpleItem.image" class="item_image"><img class="item_image" [src]="currentSimpleItem.image"></div>
   </div>
+  <div *ngIf="currentSimpleItem" class="item_like" [ngClass]="{item_liked: currentItemLiked}" (click)="onLikeCurrentItem()">Like</div>
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
 

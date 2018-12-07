@@ -55,3 +55,14 @@ export interface QuizOption {
 }
 
 export const REDIS_CHANNEL_ANNOUNCE = 'lhva.announce.v1'
+
+export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v1'
+
+export interface LikeItem {
+  id:string
+  likes?:number
+}
+
+export interface Feedback {
+  likeItem:LikeItem
+}

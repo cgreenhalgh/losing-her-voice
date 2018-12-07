@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, Observable, BehaviorSubject } from "rxjs";
 
-import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION, MSG_CONFIGURATION, Configuration, ScheduleItem, ConfigurationMsg, MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem } from './types';
+import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION, 
+  MSG_CONFIGURATION, Configuration, ScheduleItem, ConfigurationMsg, 
+  MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, 
+  MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem, 
+  MSG_UPDATE_ITEM, UpdateItem } from './types';
 import { Item } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -52,6 +56,11 @@ export class StoreService {
         this.socket.on(MSG_ANNOUNCE_ITEM, (data) => {
             let msg = data as AnnounceItem
             console.log('got item from server')
+            this.items.next(data.item)
+        })
+        this.socket.on(MSG_UPDATE_ITEM, (data) => {
+            let msg = data as UpdateItem
+            console.log('got item update from server')
             this.items.next(data.item)
         })
     }

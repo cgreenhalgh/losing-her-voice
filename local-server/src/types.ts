@@ -53,8 +53,9 @@ export const MSG_CONFIGURATION = 'lhr.configuration'
 export const MSG_ANNOUNCE_ITEMS = 'lhr.announce.items'
 export const MSG_ANNOUNCE_ITEM = 'lhr.announce.item'
 export const MSG_POST_ITEM = 'lhr.post.item'
+export const MSG_UPDATE_ITEM = 'lhr.update.item'
 
-export const LOCAL_PROTOCOL_VERSION = 1
+export const LOCAL_PROTOCOL_VERSION = 2
 
 export interface ClientHello {
   version:number
@@ -76,5 +77,9 @@ export interface AnnounceItem {
 }
 export interface PostItem {
     scheduleId:string
+    item:Item
+}
+
+export interface UpdateItem {
     item:Item
 }

@@ -16,6 +16,15 @@ export class LiveComponent implements AfterViewInit {
     constructor(private store:StoreService) {
         this.items = [];
         this.store.getItems().subscribe((item:Item) => {
+            // update?
+            for (let ix = 0; ix < this.items.length; ix++) {
+                let i = this.items[ix]
+                if (i.id == item.id) {
+                    console.log(`update item ${item.id}`, item)
+                    this.items.splice(ix, 1, item)
+                    return
+                }
+            }
             this.items.push(item)
             if (this.feedChild && this.itemsChild)
                 this.update()

@@ -64,7 +64,7 @@ Technical
 - [ ] take selfie photo 
 - [ ] add Geraldine to selfie
 - [x] social media post display (from server)
-- [ ] social media likes (to server -> local server)
+- [x] social media likes (to server -> local server)
 - [ ] social media quiz (to server -> local server)
 - [ ] social media share selfie (to server -> local server) (= "publish" ?!)
 - [ ] social media re-share? (to server -> local server)
