@@ -17,11 +17,14 @@ export class ControlComponent {
     }
     postItem(scheduleItem:ScheduleItem) {
       console.log(`post item ${scheduleItem.id} '${scheduleItem.title}'`);
+      if (scheduleItem.closePolls) {
+        this.store.closePolls(scheduleItem)
+      }
       if (scheduleItem.item) {
         this.store.postItem(scheduleItem, scheduleItem.item);
-      } else {
+      } else if (scheduleItem.itemType) {
         // TODO
-        console.log(`ERROR: cannout post undefined item ${scheduleItem.id} '${scheduleItem.title}'`);
+        console.log(`ERROR: cannout post undefined item ${scheduleItem.id} type ${scheduleItem.itemType} '${scheduleItem.title}'`);
       } 
     }
 }

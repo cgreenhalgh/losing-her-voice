@@ -2,7 +2,7 @@
   "metadata": {
     "title": "losing her voice local metadata",
     "description": "just initial testing placeholders",
-    "version": "0.1",
+    "version": "0.2",
     "author": "Chris Greenhalgh",
     "fileVersion": "lhv/local/v1"
   },
@@ -11,7 +11,6 @@
       "itemType": "simple",
       "title": "a first simple post (to audience)",
       "description": "just for initial tech testing",
-      "closePolls": true,
       "item": {
         "itemType": "simple",
         "user_name": "A.N.Admirer", 
@@ -25,7 +24,6 @@
       "itemType": "simple",
       "title": "a second simple post (to audience)",
       "description": "just for initial tech testing",
-      "closePolls": true,
       "item": {
         "itemType": "simple",
         "user_name": "A.N.Other-Admirer", 
@@ -38,7 +36,6 @@
       "itemType": "simple",
       "title": "a simple post just to the screen (not audience)",
       "description": "just for initial tech testing",
-      "closePolls": true,
       "item": {
         "itemType": "simple",
         "user_name": "A.N.Other-Admirer", 
@@ -46,6 +43,102 @@
         "content": "only on the screen, this and this and the other... ",
         "toAudience": false
       }
+    },
+    {
+      "itemType": "quiz",
+      "title": "a test quiz (live update)",
+      "description": "just for initial tech testing",
+      "item": {
+        "itemType": "quiz",
+        "user_name": "The Real Geraldine", 
+        "user_icon": "user_icon/default_user.png", 
+        "content": "In what year was Geraldine born?",
+        "toAudience": true,
+        "options": [
+          {
+            "content":"A: 1882",
+            "correct":true
+          },
+          {
+            "content":"B: 1879",
+            "correct":false
+          },
+          {
+            "content":"C: 1884",
+            "correct":false
+          }
+        ],
+        "updateLive": true,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up - were you right?"
+      }
+    },
+    {
+      "title": "close quiz",
+      "closePolls": true
+    },
+    {
+      "itemType": "quiz",
+      "title": "a test quiz (not live update)",
+      "description": "just for initial tech testing",
+      "item": {
+        "itemType": "quiz",
+        "user_name": "The Real Geraldine", 
+        "user_icon": "user_icon/default_user.png", 
+        "content": "In what year was Geraldine born?",
+        "toAudience": true,
+        "options": [
+          {
+            "content":"A: 1882",
+            "correct":true
+          },
+          {
+            "content":"B: 1879",
+            "correct":false
+          },
+          {
+            "content":"C: 1884",
+            "correct":false
+          }
+        ],
+        "updateLive": false,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up - were you right?"
+      }
+    },
+    {
+      "title": "close quiz",
+      "closePolls": true
+    },
+    {
+      "itemType": "poll",
+      "title": "a test poll",
+      "description": "just for initial tech testing",
+      "item": {
+        "itemType": "poll",
+        "user_name": "The Real Geraldine", 
+        "user_icon": "user_icon/default_user.png", 
+        "content": "What do you like most about Geraldine?",
+        "toAudience": true,
+        "options": [
+          {
+            "content":"A: Her smile"
+          },
+          {
+            "content":"B: Her outfits"
+          },
+          {
+            "content":"C: Her voice"
+          }
+        ],
+        "updateLive": true,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up"
+      }
+    },
+    {
+      "title": "close poll",
+      "closePolls": true
     }
   ],
   "selfies": [

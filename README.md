@@ -64,6 +64,8 @@ sudo docker run -it --rm --name=local-ui --network=internal \
   -v `pwd`/local-server/static:/root/work/static/ \
   local-ui /bin/bash
 `npm bin`/ng serve --host=0.0.0.0
+`npm bin`/ng build --prod
+cp -R dist/local-ui/* static/
 ```
 View on localhost:4200/live and localhost:4200/control
 

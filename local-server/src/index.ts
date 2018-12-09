@@ -14,7 +14,7 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, 
   MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, 
   AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, 
-  PostItem, MSG_UPDATE_ITEM, UpdateItem } from './types';
+  PostItem, MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback
@@ -191,6 +191,37 @@ redisSub.on("message", function (channel, message) {
       } else {
         console.log(`warning: could not find liked item ${feedback.likeItem.id}`)
       }
+    } else if (feedback.chooseOption) {
+      // choose quiz/poll option
+      if (!feedback.chooseOption.count)
+        feedback.chooseOption.count = 1
+      let item = items.find((item) => feedback.chooseOption.itemId == item.id)
+      if (item && (item.itemType == ItemType.QUIZ || item.itemType == ItemType.POLL)) {
+        let quiz = item as QuizOrPollItem
+        if (!quiz.totalCount)
+          quiz.totalCount = feedback.chooseOption.count
+        else
+          quiz.totalCount += feedback.chooseOption.count
+        let option = quiz.options[feedback.chooseOption.option]
+        if (!option) {
+          console.log(`warning: could not find option ${feedback.chooseOption.option} in quiz ${quiz.id} (with ${quiz.options.length} options)`)
+        } else {
+          if (!option.count)
+            option.count = feedback.chooseOption.count
+          else
+            option.count += feedback.chooseOption.count
+          
+          console.log(`choose option for ${item.itemType} ${item.id} option ${feedback.chooseOption.option} now ${option.count}/${quiz.totalCount}`)
+          if (quiz.updateLive) {
+            let msgui:UpdateItem = {
+              item:quiz
+            }
+            io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
+          }
+        }
+      } else {
+        console.log(`warning: could not find quiz item ${feedback.chooseOption.itemId}`)
+      }
     }
   } catch (err) {
     console.log(`error parsing feedback: {err.message}`)
@@ -244,6 +275,25 @@ io.on('connection', function (socket) {
         io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_ITEM, msgai)
         if (msg.item.toAudience) {
           announceItem(msg.item)
+        }
+    })
+    socket.on(MSG_CLOSE_POLLS, (data) => {
+        let openPolls:QuizOrPollItem[] = items.filter((i) => (i.itemType==ItemType.POLL || i.itemType==ItemType.QUIZ) && !(i as QuizOrPollItem).closed) as QuizOrPollItem[]
+        for (let openPoll of openPolls) {
+            console.log(`close ${openPoll.itemType} ${openPoll.id}`)
+            openPoll.closed = true
+            if (openPoll.itemType==ItemType.POLL) {
+                // most popular => 'correct'
+                let maxCount = openPoll.options.map((option) => option.count ? option.count : 0).reduce((acc, x) => Math.max(acc, x), 0)
+                openPoll.options.forEach((option) => option.correct = option.count && option.count >= maxCount)
+            }
+            let msgui:UpdateItem = {
+              item:openPoll
+            }
+            io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
+            if (msgui.item.toAudience) {
+              announceItem(msgui.item)
+            }
         }
     })
 });

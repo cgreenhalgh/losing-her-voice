@@ -5,11 +5,15 @@
 	<div *ngIf="configuration">
 		<div *ngFor="let scheduleItem of configuration.scheduleItems">
 			<div class="control-header">
-				<button (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-post' : 'Post'}}</button>
-				<span>{{scheduleItem.title}}</span>: <span>{{scheduleItem.itemType}}</span>
+				<button *ngIf="scheduleItem.closePolls" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-close' : 'Close'}}</button>
+				<button *ngIf="scheduleItem.item || scheduleItem.itemType" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-post' : 'Post'}}</button>
+				<span> {{scheduleItem.title}} </span>: 
+				<span *ngIf="scheduleItem.itemType"> {{scheduleItem.itemType}} </span>
+				<span *ngIf="scheduleItem.closePolls"> Close poll/quiz </span>
 				<span>(Posted {{scheduleItem.postCount}} times)</span>
+				<button *ngIf="scheduleItem.item" (click)="scheduleItem.showPreview = !scheduleItem.showPreview">show/hide preview</button>
 			</div>
-			<div class="item-preview" *ngIf="scheduleItem.item" >
+			<div class="item-preview" *ngIf="scheduleItem.item && scheduleItem.showPreview" >
 				<item-view [item]="scheduleItem.item"></item-view>
 			</div>
 		</div>

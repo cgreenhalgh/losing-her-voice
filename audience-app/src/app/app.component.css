@@ -82,6 +82,59 @@ img.item_image {
 	min-width: 32px;
 	min-height: 32px;
 }
+.quiz_question {
+	margin: 5px;
+}
+.quiz_option {
+	margin-left: 2em;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+.quiz_option.quiz_correct > .quiz_option_content > div {
+	border: 1px solid white;
+}
+.quiz_option.quiz_incorrect > .quiz_option_content > div {
+	color: #555;
+}
+.quiz_option.quiz_selected > .quiz_option_content > div {
+	background: #555;
+}
+.quiz_option.quiz_incorrect.quiz_selected > .quiz_option_content > div {
+	color: black;
+}
+.quiz_option:after {
+	content: "";
+	clear: both;
+	display: table;
+}
+.quiz_option_content {
+	display: block;
+	float:left;
+	width: 80%;
+	text-align: left;
+}
+.quiz_option_content > div {
+	border: 1px solid #555;
+	border-radius: 0.2em;
+
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0.1em;
+	padding-bottom: 0.1em;
+}
+.quiz_option_count {
+	display: block;
+	float:left;
+	width: 20%;
+/*	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0.1em;
+	padding-bottom: 0.1em;
+*/	text-align: center;
+}
+.quiz_prompt {
+	margin: 5px;
+}
 /* like etc. */
 div.item_like {
 	display: block;
@@ -98,4 +151,8 @@ div.item_like {
 div.item_like.item_liked {
 	color: #888;
 	background: #333;
+}
+div.item_like.disabled {
+	color: #555;
+	border: 1px solid #333;
 }

@@ -40,8 +40,19 @@
 		</div>
 		<div *ngIf="currentSimpleItem" class="item_content">{{currentSimpleItem.content}}</div>
 		<div *ngIf="currentSimpleItem && currentSimpleItem.image" class="item_image"><img class="item_image" [src]="currentSimpleItem.image"></div>
+		<div *ngIf="currentQuizItem" class="quiz_question">{{currentQuizItem.content}}</div>
+		<div *ngIf="currentQuizItem">
+			<div *ngFor="let option of currentQuizItem.options; index as optionIndex" class="quiz_option" 
+			[ngClass]="{quiz_selected: option.selected, quiz_correct: currentQuizItem.closed && option.correct, quiz_incorrect: currentQuizItem.closed && currentQuizItem.itemType=='quiz' && !option.correct}">
+				<div class="quiz_option_content" (click)="selectQuizOption(optionIndex)"><div>{{option.content}}</div></div>
+				<div *ngIf="currentQuizItem.closed" class="quiz_option_count"><div>{{option.count}}</div></div>
+			</div>
+			<div class="quiz_prompt" *ngIf="!currentQuizItem.closed">{{currentQuizItem.openPrompt}}</div>
+			<div class="quiz_prompt" *ngIf="currentQuizItem.closed">{{currentQuizItem.closedPrompt}}</div>
+		</div>
   </div>
   <div *ngIf="currentSimpleItem" class="item_like" [ngClass]="{item_liked: currentItemLiked}" (click)="onLikeCurrentItem()">Like</div>
+  <div *ngIf="currentQuizItem && !currentQuizItem.closed" class="item_like" [ngClass]="{item_liked: currentItemSent, disabled: !currentItemSelected}" (click)="onSendCurrentItem()">Send</div>
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
 

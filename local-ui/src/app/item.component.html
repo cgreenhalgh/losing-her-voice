@@ -9,4 +9,13 @@
 		<div *ngIf="simpleItem" class="item_content">{{simpleItem.content}}</div>
 		<div *ngIf="simpleItem && simpleItem.image" class="item_image"><img class="item_image" [src]="simpleItem.image"></div>
 		<div *ngIf="simpleItem" class="item_likes">{{simpleItem.likes}} Likes</div>
+		<div *ngIf="quizItem" class="quiz_question">{{quizItem.content}}</div>
+		<div *ngIf="quizItem">
+			<div *ngFor="let option of quizItem.options" class="quiz_option" [ngClass]="{quiz_correct: quizItem.closed && option.correct, quiz_incorrect: quizItem.closed && quizItem.itemType=='quiz' && !option.correct}">
+				<div class="quiz_option_content"><div>{{option.content}}</div></div>
+				<div *ngIf="quizItem.closed || quizItem.updateLive" class="quiz_option_count"><div>{{option.count}}</div></div>
+			</div>
+			<div class="quiz_prompt" *ngIf="!quizItem.closed">{{quizItem.openPrompt}}</div>
+			<div class="quiz_prompt" *ngIf="quizItem.closed">{{quizItem.closedPrompt}}</div>
+		</div>
 </div>

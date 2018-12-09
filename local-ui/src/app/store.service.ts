@@ -5,7 +5,7 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_CONFIGURATION, Configuration, ScheduleItem, ConfigurationMsg, 
   MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, 
   MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem, 
-  MSG_UPDATE_ITEM, UpdateItem } from './types';
+  MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS } from './types';
 import { Item } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -80,5 +80,12 @@ export class StoreService {
           scheduleItem.postCount = 1+scheduleItem.postCount
         this.socket.emit(MSG_POST_ITEM, msg)
         //this.items.next(controlItem.item);
+    }
+    closePolls(scheduleItem:ScheduleItem) {
+        if (!scheduleItem.postCount)
+          scheduleItem.postCount = 1
+        else
+          scheduleItem.postCount = 1+scheduleItem.postCount
+        this.socket.emit(MSG_CLOSE_POLLS, null)
     }
 }

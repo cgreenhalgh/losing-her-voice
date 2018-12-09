@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { SyncService } from './sync.service';
 import { CurrentState, Configuration, MenuItem, View } from './types';
-import { Item, SimpleItem, ItemType } from './socialtypes';
+import { Item, SimpleItem, ItemType, QuizOrPollItem } from './socialtypes';
 
 const SMALL_DELAY:number = 0.01
 
@@ -30,7 +30,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   currentItem:Item
   currentSimpleItem:SimpleItem
   currentItemLiked:boolean
-  
+  currentQuizItem:QuizOrPollItem
+  currentItemSelected:boolean
+  currentQuizOption:number
+  currentItemSent:boolean
+    
   constructor(
     private syncService:SyncService,
     @Inject(DOCUMENT) private document: any
@@ -84,6 +88,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.currentSimpleItem = item as SimpleItem
       else
         this.currentSimpleItem = null
+      this.currentItemSent = false
+      let wasItemSelected = this.currentItemSelected
+      this.currentItemSelected = false
+      if (item && (ItemType.QUIZ == item.itemType || ItemType.POLL == item.itemType)) {
+        let quiz = item as QuizOrPollItem
+        // update to previous quiz? preserve selected
+        if (this.currentQuizItem && this.currentQuizItem.id == quiz.id) {
+          if (wasItemSelected && this.currentQuizOption < quiz.options.length) {
+            console.log(`carry over selected option ${this.currentQuizOption} for ${quiz.id}`)
+            quiz.options[this.currentQuizOption].selected = true
+            this.currentItemSelected = true
+          }
+        }
+        this.currentQuizItem = quiz
+      }
+      else
+        this.currentQuizItem = null
     })
   }
   onShowMenuItem(menuItem:MenuItem):void {
@@ -226,6 +247,22 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.currentItemLiked = true
     if (this.currentItem) {
       this.syncService.likeItem(this.currentItem)
+    }
+  }
+  selectQuizOption(optionIndex:number) {
+    if (this.currentQuizItem && this.currentQuizItem.options && !this.currentItemSent && !this.currentQuizItem.closed) {
+      this.currentQuizItem.options.forEach((option) => option.selected = false)
+      if (optionIndex>=0 && optionIndex<this.currentQuizItem.options.length) {
+        this.currentQuizItem.options[optionIndex].selected = true
+        this.currentItemSelected = true
+        this.currentQuizOption = optionIndex
+      }
+    }
+  }
+  onSendCurrentItem() {
+    if (this.currentQuizItem && this.currentItemSelected && !this.currentQuizItem.closed && !this.currentItemSent) {
+      this.currentItemSent = true
+      this.syncService.chooseOption(this.currentQuizItem, this.currentQuizOption)
     }
   }
 }

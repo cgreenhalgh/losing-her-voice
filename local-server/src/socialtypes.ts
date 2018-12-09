@@ -46,23 +46,34 @@ export interface QuizOrPollItem extends Item {
   content:string
   options:QuizOption[]
   totalCount?:number
+  updateLive?:boolean
+  openPrompt?:string
+  closedPrompt?:string
+  closed?:boolean
 }
 
 export interface QuizOption {
   content:string
   correct?:boolean // quiz only
   count?:number
+  selected?:boolean // internal
 }
 
 export const REDIS_CHANNEL_ANNOUNCE = 'lhva.announce.v1'
 
-export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v1'
+export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v2'
 
 export interface LikeItem {
   id:string
   likes?:number
 }
+export interface ChooseOption {
+  itemId:string
+  option:number // index from 0
+  count?:number
+}
 
 export interface Feedback {
-  likeItem:LikeItem
+  likeItem?:LikeItem
+  chooseOption?:ChooseOption
 }

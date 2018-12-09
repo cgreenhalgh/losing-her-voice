@@ -206,4 +206,19 @@ export class SyncService {
     }
     this.socket.emit(MSG_FEEDBACK, msg)
   }
+  chooseOption(item:Item, option:number): void {
+    console.log(`choose item ${item.id} option ${option}`)
+    let now = (new Date()).getTime()
+    this.clientTiming.clientSendTime = now
+    let msg:FeedbackMsg = {
+      feedback: {
+        chooseOption: {
+          itemId: item.id,
+          option: option
+        }
+      },
+      timing:this.clientTiming,
+    }
+    this.socket.emit(MSG_FEEDBACK, msg)
+  }
 }

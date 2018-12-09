@@ -23,7 +23,7 @@ Metadata, config file metadata; object with:
 - `fileVersion`, currently 'lhv/local/v1'
 
 Schedule Item is object with:
-- `itemType` (string), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie'
+- `itemType` (string, optional), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie'
 - `title` (string) schedule item title
 - `description` (string) schedule item description
 - `item` (social media Item), where a specific instance is provided, i.e. simple, quiz or poll
@@ -51,6 +51,9 @@ Quiz(/Poll) item has (extends Item):
 - `content` (string) - html??
 - (?? `image` (url, optional))
 - `options` (list of Option)
+- `updateLive` (boolean, default false) - show votes live
+- `openPrompt` (string, optional) - html? shown when open
+- `closedPrompt` (string, optional) - html? shown when closed
 
 Quiz/Poll Option item:
 - `content` (string) - html?
@@ -78,10 +81,10 @@ Server needs to maintain:
 - [x] item -> simple item, title -> user_name, add item type
 - [x] "announce" item selectively to audience as well as screen/live view (via redis)
 - [x] audience app like simple item -> relay through redis -> update server item -> announce item update (live only??)
-- [ ] add poll item type
-- [ ] control UI poll open & close -> live view & audience app
-- [ ] audience app select -> relay through redis -> update server item -> announce item update (live only)
-- [ ] add quiz variant of poll
+- [x] add poll item type
+- [x] control UI poll open & close -> live view & audience app
+- [x] audience app select -> relay through redis -> update server item -> announce item update (live only)
+- [x] add quiz variant of poll
 - [ ] add re-post item type
 - [ ] control UI *make* repost -> live view 
 - [ ] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
