@@ -1,4 +1,10 @@
-<h1 (click)="toggleFullScreen()">Losing Her Voice <span class="toggleFullscreen"><mat-icon>fullscreen</mat-icon><!-- (toggle fullscreen) --></span></h1>
+<h1>
+	<span *ngIf="showMenuItem || showMenu" class="button" (click)="onShowMenu()"><mat-icon>menu</mat-icon></span>
+	<span (click)="toggleFullScreen()">
+	Losing Her Voice 
+	</span>
+	<span (click)="toggleFullScreen()" class="toggleFullscreen"><mat-icon>fullscreen</mat-icon><!-- (toggle fullscreen) --></span>
+</h1>
 
 <div *ngIf="loading" padding>
   Loading...
@@ -12,7 +18,6 @@
   </div>
 </div>
 <div *ngIf="showMenuItem && showMenuItem.cards">
-  <div class="button" (click)="onShowMenu()">Back</div>
   <div><hr></div>
   <div *ngFor="let card of showMenuItem.cards">
     <div [innerHTML]="card.html"></div>
@@ -20,7 +25,6 @@
   </div>
 </div>
 <div *ngIf="showMenuItem && showMenuItem.id=='profile'">
-  <div class="button" (click)="onShowMenu()">Back</div>
   <profile-view></profile-view>
 </div>
 <div *ngIf="view && (!view.showItems || !currentItem)">

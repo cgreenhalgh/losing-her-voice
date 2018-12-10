@@ -11,3 +11,11 @@ div.button {
 	padding-bottom: 0.1em;
 	cursor:default;
 }
+select {
+	color:white;
+	background: #333;
+	margin: 3pt;
+	padding: 3pt;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 100%;
+}
