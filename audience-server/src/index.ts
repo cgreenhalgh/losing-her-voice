@@ -14,7 +14,8 @@ import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello,
   MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, 
   MSG_CONFIGURATION, Configuration, ConfigurationMsg, 
   ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
-  AnnounceItem, MSG_FEEDBACK, FeedbackMsg } from './types'
+  AnnounceItem, MSG_FEEDBACK, FeedbackMsg, 
+  CONFIGURATION_FILE_VERSION } from './types'
 import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK } from './socialtypes'
 const app = express()
 
@@ -61,10 +62,12 @@ let configFile = path.join(__dirname, '..', 'data', 'audience-config.json');
 let configuration:Configuration = {
   metadata: {
     title:'empty (builtin)',
-    version: '0'
+    version: '0',
+    fileVersion: CONFIGURATION_FILE_VERSION
   },
   menuItems:[],
-  views:[]
+  views:[],
+  nameParts:[]
 }
 
 function readConfig() {
@@ -75,12 +78,12 @@ function readConfig() {
     }
     try {
       let json:any = JSON.parse(data)
-      if (json.menuItems && json.views && json.metadata) {
+      if (json.menuItems && json.views && json.metadata && json.nameParts && json.metadata.fileVersion == CONFIGURATION_FILE_VERSION) {
         configuration = json as Configuration
         console.log(`read config ${configFile}: "${configuration.metadata.title}" version ${configuration.metadata.version}`)
         return
       } else {
-        console.log(`ERROR reading config file ${configFile}: does not appear to have correct type`)
+        console.log(`ERROR reading config file ${configFile}: does not appear to have correct type (${CONFIGURATION_FILE_VERSION})`)
       }
     }
     catch (err2) {

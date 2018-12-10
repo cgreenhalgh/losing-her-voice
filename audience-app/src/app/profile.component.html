@@ -1,0 +1,13 @@
+<div>
+	<div><hr></div>
+	<h1>Profile</h1>
+	<div *ngFor="let namePart of nameParts">
+		<label>{{namePart.title}}</label>
+		<div>
+			<select [(ngModel)]="namePart.value" (change)="onSelectChange($event)">
+				<option *ngFor="let option of namePart.options" [value]="option">{{option}}</option>
+			</select>
+		</div>
+	</div>
+	<div><hr></div>
+</div>

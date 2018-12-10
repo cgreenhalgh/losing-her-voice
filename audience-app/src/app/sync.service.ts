@@ -1,16 +1,18 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Observable } from "rxjs";
+import { SESSION_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
   MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, Configuration, 
   ConfigurationMsg, MSG_CLIENT_PING, ClientPing, MSG_ANNOUNCE_ITEM, 
-  AnnounceItem, FeedbackMsg, MSG_FEEDBACK } from './types';
+  AnnounceItem, FeedbackMsg, MSG_FEEDBACK, NamePart } from './types';
 import { Item } from './socialtypes'
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
+const NAME_KEY_PREFIX = 'namePart:'
 
 @Injectable()
 export class SyncService {
@@ -28,7 +30,10 @@ export class SyncService {
   clientTiming:ClientTiming = null
   pingCount:number = 0
     
-  constructor(@Inject(DOCUMENT) private document: any) {
+  constructor(
+    @Inject(DOCUMENT) private document: any,
+    @Inject(SESSION_STORAGE) private storage: StorageService
+  ) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
     this.configuration = new BehaviorSubject(null)
@@ -102,6 +107,11 @@ export class SyncService {
       let msg = data as ConfigurationMsg
       console.log('got configuration from server', msg)
       this.updateTiming(msg.timing)
+      if (msg.configuration.nameParts) {
+        for (let np of msg.configuration.nameParts) {
+          np.value = this.storage.get(NAME_KEY_PREFIX+np.title)
+        }
+      }
       this.configuration.next(msg.configuration)
     })
     this.socket.on(MSG_CURRENT_STATE, (data) => {
@@ -220,5 +230,20 @@ export class SyncService {
       timing:this.clientTiming,
     }
     this.socket.emit(MSG_FEEDBACK, msg)
+  }
+  saveName(nameParts:NamePart[]) {
+    let name = ''
+    for (let np of nameParts) {
+      if (np.value && name.length>0)
+        name += ' '
+      name += np.value
+      this.storage.set(NAME_KEY_PREFIX+np.title, np.value)
+      console.log(`save name ${np.title} ${np.value}`)
+    }
+    console.log(`name = ${name}`)
+    this.storage.set(NAME_KEY_PREFIX, name)
+  }
+  getName(): string {
+    return this.storage.get(NAME_KEY_PREFIX)
   }
 }

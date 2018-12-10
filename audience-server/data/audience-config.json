@@ -3,7 +3,8 @@
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
     "version": "0.5",
-    "author": "Chris Greenhalgh"
+    "author": "Chris Greenhalgh",
+    "fileVersion": "lhv/audience/v2"
   },
   "menuItems":[
     {
@@ -17,10 +18,7 @@
     {
       "id": "profile",
       "title": "Profile",
-      "postPerformance": false,
-      "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
-      ]
+      "postPerformance": false
     },
     {
       "id": "selfie",
@@ -225,6 +223,65 @@
       ],
       "audioFile": "habanera-sample-20.mp3",
       "audioDelaySeconds": 0.1
+    }
+  ],
+  "nameParts": [
+    {
+      "title":"Given Name",
+      "required":true,
+      "options":[
+        "Andrew",
+        "Willis",
+        "James",
+        "George",
+        "Charles",
+        "Joseph",
+        "Frank",
+        "Henry",
+        "Robert",
+        "Harry",
+        "Tim",
+        "Mary",
+        "Helen",
+        "Anna",
+        "Margaret",
+        "Ruth",
+        "Elizabeth",
+        "Marie",
+        "Annabel",
+        "Ro",
+        "Florence",
+        "Bertha"
+      ]
+    },
+    {
+      "title":"Family Name",
+      "required":true,
+      "options":[
+        "Smith",
+        "Johnson",
+        "Williams",
+        "Jones",
+        "Brown",
+        "Davis",
+        "Miller",
+        "Wilson",
+        "Moore",
+        "Anderson",
+        "Thomas",
+        "Jackson",
+        "White",
+        "Harris",
+        "Martin",
+        "Thompson",
+        "Garcia",
+        "Robinson",
+        "Clark",
+        "Rodriguez",
+        "Lewis",
+        "Lee",
+        "Walker"
+      ]
     }
   ]
 }

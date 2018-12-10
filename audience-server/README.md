@@ -15,6 +15,7 @@ Object with:
 - `metadata`, see below
 - `menuItems`, array of Menu Items, see below
 - `views`, array of Views, see below
+- `nameParts`, array of NamePart, see below
 
 Metadata, config file metadata; object with:
 - `title` (string) - configuration title
@@ -40,6 +41,11 @@ View, i.e. app state/view associated with a particular part (e.g. scene) of the 
 - `audioDelaySeconds` (number, optional, default 0) - delay to start of audio (`audioFile`) compared to start of view
 - `audioVolume` (number, optional, default 1) - volume of audio
 
+NamePart, object with:
+- `title` (string)
+- `required` (boolean, default false)
+- `options` (array of string)
+
 ## To do
 
 Technical
@@ -60,7 +66,7 @@ Technical
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] unsynced audio & flickering images (act 2 scene 5b)
-- [ ] profile - set/choose name
+- [x] profile - set/choose name
 - [ ] take selfie photo 
 - [ ] add Geraldine to selfie
 - [x] social media post display (from server)

@@ -11,13 +11,17 @@
     <div class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}</div>
   </div>
 </div>
-<div *ngIf="showMenuItem">
+<div *ngIf="showMenuItem && showMenuItem.cards">
   <div class="button" (click)="onShowMenu()">Back</div>
   <div><hr></div>
   <div *ngFor="let card of showMenuItem.cards">
     <div [innerHTML]="card.html"></div>
     <div><hr></div>
   </div>
+</div>
+<div *ngIf="showMenuItem && showMenuItem.id=='profile'">
+  <div class="button" (click)="onShowMenu()">Back</div>
+  <profile-view></profile-view>
 </div>
 <div *ngIf="view && (!view.showItems || !currentItem)">
   <div><hr></div>

@@ -10,7 +10,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 6
+export const CURRENT_VERSION:number = 7
 
 export interface ClientTiming {
   clientSendTime:number
@@ -91,11 +91,23 @@ export interface ConfigurationMetadata {
   description?:string
   author?:string
   version:string
+  fileVersion:string
 }
+
+export const CONFIGURATION_FILE_VERSION = "lhv/audience/v2"
+
+export interface NamePart {
+  title:string
+  required?:boolean
+  options:string[]
+  value?:string // internal
+}
+
 export interface Configuration {
   metadata:ConfigurationMetadata
   menuItems:MenuItem[]
   views:View[]
+  nameParts:NamePart[]
 }
 export interface ConfigurationMsg {
   configuration:Configuration
