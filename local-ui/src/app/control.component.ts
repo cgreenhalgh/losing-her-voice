@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Configuration, ScheduleItem } from './types';
-import { Item } from './socialtypes';
+import { Item, ItemType } from './socialtypes';
 
 import { StoreService } from './store.service';
 
@@ -11,6 +11,7 @@ import { StoreService } from './store.service';
 })
 export class ControlComponent {
     configuration: Configuration;
+    nextSelfieIndex:number = 0
     
     constructor(private store:StoreService) {
         this.store.getConfiguration().subscribe((config) => this.configuration = config)
@@ -20,8 +21,16 @@ export class ControlComponent {
       if (scheduleItem.closePolls) {
         this.store.closePolls(scheduleItem)
       }
+      if (scheduleItem.videoState) {
+        this.store.setVideoState(scheduleItem)
+      }
       if (scheduleItem.item) {
         this.store.postItem(scheduleItem, scheduleItem.item);
+      } else if (scheduleItem.itemType == ItemType.SELFIE) {
+        if (this.configuration && this.configuration.selfies && this.configuration.selfies.length>0) {
+          let six = (this.nextSelfieIndex++) % this.configuration.selfies.length
+          this.store.postItem(scheduleItem, this.configuration.selfies[six])
+        }
       } else if (scheduleItem.itemType) {
         // TODO
         console.log(`ERROR: cannout post undefined item ${scheduleItem.id} type ${scheduleItem.itemType} '${scheduleItem.title}'`);

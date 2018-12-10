@@ -1,15 +1,35 @@
+.liveui {
+}
 .feed {
 	position: fixed;
-	left: 0px;
+	right: 0px;
 	top: 0px;
 	bottom: 0px;
+	width: 50%;
 }
 .feed_title {
 	font-size: 24px;
 }
 .items {
-	width: 600px;
+	width: 100%;
 	position: absolute;
 	/*top: 0px;*/
 	transition: top 1s;
+}
+.videoSide {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	width: 50%;
+}
+.videoSide > canvas {
+	width: 100%;
+	height: 100%;
+}
+.videoSide.hide {
+	opacity: 0;
+}
+.hiddenVideo {
+	display: none;
 }

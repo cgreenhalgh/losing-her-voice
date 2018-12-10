@@ -139,14 +139,63 @@
     {
       "title": "close poll",
       "closePolls": true
+    },
+    {
+      "title": "show video1",
+      "description": "just for initial tech testing",
+      "videoState": {
+      	"mode": "fullscreen",
+      	"url": "http://music-mrl.nott.ac.uk/1/recordings/Rehearsal_480_v2.mp4",
+      	"loop": true,
+      	"queue": false
+      }
+    },
+    {
+      "title": "show video2",
+      "description": "just for initial tech testing",
+      "videoState": {
+      	"mode": "fullscreen",
+      	"url": "http://music-mrl.nott.ac.uk/1/recordings/Performance2_480_v2.mp4",
+      	"loop": true,
+      	"queue": true
+      }
+    },
+    {
+      "title": "show video2 with selfies",
+      "description": "just for initial tech testing",
+      "videoState": {
+      	"mode": "selfies",
+      	"url": "http://music-mrl.nott.ac.uk/1/recordings/Performance2_480_v2.mp4",
+      	"loop": true,
+      	"queue": true
+      }
+    },
+    {
+      "itemType": "selfie",
+      "title": "a test selfie",
+      "description": "just for initial tech testing"
+    },
+    {
+      "title": "hide video",
+      "videoState": {
+      	"mode": "hide"
+      }
     }
   ],
   "selfies": [
     {
-      "type": "selfie",
+      "itemType": "selfie",
       "user_name": "A.N.Admirer", 
       "user_icon": "user_icon/default_user.png", 
-      "image": "user_icon/default_user.png"
+      "image": "user_icon/default_user.png",
+      "toAudience": false
+    },
+    {
+      "itemType": "selfie",
+      "user_name": "A.N.Other Admirer", 
+      "user_icon": "user_icon/default_user.png", 
+      "image": "user_icon/default_user.png",
+      "toAudience": false
     }
   ],
   "reposters": [

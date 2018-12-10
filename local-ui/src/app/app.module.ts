@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { LiveComponent } from './live.component';
@@ -20,6 +21,7 @@ import { StoreService } from './store.service';
     AppRoutingModule
   ],
   providers: [
+    {provide: DOCUMENT, useValue: document }, 
     StoreService
   ],
   bootstrap: [AppComponent]

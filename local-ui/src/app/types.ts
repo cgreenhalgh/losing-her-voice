@@ -30,12 +30,24 @@ export interface ConfigurationMetadata {
 }
 export const CONFIGURATION_FILE_VERSION = "lhv/local/v1"
 
+export enum VideoMode {
+  HIDE = 'hide',
+  FULLSCREEN = 'fullscreen',
+  SELFIES = 'selfies'
+}
+export interface VideoState {
+  url?:string
+  mode:VideoMode
+  loop?:boolean
+  queue?:boolean
+}
 export interface ScheduleItem {
   itemType:ItemType
   title:string
   description?:string
   item?:Item
   closePolls?:boolean
+  videoState?:VideoState
   id?:string // internal
   postCount?:number // internal
   showPreview?:boolean // internal
@@ -56,8 +68,9 @@ export const MSG_ANNOUNCE_ITEM = 'lhr.announce.item'
 export const MSG_POST_ITEM = 'lhr.post.item'
 export const MSG_UPDATE_ITEM = 'lhr.update.item'
 export const MSG_CLOSE_POLLS = 'lhr.close.polls'
+export const MSG_VIDEO_STATE = 'lhr.video.state'
 
-export const LOCAL_PROTOCOL_VERSION = 3
+export const LOCAL_PROTOCOL_VERSION = 4
 
 export interface ClientHello {
   version:number

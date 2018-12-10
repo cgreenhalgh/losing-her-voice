@@ -7,9 +7,11 @@
 			<div class="control-header">
 				<button *ngIf="scheduleItem.closePolls" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-close' : 'Close'}}</button>
 				<button *ngIf="scheduleItem.item || scheduleItem.itemType" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-post' : 'Post'}}</button>
+				<button *ngIf="scheduleItem.videoState" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-set' : 'Set'}}</button>
 				<span> {{scheduleItem.title}} </span>: 
 				<span *ngIf="scheduleItem.itemType"> {{scheduleItem.itemType}} </span>
 				<span *ngIf="scheduleItem.closePolls"> Close poll/quiz </span>
+				<span *ngIf="scheduleItem.videoState"> video mode {{scheduleItem.videoState.mode}} </span>
 				<span>(Posted {{scheduleItem.postCount}} times)</span>
 				<button *ngIf="scheduleItem.item" (click)="scheduleItem.showPreview = !scheduleItem.showPreview">show/hide preview</button>
 			</div>

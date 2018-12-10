@@ -28,7 +28,14 @@ Schedule Item is object with:
 - `description` (string) schedule item description
 - `item` (social media Item), where a specific instance is provided, i.e. simple, quiz or poll
 - `closePolls` (boolean, optional), close any open quiz/poll
+- `videoState` (VideoState,optional), set video/selfie playback state
 - (timing? optionality?)
+
+VideoState has:
+- `url` (string, optional) - video to start
+- `loop` (boolean, default false), whether to look current video
+- `queue` (boolean, default false), whether to wait until current video ends to start new one
+- `mode` (VideoMode, optional) - `hide`, `fullscreen`, `selfies`
 
 Item has:
 - `id` (string)
@@ -71,6 +78,7 @@ Server needs to maintain:
 - posted items
 - audience selfie images (for moderation)
 - audience reposts
+- video state
 
 ### To do
 
@@ -88,11 +96,15 @@ Server needs to maintain:
 - [ ] add re-post item type
 - [ ] control UI *make* repost -> live view 
 - [ ] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
-- [ ] add selfie item type
-- [ ] control UI send selfie -> live view
+- [x] add selfie item type
+- [x] control UI show/hide video -> live view
+- [x] control UI send selfie -> live view
+- [ ] selfie live view animations ?!
 - [ ] audience app create & submit selfie image -> relay through redis -> update server selfie image pool
 - [ ] moderation UI view - view server selfie image pool
 - [ ] moderate selfie image -> update server selfie image pool
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
 - [ ] app disconnect warning
 - [ ] app smoother reconnect support
+- [ ] control UI schedule simple control (default/next)
+- [ ] schedule remote control? (OSC?)

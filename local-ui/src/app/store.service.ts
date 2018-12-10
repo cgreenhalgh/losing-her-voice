@@ -5,7 +5,8 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_CONFIGURATION, Configuration, ScheduleItem, ConfigurationMsg, 
   MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, 
   MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem, 
-  MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS } from './types';
+  MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS, VideoState, 
+  MSG_VIDEO_STATE } from './types';
 import { Item } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -16,11 +17,13 @@ export class StoreService {
     items:ReplaySubject<Item>
     socket:any
     configuration:BehaviorSubject<Configuration>
+    videoState:BehaviorSubject<VideoState>
     outOfDate:boolean = false
   
     constructor() {
         this.items = new ReplaySubject()
         this.configuration = new BehaviorSubject(null)
+        this.videoState= new BehaviorSubject(null)
         console.log(`say hello to socket.io on ${SOCKET_IO_SERVER}`)
         this.socket = io(SOCKET_IO_SERVER)
         this.socket.on('connect', () => {
@@ -61,7 +64,12 @@ export class StoreService {
         this.socket.on(MSG_UPDATE_ITEM, (data) => {
             let msg = data as UpdateItem
             console.log('got item update from server')
-            this.items.next(data.item)
+            this.items.next(msg.item)
+        })
+        this.socket.on(MSG_VIDEO_STATE, (data) => {
+            let msg = data as VideoState
+            console.log('got video state from server')
+            this.videoState.next(msg)
         })
     }
 
@@ -71,6 +79,9 @@ export class StoreService {
     
     getConfiguration() : Observable<Configuration> {
         return this.configuration
+    }
+    getVideoState() : Observable<VideoState> {
+        return this.videoState
     }
     postItem(scheduleItem:ScheduleItem, item:Item) {
         let msg:PostItem = { scheduleId: scheduleItem.id, item: item }
@@ -87,5 +98,12 @@ export class StoreService {
         else
           scheduleItem.postCount = 1+scheduleItem.postCount
         this.socket.emit(MSG_CLOSE_POLLS, null)
+    }
+    setVideoState(scheduleItem:ScheduleItem) {
+        if (!scheduleItem.postCount)
+          scheduleItem.postCount = 1
+        else
+          scheduleItem.postCount = 1+scheduleItem.postCount
+        this.socket.emit(MSG_VIDEO_STATE, scheduleItem.videoState)
     }
 }

@@ -14,7 +14,8 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, 
   MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, 
   AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, 
-  PostItem, MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS } from './types';
+  PostItem, MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS,
+  VideoState, MSG_VIDEO_STATE, VideoMode } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback
@@ -131,6 +132,8 @@ function replaceImageUrls(configuration:Configuration) {
   }
   for (let s of configuration.selfies) {
     s.user_icon = replaceImageUrl(s, 'user_icon')
+    if (s.image)
+      s.image = replaceImageUrl(s, 'image')
   }
 }
 function readConfig() {
@@ -167,6 +170,10 @@ const ITEM_ID_PREFIX = '_server_'
 let nextItemId = 1
 
 const ITEM_ROOM = 'items'
+
+let videoState:VideoState = {
+  mode: VideoMode.HIDE
+}
 
 redisSub.on("message", function (channel, message) {
   console.log(`feedback: ${message}`)
@@ -247,6 +254,7 @@ io.on('connection', function (socket) {
         socket.emit(MSG_CONFIGURATION, msgconfig)
         let msgis:AnnounceItems = { items: items }
         socket.emit(MSG_ANNOUNCE_ITEMS, msgis)
+        socket.emit(MSG_VIDEO_STATE, videoState)
         socket.join(ITEM_ROOM)
     });
     socket.on(MSG_POST_ITEM, (data) => {
@@ -295,6 +303,16 @@ io.on('connection', function (socket) {
               announceItem(msgui.item)
             }
         }
+    })
+    socket.on(MSG_VIDEO_STATE, (data) => {
+        let msg = data as VideoState
+        if (!msg.mode) {
+            console.log('Error: video state with no mode', msg)
+            return
+        }
+        videoState = msg
+        console.log(`video state updated to ${videoState.mode} mode`)
+        io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
     })
 });
 
