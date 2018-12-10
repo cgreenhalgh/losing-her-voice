@@ -135,6 +135,9 @@ function replaceImageUrls(configuration:Configuration) {
     if (s.image)
       s.image = replaceImageUrl(s, 'image')
   }
+  for (let s of configuration.reposters) {
+    s.user_icon = replaceImageUrl(s, 'user_icon')
+  }
 }
 function readConfig() {
   fs.readFile(configFile, 'utf8', (err,data) => {
@@ -195,6 +198,8 @@ redisSub.on("message", function (channel, message) {
           item:simple
         }
         io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
+        items.filter((item) => item.itemType==ItemType.REPOST && (item as RepostItem).item.id == feedback.likeItem.id).forEach((item) => 
+          (item as RepostItem).item = simple)
       } else {
         console.log(`warning: could not find liked item ${feedback.likeItem.id}`)
       }

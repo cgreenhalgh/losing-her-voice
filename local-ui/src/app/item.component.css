@@ -3,6 +3,9 @@
 	margin: 5px;
 	padding: 4px;
 }
+.item_repost_header {
+	margin-bottom: 3pt;
+}
 .item_header:after {
 	content: "";
 	display: table;

@@ -31,6 +31,7 @@
 </div>
 <div *ngIf="view && view.showItems">
   <div *ngIf="currentItem" class="item">
+		<div *ngIf="currentRepostItem" class="item_repost_header"><em>{{currentRepostItem.user_name}}</em> shared</div>
 		<div class="item_header">
 			<div class="item_user_icon"><img class="item_user_icon" [src]="currentItem.user_icon"></div>
 			<div class="item_header2">

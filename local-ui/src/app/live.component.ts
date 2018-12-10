@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit, ElementRef, HostListener, Inject } from '@angular/core';
-import { Item, SelfieItem, ItemType } from './socialtypes';
+import { Item, SelfieItem, ItemType, RepostItem } from './socialtypes';
 import { StoreService } from './store.service';
 import { VideoState, VideoMode } from './types';
 import { DOCUMENT } from '@angular/common';
@@ -67,6 +67,15 @@ export class LiveComponent implements AfterViewInit {
                 if (i.id == item.id) {
                     console.log(`update item ${item.id}`, item)
                     this.items.splice(ix, 1, item)
+                    for (let ix2 = 0; ix2 < this.items.length; ix2++) {
+                        let i2 = this.items[ix2]
+                        if (i2.itemType==ItemType.REPOST && (i2 as RepostItem).item.id == item.id) {
+                            (i2 as RepostItem).item = item;
+                            // nasty force change
+                            this.items.splice(ix2, 1, JSON.parse(JSON.stringify(i2)))
+                            //console.log(`- updates repost ${i2.id}`)
+                        }
+                    }
                     return
                 }
             }

@@ -68,7 +68,6 @@ Technical
 - [x] social media quiz (to server -> local server)
 - [ ] social media share selfie (to server -> local server) (= "publish" ?!)
 - [ ] social media re-share? (to server -> local server)
-- [ ] social media 
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??

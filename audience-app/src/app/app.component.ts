@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { SyncService } from './sync.service';
 import { CurrentState, Configuration, MenuItem, View } from './types';
-import { Item, SimpleItem, ItemType, QuizOrPollItem } from './socialtypes';
+import { Item, SimpleItem, ItemType, QuizOrPollItem, RepostItem } from './socialtypes';
 
 const SMALL_DELAY:number = 0.01
 
@@ -28,6 +28,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   showLanding:boolean = true
   landingTouched:boolean = false
   currentItem:Item
+  currentRepostItem:RepostItem
   currentSimpleItem:SimpleItem
   currentItemLiked:boolean
   currentQuizItem:QuizOrPollItem
@@ -82,6 +83,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.updateAudio()
     })
     syncService.getItem().subscribe((item) => {
+      if (item.itemType == ItemType.REPOST) {
+        this.currentRepostItem = item as RepostItem
+        item = this.currentRepostItem.item
+      } else {
+        this.currentRepostItem = null
+      }
       this.currentItem = item
       this.currentItemLiked = false
       if (item && ItemType.SIMPLE == item.itemType)

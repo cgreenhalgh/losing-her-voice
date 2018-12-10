@@ -93,8 +93,8 @@ Server needs to maintain:
 - [x] control UI poll open & close -> live view & audience app
 - [x] audience app select -> relay through redis -> update server item -> announce item update (live only)
 - [x] add quiz variant of poll
-- [ ] add re-post item type
-- [ ] control UI *make* repost -> live view 
+- [x] add re-post item type
+- [x] control UI *make* repost -> live view 
 - [ ] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
 - [x] add selfie item type
 - [x] control UI show/hide video -> live view
@@ -108,3 +108,4 @@ Server needs to maintain:
 - [ ] app smoother reconnect support
 - [ ] control UI schedule simple control (default/next)
 - [ ] schedule remote control? (OSC?)
+- [ ] prune items in live view? (performance)

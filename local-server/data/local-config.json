@@ -33,6 +33,11 @@
       }
     },
     {
+      "itemType": "repost",
+      "title": "Re-post",
+      "description": "re-post a previous simple post"
+    },
+    {
       "itemType": "simple",
       "title": "a simple post just to the screen (not audience)",
       "description": "just for initial tech testing",
