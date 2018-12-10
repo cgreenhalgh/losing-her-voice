@@ -73,6 +73,7 @@ Technical
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
 - [ ] moderation...
+- [ ] separate testing and each performance (i.e. unique client URL, etc.)
 
 Content
 
