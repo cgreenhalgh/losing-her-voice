@@ -103,6 +103,10 @@ Server needs to maintain:
 - [x] audience app create & submit selfie image -> relay through redis -> update server selfie image pool
 - [x] moderation UI view - view server selfie image pool
 - [x] moderate selfie image -> update server selfie image pool
+- [ ] persist selfie images on audience server for local server offline
+- [ ] move audience server to https for media access
+- [ ] submit selfie image over http rather than socket.io (for use well in advance)
+- [ ] app reset option to clear name/selfie
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
 - [ ] app disconnect warning
 - [ ] app smoother reconnect support
