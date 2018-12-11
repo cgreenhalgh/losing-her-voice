@@ -4,7 +4,9 @@ import { DOCUMENT } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { LiveComponent } from './live.component';
+import { ModerateComponent } from './moderate.component';
 import { ItemComponent } from './item.component';
+import { SelfieImageComponent } from './selfieImage.component'
 import { ControlComponent } from './control.component';
 import { AppRoutingModule } from './app-routing.module';
 import { StoreService } from './store.service';
@@ -13,7 +15,9 @@ import { StoreService } from './store.service';
   declarations: [
     AppComponent,
     LiveComponent,
+    ModerateComponent,
     ItemComponent,
+    SelfieImageComponent,
     ControlComponent
   ],
   imports: [

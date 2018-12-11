@@ -81,6 +81,7 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server
 ```
 
@@ -94,6 +95,7 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server /bin/bash
 node dist/index.js
 ```
@@ -115,7 +117,6 @@ sudo docker run -it --rm --name=audience-app --network=internal \
   -p :4200:4200 -p :9876:9876 \
   -v `pwd`/html/2/:/root/work/static/ \
   audience-app /bin/bash
-ng build --output-path=static --watch --base-href=/2/losing-her-voice/
 ng serve --host=0.0.0.0
 ng build --prod --base-href=/2/losing-her-voice/
 cp -r dist/losing-her-voice static/

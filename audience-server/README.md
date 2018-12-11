@@ -67,7 +67,7 @@ Technical
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] unsynced audio & flickering images (act 2 scene 5b)
 - [x] profile - set/choose name
-- [ ] take selfie photo 
+- [x] take selfie photo 
 - [ ] add Geraldine to selfie
 - [x] social media post display (from server)
 - [x] social media likes (to server -> local server)

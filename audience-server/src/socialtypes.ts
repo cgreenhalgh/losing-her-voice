@@ -76,4 +76,5 @@ export interface ChooseOption {
 export interface Feedback {
   likeItem?:LikeItem
   chooseOption?:ChooseOption
+  selfieImage?:SelfieImage
 }

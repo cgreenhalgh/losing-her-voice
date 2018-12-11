@@ -6,8 +6,8 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, 
   MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem, 
   MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS, VideoState, 
-  MSG_VIDEO_STATE } from './types';
-import { Item } from './socialtypes';
+  MSG_VIDEO_STATE, MSG_SELFIE_IMAGE } from './types';
+import { Item, SelfieImage } from './socialtypes';
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_SERVER:string = 'http://localhost:8080'
@@ -19,11 +19,13 @@ export class StoreService {
     configuration:BehaviorSubject<Configuration>
     videoState:BehaviorSubject<VideoState>
     outOfDate:boolean = false
+    selfieImages:ReplaySubject<SelfieImage>
   
     constructor() {
         this.items = new ReplaySubject()
         this.configuration = new BehaviorSubject(null)
         this.videoState= new BehaviorSubject(null)
+        this.selfieImages = new ReplaySubject()
         console.log(`say hello to socket.io on ${SOCKET_IO_SERVER}`)
         this.socket = io(SOCKET_IO_SERVER)
         this.socket.on('connect', () => {
@@ -71,6 +73,11 @@ export class StoreService {
             console.log('got video state from server')
             this.videoState.next(msg)
         })
+        this.socket.on(MSG_SELFIE_IMAGE, (data) => {
+            let msg = data as SelfieImage
+            console.log('got selfie image from server')
+            this.selfieImages.next(msg)
+        })
     }
 
     getItems() : Observable<Item> {
@@ -82,6 +89,9 @@ export class StoreService {
     }
     getVideoState() : Observable<VideoState> {
         return this.videoState
+    }
+    getSelfieImages() : Observable<SelfieImage> {
+        return this.selfieImages;
     }
     postItem(scheduleItem:ScheduleItem, item:Item) {
         let msg:PostItem = { scheduleId: scheduleItem.id, item: item }
@@ -105,5 +115,8 @@ export class StoreService {
         else
           scheduleItem.postCount = 1+scheduleItem.postCount
         this.socket.emit(MSG_VIDEO_STATE, scheduleItem.videoState)
+    }
+    updateSelfieImage(selfieImage:SelfieImage) {
+        this.socket.emit(MSG_SELFIE_IMAGE, selfieImage)
     }
 }

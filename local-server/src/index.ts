@@ -10,12 +10,14 @@ import * as socketio from 'socket.io'
 import * as redis from 'redis'
 import { startOSCBridge } from './osc-bridge'
 
+import { SelfieStore } from './moderation'
+
 import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO, 
   LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, 
   MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, 
   AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, 
   PostItem, MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS,
-  VideoState, MSG_VIDEO_STATE, VideoMode } from './types';
+  VideoState, MSG_VIDEO_STATE, VideoMode, MSG_SELFIE_IMAGE } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback
@@ -178,8 +180,10 @@ let videoState:VideoState = {
   mode: VideoMode.HIDE
 }
 
+let selfieStore = new SelfieStore()
+
 redisSub.on("message", function (channel, message) {
-  console.log(`feedback: ${message}`)
+  console.log(`feedback: ${message.substring(0,50)}...`)
   try {
     let feedback = JSON.parse(message) as Feedback
     if (feedback.likeItem) {
@@ -234,6 +238,18 @@ redisSub.on("message", function (channel, message) {
       } else {
         console.log(`warning: could not find quiz item ${feedback.chooseOption.itemId}`)
       }
+    } else if (feedback.selfieImage) {
+      if (!feedback.selfieImage.image) {
+        console.log(`ignore selfieImage with no image`)
+        return
+      }
+      //console.log(`got new selfieItem...`)
+      selfieStore.addImage(feedback.selfieImage, (newsi, isNew) => {
+        console.log(`got ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
+        if (isNew) {
+          io.to(ITEM_ROOM).emit(MSG_SELFIE_IMAGE, newsi)
+        }
+      })
     }
   } catch (err) {
     console.log(`error parsing feedback: {err.message}`)
@@ -260,6 +276,10 @@ io.on('connection', function (socket) {
         let msgis:AnnounceItems = { items: items }
         socket.emit(MSG_ANNOUNCE_ITEMS, msgis)
         socket.emit(MSG_VIDEO_STATE, videoState)
+      
+        selfieStore.getImages((si:SelfieImage, isNew:boolean) => {
+          socket.emit(MSG_SELFIE_IMAGE, si)
+        })
         socket.join(ITEM_ROOM)
     });
     socket.on(MSG_POST_ITEM, (data) => {
@@ -318,6 +338,15 @@ io.on('connection', function (socket) {
         videoState = msg
         console.log(`video state updated to ${videoState.mode} mode`)
         io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
+    })
+    socket.on(MSG_SELFIE_IMAGE, (data) => {
+        let msg = data as SelfieImage
+        if (!msg.hash) {
+            console.log('Error: selfie image with no hash', msg)
+            return
+        }
+        selfieStore.update(msg)
+        console.log(`selfie ${msg.hash} updated, approved=${msg.approved}, rejected=${msg.rejected}, moderator=${msg.moderator}`)
     })
 });
 

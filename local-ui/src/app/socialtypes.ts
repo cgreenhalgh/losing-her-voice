@@ -25,6 +25,7 @@ export interface SimpleItem extends Item {
 
 export interface RepostItem extends Item {
   item:Item
+  submitted?:number // date
 }
 
 export interface SelfieItem extends Item {
@@ -32,6 +33,7 @@ export interface SelfieItem extends Item {
   rejected?:boolean
   approved?:boolean
   moderator?:string
+  submitted?:number // date
 }
 
 export interface SelfieImage {
@@ -40,6 +42,7 @@ export interface SelfieImage {
   rejected?:boolean
   approved?:boolean
   moderator?:string
+  submitted?:number // date
 }
 
 export interface QuizOrPollItem extends Item {
@@ -76,4 +79,5 @@ export interface ChooseOption {
 export interface Feedback {
   likeItem?:LikeItem
   chooseOption?:ChooseOption
+  selfieImage?:SelfieImage
 }

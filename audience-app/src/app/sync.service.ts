@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Observable } from "rxjs";
-import { SESSION_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
@@ -32,7 +32,7 @@ export class SyncService {
     
   constructor(
     @Inject(DOCUMENT) private document: any,
-    @Inject(SESSION_STORAGE) private storage: StorageService
+    @Inject(LOCAL_STORAGE) private storage: StorageService
   ) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
@@ -245,5 +245,19 @@ export class SyncService {
   }
   getName(): string {
     return this.storage.get(NAME_KEY_PREFIX)
+  }
+  submitSelfieImage(dataurl:string) {
+    console.log(`submit selfie image`)
+    let now = (new Date()).getTime()
+    this.clientTiming.clientSendTime = now
+    let msg:FeedbackMsg = {
+      feedback: {
+        selfieImage: {
+          image: dataurl
+        }
+      },
+      timing:this.clientTiming,
+    }
+    this.socket.emit(MSG_FEEDBACK, msg)
   }
 }

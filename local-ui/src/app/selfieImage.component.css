@@ -1,0 +1,25 @@
+:host {
+	display: inline-block;
+	width: 200px;
+	margin: 5px;
+	/*float: left;*/
+}
+:host > img {
+	width:100%;
+	height:auto;
+}
+div.selfie-option {
+	display: block;
+	border: 1px solid #555;
+	border-radius: 0.2em;
+	margin: 0.2em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0.1em;
+	padding-bottom: 0.1em;
+	text-align: center;
+}
+div.selfie-option.active {
+	color: #888;
+	background: #333;
+}

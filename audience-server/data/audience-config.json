@@ -8,21 +8,18 @@
   },
   "menuItems":[
     {
-      "id": "about.geraldine",
-      "title": "About Geraldine",
-      "postPerformance": false,
-      "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
-      ]
-    },
-    {
       "id": "profile",
       "title": "Profile",
       "postPerformance": false
     },
     {
       "id": "selfie",
-      "title": "Selfie with Geraldine",
+      "title": "Selfie",
+      "postPerformance": false
+    },
+    {
+      "id": "about.geraldine",
+      "title": "About Geraldine",
       "postPerformance": false,
       "cards": [
         { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }

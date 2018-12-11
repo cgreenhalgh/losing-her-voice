@@ -7,12 +7,14 @@ import { StorageServiceModule } from 'ngx-webstorage-service';
 
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './profile.component';
+import { SelfieComponent } from './selfie.component';
 import { SyncService } from './sync.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProfileComponent
+    ProfileComponent,
+    SelfieComponent
   ],
   imports: [
     BrowserModule,

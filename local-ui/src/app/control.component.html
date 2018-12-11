@@ -1,6 +1,6 @@
 <div class='control'>
 	<h1>Control view</h1>
-	<p><a [routerLink]="['/live']">Live</a></p>
+	<p><a [routerLink]="['/live']">Live</a> <a [routerLink]="['/moderate']">Moderation</a></p>
 	<div *ngIf="!configuration">Waiting for configuration...</div>
 	<div *ngIf="configuration">
 		<div *ngFor="let scheduleItem of configuration.scheduleItems">

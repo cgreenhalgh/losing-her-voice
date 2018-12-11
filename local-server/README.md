@@ -100,9 +100,9 @@ Server needs to maintain:
 - [x] control UI show/hide video -> live view
 - [x] control UI send selfie -> live view
 - [ ] selfie live view animations ?!
-- [ ] audience app create & submit selfie image -> relay through redis -> update server selfie image pool
-- [ ] moderation UI view - view server selfie image pool
-- [ ] moderate selfie image -> update server selfie image pool
+- [x] audience app create & submit selfie image -> relay through redis -> update server selfie image pool
+- [x] moderation UI view - view server selfie image pool
+- [x] moderate selfie image -> update server selfie image pool
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
 - [ ] app disconnect warning
 - [ ] app smoother reconnect support

@@ -186,7 +186,7 @@ io.on('connection', function (socket) {
       }
       if (fb.feedback) {
         let msg = JSON.stringify(fb.feedback)
-        console.log(`relay feedback ${msg}`)
+        console.log(`relay feedback ${msg.substring(0,50)}...`)
         redisPub.publish(REDIS_CHANNEL_FEEDBACK, msg)
       }
     })

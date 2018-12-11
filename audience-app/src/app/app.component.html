@@ -27,6 +27,9 @@
 <div *ngIf="showMenuItem && showMenuItem.id=='profile'">
   <profile-view></profile-view>
 </div>
+<div *ngIf="showMenuItem && showMenuItem.id=='selfie'">
+  <selfie-view></selfie-view>
+</div>
 <div *ngIf="view && (!view.showItems || !currentItem)">
   <div><hr></div>
   <div *ngFor="let card of view.cards">

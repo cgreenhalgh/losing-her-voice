@@ -69,8 +69,9 @@ export const MSG_POST_ITEM = 'lhr.post.item'
 export const MSG_UPDATE_ITEM = 'lhr.update.item'
 export const MSG_CLOSE_POLLS = 'lhr.close.polls'
 export const MSG_VIDEO_STATE = 'lhr.video.state'
+export const MSG_SELFIE_IMAGE = 'lhr.selfie.image'
 
-export const LOCAL_PROTOCOL_VERSION = 4
+export const LOCAL_PROTOCOL_VERSION = 5
 
 export interface ClientHello {
   version:number
