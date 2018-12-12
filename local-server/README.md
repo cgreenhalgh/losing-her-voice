@@ -135,8 +135,8 @@ Audience app:
 - [x] social media post display (from server)
 - [x] social media likes (to server -> local server)
 - [x] social media quiz (to server -> local server)
+- [x] move audience server to https for media access
 
-- [ ] move audience server to https for media access
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] app reset option to clear name/selfie
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
