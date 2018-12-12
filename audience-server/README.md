@@ -48,43 +48,5 @@ NamePart, object with:
 
 ## To do
 
-Technical
+See local-server [README](../local-server/README.md)
 
-- [x] move app config to external (watched) file - note watch didn't work; reload with redis RELOAD message
-- [x] synced audio play/stop (act 2 scene 5c)
-- [x] volume option for synced audio play/stop 
-- [x] audioDelay option for synced audio play/stop 
-- [x] check/fix blocked autoplay/failed initial play policy enforcement
-- [x] "show about to begin" audio? (should not be triggered by app (re)load when view current, only by initial triggering of view)
-- [x] link to Qlab (via local server & OSC)
-- [x] initial page to prompt click on app
-- [x] reconnect if disconnected
-- [x] make full screen
-- [ ] disable communication after event ?! (or otherwise limit traffic)
-- [ ] support link from app page to external questionnaire
-- [ ] card navigation within view/page
-- [ ] card navigation animation, e.g. newspaper, social media, scrap book
-- [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
-- [ ] unsynced audio & flickering images (act 2 scene 5b)
-- [x] profile - set/choose name
-- [x] take selfie photo 
-- [ ] add Geraldine to selfie
-- [x] social media post display (from server)
-- [x] social media likes (to server -> local server)
-- [x] social media quiz (to server -> local server)
-- [ ] social media share selfie (to server -> local server) (= "publish" ?!)
-- [ ] social media re-share? (to server -> local server)
-- [ ] personal scrapbook - souvenir audio
-- [ ] personal scrapbook - selfie
-- [ ] personal scrapbook - social media??
-- [ ] moderation...
-- [ ] separate testing and each performance (i.e. unique client URL, etc.)
-
-Content
-
-- [ ] menu items and associated content
-- [ ] views and associated cards/content
-- [ ] social media activities/etc
-- [ ] CSS/images for newspaper, social media, scrapbook (or whatever)
-- [ ] name options for profile
-- [ ] image options for profile?
