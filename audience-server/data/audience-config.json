@@ -203,7 +203,8 @@
         { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [habanera]</p>" }
       ],
       "audioFile": "habanera-sample-20.mp3",
-      "audioDelaySeconds": 0.1
+      "audioDelaySeconds": 0.1,
+      "audioJitterSeconds": 1
     },
     {
       "id":"act2.scene5e",
@@ -219,7 +220,8 @@
         { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [habanera+flickering]</p>" }
       ],
       "audioFile": "habanera-sample-20.mp3",
-      "audioDelaySeconds": 0.1
+      "audioDelaySeconds": 0.1,
+      "audioJitterSeconds": 5
     }
   ],
   "nameParts": [

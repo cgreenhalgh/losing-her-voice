@@ -21,6 +21,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   views:View[]
   showMenu:boolean = false
   view:View
+  audioDelaySeconds:number
   showMenuItem:MenuItem
   showPlay:boolean
   playWhenReady:boolean
@@ -63,10 +64,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       if (this.currentState && this.currentState.forceView) {
         // force a view
         this.showMenu = false
+        this.audioDelaySeconds = 0
         this.view = this.views.find((v) => this.currentState.forceView == v.id)
         if (!this.view) {
           console.log(`unknown view forced: ${this.currentState.forceView}`)
           this.currentState.error = `there seems to be something wrong (I don't know how to show ${this.currentState.forceView}`
+        } else {
+          if (this.view.audioDelaySeconds)
+            this.audioDelaySeconds = this.view.audioDelaySeconds
+          if (this.view.audioJitterSeconds)
+            this.audioDelaySeconds += Math.random()*this.view.audioJitterSeconds
         }
       } else {
         if (this.view) {
@@ -158,8 +165,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let clientStartTime = this.syncService.getClientTime(this.currentState.serverStartTime)
     let now = (new Date()).getTime()
     let elapsed = (now - clientStartTime)*0.001
-    if (this.view.audioDelaySeconds)
-      elapsed -= this.view.audioDelaySeconds
+    if (this.audioDelaySeconds)
+      elapsed -= this.audioDelaySeconds
     if (elapsed < 0) {
       console.log(`delay audio ${-elapsed}`)
       this.audioTimeout = setTimeout(() => this.playAudio(), -1000*elapsed)

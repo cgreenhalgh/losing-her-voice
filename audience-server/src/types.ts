@@ -82,6 +82,7 @@ export interface View {
   defaultMenuId?:string
   audioFile?:string
   audioDelaySeconds?:number
+  audioJitterSeconds?:number
   audioVolume?:number
   showItems?:boolean // social media stuff...
 }
