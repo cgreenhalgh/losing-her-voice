@@ -1,10 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
 import { SyncService } from './sync.service';
 import { NamePart } from './types';
-import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
-
-const IMAGE_KEY = 'selfie.image'
-const SELFIE_CONFIRMED_KEY = 'selfie.confirmed'
 
 @Component({
   selector: 'selfie-view',
@@ -23,13 +19,12 @@ export class SelfieComponent implements AfterViewInit {
   
   constructor(
     private syncService:SyncService,
-    @Inject(LOCAL_STORAGE) private storage: StorageService,
   ) {
-    this.selfieConfirmed = !!storage.get(SELFIE_CONFIRMED_KEY)
-    this.selfiePresent = !!storage.get(IMAGE_KEY)
+    this.selfieConfirmed = this.syncService.getSelfieConfirmed()
+    this.selfiePresent = this.syncService.getSelfiePresent()
   }
   ngAfterViewInit() {
-    let dataurl = this.storage.get(IMAGE_KEY)
+    let dataurl = this.syncService.getSelfieImage()
     if (dataurl) {
       console.log(`restore image`)
       let ctx = this.canvasRef.nativeElement.getContext('2d')
@@ -57,8 +52,7 @@ export class SelfieComponent implements AfterViewInit {
     this.selfieAccepted = true
     this.selfieDeclined = false
     console.log(`selfie consent confirmed`)
-    this.storage.set(SELFIE_CONFIRMED_KEY, 'true')
-    this.syncService.submitSelfieImage(this.storage.get(IMAGE_KEY))
+    this.syncService.setSelfieConfirmed()
   }
   onChangeFile($event) {
     console.log(`change image file`)
@@ -97,7 +91,7 @@ export class SelfieComponent implements AfterViewInit {
         
         // persist
         let dataurl = this.canvasRef.nativeElement.toDataURL()
-        this.storage.set(IMAGE_KEY, dataurl)
+        this.syncService.setSelfieImage(dataurl)
         this.selfiePresent = true
       }
       img.src = url;

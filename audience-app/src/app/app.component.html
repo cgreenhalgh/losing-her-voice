@@ -14,7 +14,7 @@
 </div>
 <div *ngIf="showMenu">
   <div *ngFor="let menuItem of menuItems">
-    <div class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}</div>
+    <div class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
   </div>
 </div>
 <div *ngIf="showMenuItem && showMenuItem.cards">
@@ -30,7 +30,10 @@
 <div *ngIf="showMenuItem && showMenuItem.id=='selfie'">
   <selfie-view></selfie-view>
 </div>
-<div *ngIf="view && (!view.showItems || !currentItem)">
+<div *ngIf="showMenuItem && showMenuItem.id=='reset'">
+  <reset-view></reset-view>
+</div>
+<div *ngIf="view && !view.showItems">
   <div><hr></div>
   <div *ngFor="let card of view.cards">
     <div [innerHTML]="card.html"></div>
@@ -41,6 +44,11 @@
   </div>
 </div>
 <div *ngIf="view && view.showItems">
+	<div class="profile_name" (click)="onToggleEditProfile()">
+		{{profileName}}<mat-icon *ngIf="!profileName" >create</mat-icon>
+	</div>
+	<profile-view *ngIf="editProfile" (fullNameSet)="onToggleEditProfile()"></profile-view>
+	<div *ngIf="!editProfile"><hr></div>
   <div *ngIf="currentItem" class="item">
 		<div *ngIf="currentRepostItem" class="item_repost_header"><em>{{currentRepostItem.user_name}}</em> shared</div>
 		<div class="item_header">

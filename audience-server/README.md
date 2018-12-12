@@ -39,6 +39,7 @@ View, i.e. app state/view associated with a particular part (e.g. scene) of the 
 - `defaultMenuId` (string, optional) - if act ends with this view showing, which menu item should be the default (e.g. questionnaire after act 2 or take selfie after act 1)
 - `audioFile` (string, optional) - name of file (in `src/assets`) to play during view
 - `audioDelaySeconds` (number, optional, default 0) - delay to start of audio (`audioFile`) compared to start of view
+- `audioJitterSeconds` (number, optional, default 0) - additional random delay added to `audioDelaySeconds`
 - `audioVolume` (number, optional, default 1) - volume of audio
 
 NamePart, object with:

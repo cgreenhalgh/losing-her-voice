@@ -13,11 +13,17 @@ import * as io from 'socket.io-client';
 
 const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
 const NAME_KEY_PREFIX = 'namePart:'
+const IMAGE_KEY = 'selfie.image'
+const SELFIE_CONFIRMED_KEY = 'selfie.confirmed'
+
 
 @Injectable()
 export class SyncService {
   currentState:BehaviorSubject<CurrentState>
   configuration:BehaviorSubject<Configuration>
+  profileName:BehaviorSubject<string>
+  selfieConfirmed:BehaviorSubject<boolean>
+  selfieSent:BehaviorSubject<boolean>
   item:Subject<Item>
   socket:any
   minClientTimeOffset:number = Number.MIN_SAFE_INTEGER
@@ -37,6 +43,8 @@ export class SyncService {
     // loading state...
     this.currentState = new BehaviorSubject(null)
     this.configuration = new BehaviorSubject(null)
+    this.profileName = new BehaviorSubject(this.getName())
+    this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.item = new Subject()
     // base href?
     let baseHref = (document.getElementsByTagName('base')[0] || {}).href
@@ -236,17 +244,35 @@ export class SyncService {
     for (let np of nameParts) {
       if (np.value && name.length>0)
         name += ' '
-      name += np.value
+      if (np.value)
+        name += np.value
       this.storage.set(NAME_KEY_PREFIX+np.title, np.value)
       console.log(`save name ${np.title} ${np.value}`)
     }
+    name = name.trim()
     console.log(`name = ${name}`)
     this.storage.set(NAME_KEY_PREFIX, name)
+    this.profileName.next(name)
   }
   getName(): string {
     return this.storage.get(NAME_KEY_PREFIX)
   }
-  submitSelfieImage(dataurl:string) {
+  getNameObservable(): Observable<string> {
+    return this.profileName
+  }
+  getSelfieConfirmed(): boolean {
+    return !!this.storage.get(SELFIE_CONFIRMED_KEY)
+  }
+  getSelfieConfirmedObservable(): Observable<boolean> {
+    return this.selfieConfirmed
+  }
+  getSelfiePresent(): boolean {
+    return !!this.storage.get(IMAGE_KEY)
+  }
+  setSelfieConfirmed(): void {
+    this.storage.set(SELFIE_CONFIRMED_KEY, 'true')
+    this.selfieConfirmed.next(true)
+    let dataurl:string = this.getSelfieImage()
     console.log(`submit selfie image`)
     let now = (new Date()).getTime()
     this.clientTiming.clientSendTime = now
@@ -259,5 +285,26 @@ export class SyncService {
       timing:this.clientTiming,
     }
     this.socket.emit(MSG_FEEDBACK, msg)
+  }
+  getSelfieImage(): string {
+    return this.storage.get(IMAGE_KEY)
+  }
+  setSelfieImage(dataurl:string): void {
+    this.storage.remove(SELFIE_CONFIRMED_KEY)
+    this.selfieConfirmed.next(false)
+    this.storage.set(IMAGE_KEY, dataurl)
+  }
+  resetApp():void {
+    console.log(`reset app state`)
+    this.storage.remove(SELFIE_CONFIRMED_KEY)
+    this.storage.remove(IMAGE_KEY)
+    this.storage.remove(NAME_KEY_PREFIX)
+    if (this.configuration.value && this.configuration.value.nameParts) {
+      for (let np of this.configuration.value.nameParts) {
+        this.storage.remove(NAME_KEY_PREFIX+np.title)
+      }
+    }
+    this.profileName.next(null)
+    this.selfieConfirmed.next(false)
   }
 }

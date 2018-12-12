@@ -72,6 +72,7 @@ export interface MenuItem {
   title:string
   postPerformance:boolean
   cards:Card[]
+  highlight?:boolean // internal
 }
 
 // view

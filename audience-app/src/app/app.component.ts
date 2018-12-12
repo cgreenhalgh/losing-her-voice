@@ -36,7 +36,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   currentItemSelected:boolean
   currentQuizOption:number
   currentItemSent:boolean
-    
+  profileName:string
+  editProfile:boolean
+  
   constructor(
     private syncService:SyncService,
     @Inject(DOCUMENT) private document: any
@@ -47,6 +49,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         return
       this.allMenuItems = configuration.menuItems
       this.views = configuration.views
+      let pmi = this.allMenuItems.find((mi) => mi.id =='profile')
+      if (pmi)
+        pmi.highlight = !syncService.getName()
+      let smi = this.allMenuItems.find((mi) => mi.id =='selfie')
+      if (smi)
+        smi.highlight = !syncService.getSelfieConfirmed()
+    })
+    syncService.getNameObservable().subscribe((name) => {
+      this.profileName = name
+      if (this.allMenuItems) {
+        let pmi = this.allMenuItems.find((mi) => mi.id =='profile')
+        if (pmi)
+          pmi.highlight = !name
+      }
+    })
+    syncService.getSelfieConfirmedObservable().subscribe((val) => {
+      if (this.allMenuItems) {
+        let smi = this.allMenuItems.find((mi) => mi.id =='selfie')
+        if (smi)
+          smi.highlight = !val
+      }
     })
     syncService.getCurrentState().subscribe((newState) => {
       console.log('home update current state', newState)
@@ -130,6 +153,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     console.log('show menu')
     this.showMenu = true
     this.showMenuItem = null
+  }
+  onToggleEditProfile() :void {
+    this.editProfile = !this.editProfile
   }
   ngAfterViewInit() {
     console.log(`audio component`, this.audio)

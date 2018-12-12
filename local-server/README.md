@@ -136,13 +136,14 @@ Audience app:
 - [x] social media likes (to server -> local server)
 - [x] social media quiz (to server -> local server)
 - [x] move audience server to https for media access
+- [x] (deliberately) unsynced audio option
+- [x] app reset option to clear name/selfie
+- [x] check/edit name from social media view
 
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
-- [ ] app reset option to clear name/selfie
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
 - [ ] app disconnect warning
 - [ ] app smoother reconnect support
-- [ ] (deliberately) unsynced audio option
 - [ ] specific user guidance for in-browser vs PWA/home screen
 - [ ] disable communication after event ?! (or otherwise limit traffic)
 - [ ] support link from app page to external questionnaire
@@ -152,7 +153,6 @@ Audience app:
 - [ ] flickering images (act 2 scene 5b)
 - [ ] social media share selfie (to server -> local server) (= "publish" ?!)
 - [ ] social media re-share? (to server -> local server)
-- [ ] check/edit name from social media view
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
