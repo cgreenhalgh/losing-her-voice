@@ -62,9 +62,14 @@ export interface QuizOption {
   selected?:boolean // internal
 }
 
-export const REDIS_CHANNEL_ANNOUNCE = 'lhva.announce.v1'
+export const REDIS_CHANNEL_ANNOUNCE = 'lhva.announce.v2'
 
-export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v2'
+export interface Announce {
+    performanceid:string
+    item:Item
+}
+
+export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v3'
 
 export interface LikeItem {
   id:string
@@ -77,6 +82,7 @@ export interface ChooseOption {
 }
 
 export interface Feedback {
+  performanceid:string
   likeItem?:LikeItem
   chooseOption?:ChooseOption
   selfieImage?:SelfieImage

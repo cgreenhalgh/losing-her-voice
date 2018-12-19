@@ -3,6 +3,14 @@
 	<p><a [routerLink]="['/live']">Live</a> <a [routerLink]="['/moderate']">Moderation</a></p>
 	<div *ngIf="!configuration">Waiting for configuration...</div>
 	<div *ngIf="configuration">
+		<div>
+			Performance: <span *ngIf="currentPerformance">{{currentPerformance.title}} ({{currentPerformance.id}})</span>
+			<select [(ngModel)]="nextPerformanceId">
+				<option [ngValue]="null"></option>
+				<option *ngFor="let p of configuration.performances" value="{{p.id}}">{{p.title}} ({{p.id}})</option>
+			</select>
+			<input type="button" (click)="startPerformance()" value="Start Performance">
+		</div>
 		<div *ngFor="let scheduleItem of configuration.scheduleItems">
 			<div class="control-header">
 				<button *ngIf="scheduleItem.closePolls" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-close' : 'Close'}}</button>

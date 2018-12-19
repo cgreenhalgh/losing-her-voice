@@ -22,7 +22,7 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   MSG_START_PERFORMANCE, StartPerformance } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
-  REDIS_CHANNEL_FEEDBACK, Feedback
+  REDIS_CHANNEL_FEEDBACK, Feedback, Announce
 } from './socialtypes'
 
 function startRedisPubSub() {
@@ -54,8 +54,18 @@ function startRedisPubSub() {
 }
 let [redisPub, redisSub] = startRedisPubSub()
 
+let performance:Performance = null
+
 function announceItem(item:Item) {
-  let msg = JSON.stringify(item)
+  if (!performance) {
+    console.log(`cannot announce item for audience: performance not set`)
+    return
+  }
+  let announce:Announce = {
+    performanceid: performance.id,
+    item:item
+  }
+  let msg = JSON.stringify(announce)
   redisPub.publish(REDIS_CHANNEL_ANNOUNCE, msg)
 }
 
@@ -172,7 +182,6 @@ function readConfig() {
 }
 readConfig()
 
-let performance:Performance = null
 let items:Item[] = []
 
 const ITEM_ID_PREFIX = '_server_'
@@ -191,6 +200,33 @@ redisSub.on("message", function (channel, message) {
   console.log(`feedback: ${message.substring(0,50)}...`)
   try {
     let feedback = JSON.parse(message) as Feedback
+    if (!feedback.performanceid) {
+      console.log(`Error: discarding feedback with no performanceid: ${message.substring(0,50)}...`)
+      return
+    }
+    // selfie handled any time!
+    if (feedback.selfieImage) {
+      if (!feedback.selfieImage.image) {
+        console.log(`ignore selfieImage with no image`)
+        return
+      }
+      //console.log(`got new selfieItem...`)
+      selfieStore.addImage(feedback.selfieImage, (newsi, isNew) => {
+        console.log(`got ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
+        if (isNew) {
+          io.to(ITEM_ROOM).emit(MSG_SELFIE_IMAGE, newsi)
+        }
+      })
+      return
+    }
+    if (!performance) {
+      console.log(`Warning: ignoring feedback when performance not set: ${message.substring(0,50)}...`)
+      return
+    }
+    if (performance.id != feedback.performanceid) {
+      console.log(`Warning: ignoring feedback for another performance (${feedback.performanceid} vs ${performance.id}): ${message.substring(0,50)}...`)
+      return
+    }
     if (feedback.likeItem) {
       // like (simple message)
       if (!feedback.likeItem.likes)
@@ -243,19 +279,7 @@ redisSub.on("message", function (channel, message) {
       } else {
         console.log(`warning: could not find quiz item ${feedback.chooseOption.itemId}`)
       }
-    } else if (feedback.selfieImage) {
-      if (!feedback.selfieImage.image) {
-        console.log(`ignore selfieImage with no image`)
-        return
-      }
-      //console.log(`got new selfieItem...`)
-      selfieStore.addImage(feedback.selfieImage, (newsi, isNew) => {
-        console.log(`got ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
-        if (isNew) {
-          io.to(ITEM_ROOM).emit(MSG_SELFIE_IMAGE, newsi)
-        }
-      })
-    }
+    } 
   } catch (err) {
     console.log(`error parsing feedback: {err.message}`)
   }
@@ -301,6 +325,9 @@ io.on('connection', function (socket) {
         let msgp :AnnouncePerformance = { performance: msg.performance }
         io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_PERFORMANCE, msgp)
         items = []
+        configuration.scheduleItems.forEach((si) => si.postCount = 0)
+        let msgconfig:ConfigurationMsg = { configuration: configuration }
+        io.to(ITEM_ROOM).emit(MSG_CONFIGURATION, msgconfig)
         videoState = DEFAULT_VIDEO_STATE
         io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
     })

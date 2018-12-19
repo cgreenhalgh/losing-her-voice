@@ -28,7 +28,7 @@ export interface ConfigurationMetadata {
   version:string
   fileVersion:string
 }
-export const CONFIGURATION_FILE_VERSION = "lhv/local/v1"
+export const CONFIGURATION_FILE_VERSION = "lhv/local/v2"
 
 export enum VideoMode {
   HIDE = 'hide',
@@ -53,8 +53,18 @@ export interface ScheduleItem {
   showPreview?:boolean // internal
 }
 
+export interface Performance {
+  id:string
+  title:string
+  isPublic?:boolean
+  startDatetime:string // RFC3339 GMT
+  durationSeconds?:number
+  timezone?:string
+}
+
 export interface Configuration {
   metadata:ConfigurationMetadata
+  performances:Performance[]
   scheduleItems:ScheduleItem[]
   selfies:SelfieItem[]
   reposters:Reposter[]
@@ -63,15 +73,17 @@ export interface Configuration {
 export const MSG_CLIENT_HELLO = 'lhr.client.hello'
 export const MSG_OUT_OF_DATE = 'lhr.out.of.date'
 export const MSG_CONFIGURATION = 'lhr.configuration'
+export const MSG_ANNOUNCE_PERFORMANCE = 'lhr.announce.performance'
 export const MSG_ANNOUNCE_ITEMS = 'lhr.announce.items'
 export const MSG_ANNOUNCE_ITEM = 'lhr.announce.item'
+export const MSG_START_PERFORMANCE = 'lhr.start.performance'
 export const MSG_POST_ITEM = 'lhr.post.item'
 export const MSG_UPDATE_ITEM = 'lhr.update.item'
 export const MSG_CLOSE_POLLS = 'lhr.close.polls'
 export const MSG_VIDEO_STATE = 'lhr.video.state'
 export const MSG_SELFIE_IMAGE = 'lhr.selfie.image'
 
-export const LOCAL_PROTOCOL_VERSION = 5
+export const LOCAL_PROTOCOL_VERSION = 6
 
 export interface ClientHello {
   version:number
@@ -90,6 +102,12 @@ export interface AnnounceItems {
 }
 export interface AnnounceItem {
     item:Item
+}
+export interface AnnouncePerformance {
+  performance:Performance
+}
+export interface StartPerformance {
+  performance:Performance
 }
 export interface PostItem {
     scheduleId:string

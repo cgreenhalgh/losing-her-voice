@@ -3,6 +3,7 @@ import { Item, SelfieItem, ItemType, RepostItem } from './socialtypes';
 import { StoreService } from './store.service';
 import { VideoState, VideoMode } from './types';
 import { DOCUMENT } from '@angular/common';
+import { timer } from 'rxjs/observable/timer';
 
 class VideoInfo {
   url:string
@@ -36,7 +37,7 @@ const EXTRA_SELFIE_SCALE = 0.9
   styleUrls: ['./live.component.css']
 })
 export class LiveComponent implements AfterViewInit {
-    items: Item[];
+    items: Item[] = []
     @ViewChild('feedChild') feedChild: ElementRef; 
     @ViewChild('itemsChild') itemsChild: ElementRef; 
     @ViewChild('videoDiv') videoDiv: ElementRef; 
@@ -54,42 +55,51 @@ export class LiveComponent implements AfterViewInit {
     selfieCanvasCount:number = 0
     selfieCanvasSize:number = 1
     selfiesToAdd:ImageInfo[] = []
-    
+    showTitle:boolean = true
+
     constructor(
         private store:StoreService,
         @Inject(DOCUMENT) private document: any
     ) {
-        this.items = [];
-        this.store.getItems().subscribe((item:Item) => {
-            // update?
-            for (let ix = 0; ix < this.items.length; ix++) {
-                let i = this.items[ix]
-                if (i.id == item.id) {
-                    console.log(`update item ${item.id}`, item)
-                    this.items.splice(ix, 1, item)
-                    for (let ix2 = 0; ix2 < this.items.length; ix2++) {
-                        let i2 = this.items[ix2]
-                        if (i2.itemType==ItemType.REPOST && (i2 as RepostItem).item.id == item.id) {
-                            (i2 as RepostItem).item = item;
-                            // nasty force change
-                            this.items.splice(ix2, 1, JSON.parse(JSON.stringify(i2)))
-                            //console.log(`- updates repost ${i2.id}`)
-                        }
-                    }
-                    return
-                }
-            }
-            this.items.push(item)
+        timer(3000).subscribe(() => this.showTitle = false)
+        this.store.getPerformance().subscribe((performance) => {
+            console.log(`live view set performance ${performance ? performance.id : 'null'}`)
+            this.items.splice(0, this.items.length)
             if (this.feedChild && this.itemsChild)
                 this.update()
-            if (this.videoState && this.videoState.mode == VideoMode.SELFIES && item.itemType == ItemType.SELFIE) {
-                console.log(`new selfie to add ${item.id}`)
-                let selfie = item as SelfieItem
-                let img = document.createElement('img')
-                img.src = selfie.image
-                let ii = new ImageInfo(selfie.image, new ElementRef(img))
-                this.selfiesToAdd.push(ii)
-            }
+            // hack - items has been replaced
+            this.store.getItems().subscribe((item:Item) => {
+                this.showTitle = false
+                // update?
+                for (let ix = 0; ix < this.items.length; ix++) {
+                    let i = this.items[ix]
+                    if (i.id == item.id) {
+                        console.log(`update item ${item.id}`, item)
+                        this.items.splice(ix, 1, item)
+                        for (let ix2 = 0; ix2 < this.items.length; ix2++) {
+                            let i2 = this.items[ix2]
+                            if (i2.itemType==ItemType.REPOST && (i2 as RepostItem).item.id == item.id) {
+                                (i2 as RepostItem).item = item;
+                                // nasty force change
+                                this.items.splice(ix2, 1, JSON.parse(JSON.stringify(i2)))
+                                //console.log(`- updates repost ${i2.id}`)
+                            }
+                        }
+                        return
+                    }
+                }
+                this.items.push(item)
+                if (this.feedChild && this.itemsChild)
+                    this.update()
+                if (this.videoState && this.videoState.mode == VideoMode.SELFIES && item.itemType == ItemType.SELFIE) {
+                    console.log(`new selfie to add ${item.id}`)
+                    let selfie = item as SelfieItem
+                    let img = document.createElement('img')
+                    img.src = selfie.image
+                    let ii = new ImageInfo(selfie.image, new ElementRef(img))
+                    this.selfiesToAdd.push(ii)
+                }
+            })
         })
         this.store.getVideoState().subscribe((vs:VideoState) => {
             // update?

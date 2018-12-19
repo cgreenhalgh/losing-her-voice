@@ -13,7 +13,7 @@ export class ItemComponent implements OnChanges {
     quizItem: QuizOrPollItem
     selfieItem: SelfieItem
     repostItem: RepostItem
-  
+    
     constructor() {}
     ngOnChanges() {
         //console.log(`onChanges item`, this.item)

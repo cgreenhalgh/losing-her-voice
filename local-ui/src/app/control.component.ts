@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Configuration, ScheduleItem } from './types';
+import { Configuration, ScheduleItem, Performance } from './types';
 import { Item, ItemType, SimpleItem, RepostItem } from './socialtypes';
 
 import { StoreService } from './store.service';
@@ -13,8 +13,14 @@ export class ControlComponent {
     configuration: Configuration;
     nextSelfieIndex:number = 0
     items:Item[] = []
+    nextPerformanceId:string = null
+    currentPerformance:Performance
     
     constructor(private store:StoreService) {
+        this.store.getPerformance().subscribe((performance) => {
+            this.currentPerformance = performance;
+            this.nextPerformanceId = null
+        })
         this.store.getConfiguration().subscribe((config) => this.configuration = config)
         this.store.getItems().subscribe((item) => {
             // update?
@@ -28,6 +34,19 @@ export class ControlComponent {
             }
             this.items.push(item) 
         })
+    }
+    startPerformance() {
+        console.log(`start performance ${this.nextPerformanceId}`)
+        if (!this.nextPerformanceId)
+            return
+        let nextPerformance = this.configuration.performances.find((p) => p.id == this.nextPerformanceId)
+        if (!nextPerformance) {
+            let msg = `Sorry, could not find performance ${this.nextPerformanceId}`
+            console.log(msg)
+            alert(msg)
+            return
+        }
+        this.store.startPerformance(nextPerformance)
     }
     postItem(scheduleItem:ScheduleItem) {
       console.log(`post item ${scheduleItem.id} '${scheduleItem.title}'`);

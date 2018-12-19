@@ -6,7 +6,9 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_OUT_OF_DATE, OutOfDate, MSG_ANNOUNCE_ITEMS, AnnounceItems, 
   MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, PostItem, 
   MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS, VideoState, 
-  MSG_VIDEO_STATE, MSG_SELFIE_IMAGE } from './types';
+  MSG_VIDEO_STATE, MSG_SELFIE_IMAGE, MSG_ANNOUNCE_PERFORMANCE,
+  MSG_START_PERFORMANCE, AnnouncePerformance, StartPerformance,
+  Performance } from './types';
 import { Item, SelfieImage } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -16,6 +18,7 @@ const SOCKET_IO_SERVER:string = 'http://localhost:8080'
 export class StoreService {
     items:ReplaySubject<Item>
     socket:any
+    performance:BehaviorSubject<Performance>
     configuration:BehaviorSubject<Configuration>
     videoState:BehaviorSubject<VideoState>
     outOfDate:boolean = false
@@ -23,6 +26,7 @@ export class StoreService {
   
     constructor() {
         this.items = new ReplaySubject()
+        this.performance = new BehaviorSubject(null)
         this.configuration = new BehaviorSubject(null)
         this.videoState= new BehaviorSubject(null)
         this.selfieImages = new ReplaySubject()
@@ -47,6 +51,13 @@ export class StoreService {
           console.log(report)
           alert(report)
         })
+        this.socket.on(MSG_ANNOUNCE_PERFORMANCE, (data) => {
+          let msg = data as AnnouncePerformance
+          console.log(`announce performance ${msg.performance.id}: ${msg.performance.title}`)
+          // replace/reset
+          this.items = new ReplaySubject()
+          this.performance.next(msg.performance)
+        })
         this.socket.on(MSG_CONFIGURATION, (data) => {
           let msg = data as ConfigurationMsg
           console.log('got configuration ${msg.configuration.metadata.version} from server')
@@ -54,7 +65,7 @@ export class StoreService {
         })
         this.socket.on(MSG_ANNOUNCE_ITEMS, (data) => {
             let msg = data as AnnounceItems
-            console.log('got items from server')
+            console.log(`got ${msg.items.length} items from server`)
             for (let i=0; i<data.items. length; i++)
                 this.items.next(data.items[i])
         })
@@ -84,6 +95,9 @@ export class StoreService {
         return this.items;
     }
     
+    getPerformance() : Observable<Performance> {
+        return this.performance
+    }
     getConfiguration() : Observable<Configuration> {
         return this.configuration
     }
@@ -118,5 +132,11 @@ export class StoreService {
     }
     updateSelfieImage(selfieImage:SelfieImage) {
         this.socket.emit(MSG_SELFIE_IMAGE, selfieImage)
+    }
+    startPerformance(performance:Performance) {
+        let msg:StartPerformance = {
+            performance:performance
+        }
+        this.socket.emit(MSG_START_PERFORMANCE, msg)
     }
 }
