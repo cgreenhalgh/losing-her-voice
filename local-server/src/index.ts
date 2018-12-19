@@ -17,7 +17,9 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   MSG_CONFIGURATION, ConfigurationMsg, MSG_ANNOUNCE_ITEMS, 
   AnnounceItems, MSG_ANNOUNCE_ITEM, AnnounceItem, MSG_POST_ITEM, 
   PostItem, MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS,
-  VideoState, MSG_VIDEO_STATE, VideoMode, MSG_SELFIE_IMAGE } from './types';
+  VideoState, MSG_VIDEO_STATE, VideoMode, MSG_SELFIE_IMAGE,
+  Performance, MSG_ANNOUNCE_PERFORMANCE, AnnouncePerformance,
+  MSG_START_PERFORMANCE, StartPerformance } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback
@@ -100,6 +102,7 @@ let configuration:Configuration = {
     version: '0',
     fileVersion: CONFIGURATION_FILE_VERSION
   },
+  performances:[],
   scheduleItems:[],
   selfies:[],
   reposters:[]
@@ -169,6 +172,7 @@ function readConfig() {
 }
 readConfig()
 
+let performance:Performance = null
 let items:Item[] = []
 
 const ITEM_ID_PREFIX = '_server_'
@@ -176,9 +180,10 @@ let nextItemId = 1
 
 const ITEM_ROOM = 'items'
 
-let videoState:VideoState = {
-  mode: VideoMode.HIDE
+const DEFAULT_VIDEO_STATE:VideoState = {
+  mode:VideoMode.HIDE
 }
+let videoState:VideoState = DEFAULT_VIDEO_STATE
 
 let selfieStore = new SelfieStore()
 
@@ -273,15 +278,32 @@ io.on('connection', function (socket) {
         }
         let msgconfig:ConfigurationMsg = { configuration: configuration }
         socket.emit(MSG_CONFIGURATION, msgconfig)
-        let msgis:AnnounceItems = { items: items }
-        socket.emit(MSG_ANNOUNCE_ITEMS, msgis)
-        socket.emit(MSG_VIDEO_STATE, videoState)
-      
+        if (performance) {
+          let msgp:AnnouncePerformance = { performance: performance }
+          socket.emit(MSG_ANNOUNCE_PERFORMANCE, msgp)
+          let msgis:AnnounceItems = { items: items }
+          socket.emit(MSG_ANNOUNCE_ITEMS, msgis)
+          socket.emit(MSG_VIDEO_STATE, videoState)
+        }
         selfieStore.getImages((si:SelfieImage, isNew:boolean) => {
           socket.emit(MSG_SELFIE_IMAGE, si)
         })
         socket.join(ITEM_ROOM)
     });
+    socket.on(MSG_START_PERFORMANCE, (data) => {
+        let msg = data as StartPerformance
+        if (!msg.performance) {
+            console.log('Error: start performance with no performance', msg)
+            return
+        }
+        console.log(`start performance ${msg.performance.id}: ${msg.performance.title}`)
+        performance = msg.performance
+        let msgp :AnnouncePerformance = { performance: msg.performance }
+        io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_PERFORMANCE, msgp)
+        items = []
+        videoState = DEFAULT_VIDEO_STATE
+        io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
+    })
     socket.on(MSG_POST_ITEM, (data) => {
         let msg = data as PostItem
         if (!msg.item) {

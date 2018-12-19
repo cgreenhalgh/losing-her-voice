@@ -4,8 +4,38 @@
     "description": "just initial testing placeholders",
     "version": "0.2",
     "author": "Chris Greenhalgh",
-    "fileVersion": "lhv/local/v1"
+    "fileVersion": "lhv/local/v2"
   },
+  "performances": [
+    {
+      "id":"test1",
+      "title":"test performance no.1",
+      "startDatetime":"2018-12-19T14:43:00Z",
+      "isPublic":false
+    },
+    {
+      "id":"test2",
+      "title":"test performance no.2",
+      "startDatetime":"2018-12-19T14:43:00Z",
+      "isPublic":false
+    },
+    {
+      "id":"20190406-premiere",
+      "title":"Premiere public performance",
+      "startDatetime":"2019-04-06T13:30:00Z",
+      "isPublic":true,
+      "durationSeconds":10800,
+      "timezone":"+01:00"
+    },
+    {
+      "id":"20190407-second",
+      "title":"Second public performance",
+      "startDatetime":"2019-04-07T18:00:00Z",
+      "isPublic":true,
+      "durationSeconds":10800,
+      "timezone":"+01:00"
+    }
+  ],
   "scheduleItems": [
     {
       "itemType": "simple",

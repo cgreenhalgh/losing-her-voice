@@ -9,7 +9,7 @@ See [audience-server/src/types.ts](../audience-server/src/types) for details of 
 ### Interaction
 
 Client Start-up:
-- on start-up, app sends 'lhva.client.hello' (MSC_CLIENT_HELLO) to server
+- on start-up, app sends 'lhva.client.hello' (MSC_CLIENT_HELLO) to server (including performance ID obtained from URL)
 - if the client is incompatible with the server then it sends MSG_OUT_OF_DATE = 'lhva.server.outofdate' and there is no further interaction
 - in reply to client hello, server sends 'lhva.server.configuration' (MSG_CONFIGURATION) back to client, which includes static app configuration (e.g. menu items and page content) (this is suppressed if the client already has the same version configuration from a previous interaction)
 - in reply to client hello the server also sends 'lhva.server.state' (MSG_CURRENT_STATE) with the current app view state (e.g. forced view, after performance)
@@ -27,7 +27,10 @@ Recovery:
 
 #### Audience app view
 
-Server subscribes to channel 'lhva.state'. Message is a simple (i.e. not JSON) string.
+Server subscribes to channel 'lhva.state'. 
+Message is a JSON object with properties:
+- `state` (string) - state, see below
+- `performanceid` (string) performance ID
 
 Following custom values are specified:
 - 'RELOAD' - server reloads configuration file to send to subsequent apps
@@ -52,10 +55,13 @@ Note: the same app is used for the control view and for the live view.
 
 Client start-up:
 - on start-up the app sends MSG_CLIENT_HELLO = 'lhr.client.hello' to the server
-- the server replies with MSG_ANNOUNCE_CONTROL_ITEMS = 'lhr.announce.controlItems' and the list of (current) ControlItems in the server (i.e. options for the management UI)
-- the server also replies with MSG_ANNOUNCE_ITEMS = 'lhr.announce.items' and the history of items posted (on the main view)
+- the server replies with MSG_CONFIGURATION = 'lhr.configuration' and the current configuration (including possible performance IDs)
+- if performance is set the server also replies with MSG_ANNOUNCE_PERFORMANCE = 'lhr.announce.performance' and the current performance ID (if set)
+- if performance is set the server also replies with MSG_ANNOUNCE_CONTROL_ITEMS = 'lhr.announce.controlItems' and the list of (current) ControlItems in the server (i.e. options for the management UI)
+if performance is set the server also replies with MSG_ANNOUNCE_ITEMS = 'lhr.announce.items' and the history of items posted (on the main view)
 
 Management UI post:
+- control UI sends MSG_START_PERFORMANCE = 'lhr.start.performance'
 - control UI sends MSG_POST_ITEM = 'lhr.post.item' to server with selected ControlItem
 - server updates items (and ControlItem) and sends MSG_ANNOUNCE_ITEM = 'lhr.announce.item' to all clients
 - client updates (live) UI with newly posted item
@@ -69,7 +75,9 @@ Management UI post:
 - (not selfie?)
 
 Use redis channel 'lhva.announce.v1'.
-Send JSON-encoded Item (subtype).
+Send JSON-encoded object with:
+- `performanceid` (string) performance ID
+- `item` (Item) (subtype).
 
 ### Messages from audience server to local server
 
@@ -78,3 +86,5 @@ Send JSON-encoded Item (subtype).
 - response to poll/quiz
 - submit selfie image
 - share selfie
+
+(each includes performance ID)

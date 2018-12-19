@@ -6,11 +6,11 @@ See [../README.md](../README.md)
 
 ## Configuration
 
-TODO:
 Local (social media) UIs configuration file, [data/local-config.json](data/local-config.json).
 
 Object with:
 - `metadata`, see below
+- `performances`, array of Performance items, see below
 - `scheduleItems`, array of Schedule Items, see below
 - `selfies`, array of Selfie Items that can be used as selfie items 
 - `reposters`, array of Reposters (see below) who can be used to make Reposts
@@ -20,7 +20,15 @@ Metadata, config file metadata; object with:
 - `description` (string, optional) - description
 - `author` (string, optional) - creator of configuration
 - `version` (string) - version identifier for configuration file (advisory only)
-- `fileVersion`, currently 'lhv/local/v1'
+- `fileVersion`, currently 'lhv/local/v2'
+
+Performance, is object with:
+- `id` (string) unique
+- `title` (string)
+- `isPublic` (boolean, default false) whether performance is public/"real" (vs rehearsal/test)
+- `startDatetime` (string) earliest start date/time in RFC3339 format (e.g. "2018-04-06T18:00:00Z")
+- `durationSeconds` (number, default unlimited) maximum duration (after start date/time) in seconds
+- `timezone` (string, optional) timezone in which performance takes place (for local time display)
 
 Schedule Item is object with:
 - `itemType` (string, optional), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie'
@@ -140,6 +148,8 @@ Audience app:
 - [x] app reset option to clear name/selfie
 - [x] check/edit name from social media view
 
+- [ ] separate testing and each performance (i.e. unique client URL, etc.)
+
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
 - [ ] app disconnect warning
@@ -156,7 +166,6 @@ Audience app:
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
-- [ ] separate testing and each performance (i.e. unique client URL, etc.)
 - [ ] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [ ] iphone troubleshoot/fix audio non-playing (https??)
 - [ ] better selfie-taking instructions
