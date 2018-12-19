@@ -117,8 +117,8 @@ Local server/control:
 - [x] local server protocol version & check
 - [x] control UI schedule (order of post type, timing?)
 - [x] schedule in external file (reload option)
+- [x] server reset schedule
 
-- [ ] server reset schedule??
 - [ ] persist selfie images on audience server for local server offline
 - [ ] control UI cleaner (table) view
 - [ ] control UI schedule simple control (default/next)
@@ -147,8 +147,7 @@ Audience app:
 - [x] (deliberately) unsynced audio option
 - [x] app reset option to clear name/selfie
 - [x] check/edit name from social media view
-
-- [ ] separate testing and each performance (i.e. unique client URL, etc.)
+- [x] separate testing and each performance (i.e. unique client URL, etc.)
 
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie

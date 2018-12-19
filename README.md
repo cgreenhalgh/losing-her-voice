@@ -152,7 +152,7 @@ control redis...
 ```
 sudo docker exec -it store redis-cli
 auth PASSWORD (redis.password)
-publish lhva.state act1.scene1
+publish lhva.state.v2 "{\"performanceid\":\"test1\",\"state\":\"act1.scene1\"}"
 ```
 
 publish POST, INTERVAL, RESET, act1.scene1, etc. (RELOAD - re-read config)

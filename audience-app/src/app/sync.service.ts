@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Observable } from "rxjs";
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
@@ -35,10 +35,12 @@ export class SyncService {
   outOfDate:boolean = false
   clientTiming:ClientTiming = null
   pingCount:number = 0
+  performanceid:string
+  shouldSendHello:boolean
     
   constructor(
     @Inject(DOCUMENT) private document: any,
-    @Inject(LOCAL_STORAGE) private storage: StorageService
+    @Inject(LOCAL_STORAGE) private storage: StorageService,
   ) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
@@ -67,6 +69,7 @@ export class SyncService {
         socketioServer = baseHref.substring(0,pix)
       }
     }
+    this.initPerformanceid()
     if (!socketioPath) {
       socketioServer = SOCKET_IO_TEST_SERVER
     } 
@@ -76,24 +79,14 @@ export class SyncService {
       console.log(`socket.io connected`)
       // reset
       this.pingCount = 0
-      let now = (new Date()).getTime()
-      if (this.clientTiming) {
-        this.clientTiming.clientSendTime = now
-      }
-      let msg:ClientHello = {
-        version:CURRENT_VERSION,
-        clientType:'default', // TODO: fix clientType
-        clientId:'?', // TODO: fix clientId - persistent??
-        clientSendTime: now,
-        timing:this.clientTiming,
-        configurationVersion:this.configuration.value && this.configuration.value.metadata ? this.configuration.value.metadata.version : null,
-      }
-      this.socket.emit(MSG_CLIENT_HELLO, msg)
+      this.shouldSendHello = true
+      this.trySendHello()
     })
     this.socket.on('error', (error) => {
       console.log(`socket.io error: ${error.message}`, error)
     })
     this.socket.on('disconnect', (reason) => {
+      this.shouldSendHello = false
       if (reason === 'io server disconnect') {
         // the disconnection was initiated by the server, you need to reconnect manually
         this.socket.connect();
@@ -148,6 +141,48 @@ export class SyncService {
       })
       this.outOfDate = true
     })
+  }
+  initPerformanceid(): void {
+        var pl     = /\+/g;  
+        // Regex for replacing addition symbol with a space
+        var search = /([^&=]+)=?([^&]*)/g;
+        var decode = function(s) { return decodeURIComponent(s.replace(pl, " ")); }
+        var query  = window.location.search.substring(1);
+        let params = {};
+        var match
+        while (match = search.exec(query))
+          params[decode(match[1])] = decode(match[2]);
+
+        if (params['p']!==undefined) {
+          if (!this.performanceid) {
+            this.performanceid = params['p'];
+            console.log(`setting performanceid: ${this.performanceid}`)
+            this.trySendHello()
+          }
+        } else if (!this.performanceid) {
+          alert(`Sorry, the URL seems to be wrong (there is no performance specified)`)
+          console.log(`Error: no performanceid (p) in url`, params)
+        }
+  }
+  trySendHello():void {
+      if (!this.shouldSendHello || !this.performanceid)
+        return
+      this.shouldSendHello = false
+      console.log(`sending hello`)
+      let now = (new Date()).getTime()
+      if (this.clientTiming) {
+        this.clientTiming.clientSendTime = now
+      }
+      let msg:ClientHello = {
+        version:CURRENT_VERSION,
+        clientType:'default', // TODO: fix clientType
+        clientId:'?', // TODO: fix clientId - persistent??
+        clientSendTime: now,
+        timing:this.clientTiming,
+        configurationVersion:this.configuration.value && this.configuration.value.metadata ? this.configuration.value.metadata.version : null,
+        performanceid:this.performanceid,
+      }
+      this.socket.emit(MSG_CLIENT_HELLO, msg)
   }
   maybePing():void {
     if (this.pingCount>0 || !this.clientTiming)
@@ -216,6 +251,7 @@ export class SyncService {
     this.clientTiming.clientSendTime = now
     let msg:FeedbackMsg = {
       feedback: {
+        performanceid:this.performanceid,
         likeItem: {
           id: item.id
         }
@@ -230,6 +266,7 @@ export class SyncService {
     this.clientTiming.clientSendTime = now
     let msg:FeedbackMsg = {
       feedback: {
+        performanceid:this.performanceid,
         chooseOption: {
           itemId: item.id,
           option: option
@@ -278,6 +315,7 @@ export class SyncService {
     this.clientTiming.clientSendTime = now
     let msg:FeedbackMsg = {
       feedback: {
+        performanceid:this.performanceid,
         selfieImage: {
           image: dataurl
         }

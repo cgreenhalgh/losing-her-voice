@@ -16,7 +16,9 @@ import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello,
   ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
   AnnounceItem, MSG_FEEDBACK, FeedbackMsg, 
   CONFIGURATION_FILE_VERSION } from './types'
-import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK } from './socialtypes'
+import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce } from './socialtypes'
+import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
+
 const app = express()
 
 // Parsers for POST data
@@ -48,13 +50,26 @@ const server = http.createServer(app)
 let io = socketio(server)
 
 const UPDATE_ROOM = "room.currentState"
-let currentState:CurrentState = {
-  allowMenu:true,
-  postPerformance:false,
-  serverStartTime:(new Date()).getTime(),
-  serverSendTime:(new Date()).getTime(),
-}
 
+interface CurrentStates {
+    [performanceid:string] : CurrentState
+}
+let currentStates:CurrentStates = {}
+function getCurrentState(performanceid:string): CurrentState {
+    if (!performanceid)
+        return null
+    let currentState = currentStates[performanceid]
+    if (!currentState) {
+        currentState = {
+            allowMenu:true,
+            postPerformance:false,
+            serverStartTime:(new Date()).getTime(),
+            serverSendTime:(new Date()).getTime(),
+        }
+        currentStates[performanceid] = currentState
+    }
+    return currentState
+}
 let configFile = path.join(__dirname, '..', 'data', 'audience-config.json');
 
 
@@ -112,6 +127,7 @@ interface ClientInfo {
   clientType:string // e.g. web/pwa, ios, android ??
   clientId:string
   timing:ServerTiming
+  performanceid:string
 }
 
 // redis set-up
@@ -141,7 +157,17 @@ io.on('connection', function (socket) {
       socket.emit(MSG_OUT_OF_DATE, err)
       return
     }
-    console.log(`Add new client type ${msg.clientType} id ${msg.clientId} (version ${msg.version})`,msg)
+    if (!msg.performanceid) {
+      let err:OutOfDate = {
+        serverVersion:CURRENT_VERSION,
+        clientVersion:msg.version,
+      }
+      console.log(`reject client without performanceid`,msg)
+      socket.emit(MSG_OUT_OF_DATE, err)
+      return
+    }
+    console.log(`Add new client type ${msg.clientType} id ${msg.clientId} performance ${msg.performanceid} (version ${msg.version})`)
+    let currentState = getCurrentState(msg.performanceid)
     // update client state / timing
     let now = (new Date()).getTime()
     let timing:ServerTiming = {
@@ -155,6 +181,7 @@ io.on('connection', function (socket) {
       clientType:msg.clientType,
       clientId:msg.clientId,
       timing:timing,
+      performanceid:msg.performanceid,
     }
     socket.myClientInfo = clientInfo
     if (!msg.configurationVersion || !configuration.metadata || msg.configurationVersion != configuration.metadata.version) {
@@ -185,6 +212,7 @@ io.on('connection', function (socket) {
         clientInfo.timing.lastServerRecvTime = now
       }
       if (fb.feedback) {
+        fb.feedback.performanceid = clientInfo.performanceid
         let msg = JSON.stringify(fb.feedback)
         console.log(`relay feedback ${msg.substring(0,50)}...`)
         redisPub.publish(REDIS_CHANNEL_FEEDBACK, msg)
@@ -218,47 +246,60 @@ redisSub.on("message", function (channel, message) {
   console.log("sub channel " + channel + ": " + message);
   if (!message) 
     return;
-  let now = (new Date()).getTime()
-  if (STATE_RESET == message) {
-    console.log('reset state')
-    currentState.forceView = null
-    currentState.allowMenu = true
-    currentState.postPerformance = false
-  } else if (STATE_INTERVAL == message) {
-    console.log('interval state')
-    currentState.forceView = null
-    currentState.allowMenu = true
-    currentState.postPerformance = false
-  } else if (STATE_POST == message) {
-    console.log('post state')
-    currentState.forceView = null
-    currentState.allowMenu = true
-    currentState.postPerformance = true
-  } else if (SERVER_RELOAD == message) {
-    console.log('NOTE: reload configuration!')
-    readConfig()
-    return
-  } else  {
-    console.log(`force state ${message}`)
-    currentState.forceView = message as string
-    currentState.allowMenu = false
-    currentState.postPerformance = false
-  }
-  currentState.serverStartTime = now
-  currentState.serverSendTime = now
-  for (let socketId in sockets) {
-    let socket = sockets[socketId]
-    let clientInfo:ClientInfo = socket.myClientInfo
-    clientInfo.timing.serverSendTime = now
-    let msg:CurrentStateMsg = {
-      currentState:currentState,
-      timing: clientInfo.timing
-    }
-    socket.emit(MSG_CURRENT_STATE, msg)
-  }
+  try {
+      let vs = JSON.parse(message) as ViewState
+      if (!vs.performanceid) {
+          console.log(`Error: ignore redis message withouth performanceid: ${message}`)
+          return
+      }
+      let currentState = getCurrentState(vs.performanceid)
+      let state = vs.state
+      let now = (new Date()).getTime()
+      if (STATE_RESET == state) {
+        console.log(`${vs.performanceid}: reset state`)
+        currentState.forceView = null
+        currentState.allowMenu = true
+        currentState.postPerformance = false
+      } else if (STATE_INTERVAL == state) {
+        console.log(`${vs.performanceid}: interval state`)
+        currentState.forceView = null
+        currentState.allowMenu = true
+        currentState.postPerformance = false
+      } else if (STATE_POST == state) {
+        console.log(`${vs.performanceid}: post state`)
+        currentState.forceView = null
+        currentState.allowMenu = true
+        currentState.postPerformance = true
+      } else if (SERVER_RELOAD == state) {
+        console.log('NOTE: reload configuration!')
+        readConfig()
+        return
+      } else  {
+        console.log(`${vs.performanceid}: force state ${state}`)
+        currentState.forceView = state as string
+        currentState.allowMenu = false
+        currentState.postPerformance = false
+      }
+      currentState.serverStartTime = now
+      currentState.serverSendTime = now
+      for (let socketId in sockets) {
+        let socket = sockets[socketId]
+        let clientInfo:ClientInfo = socket.myClientInfo
+        if (clientInfo.performanceid != vs.performanceid)
+          continue
+        clientInfo.timing.serverSendTime = now
+        let msg:CurrentStateMsg = {
+          currentState:currentState,
+          timing: clientInfo.timing
+        }
+        socket.emit(MSG_CURRENT_STATE, msg)
+      }
+   } catch (err) {
+      console.log(`Error parsing/handling state event ${message}`, err)
+   }
 });
  
-redisSub.subscribe("lhva.state");
+redisSub.subscribe(REDIS_CHANNEL_VIEW_STATE);
 
 // social media
 let redisSub2 = redis.createClient(redis_config);
@@ -274,14 +315,20 @@ redisSub2.on("message", function (channel, message) {
     return;
   let now = (new Date()).getTime()
   try {
-    let item = JSON.parse(message) as Item
-    console.log(`announce item ${item.id} (${item.itemType})`);
+    let announce = JSON.parse(message) as Announce
+    if (!announce.performanceid || !announce.item) {
+        console.log(`Warning: ignore ill-formed announce ${message.substring(0, 50)}...`)
+        return
+    }
+    console.log(`announce item ${announce.item.id} (${announce.item.itemType})`);
     for (let socketId in sockets) {
       let socket = sockets[socketId]
       let clientInfo:ClientInfo = socket.myClientInfo
+      if (clientInfo.performanceid != announce.performanceid)
+        continue
       clientInfo.timing.serverSendTime = now
       let msg:AnnounceItem = {
-        item:item,
+        item:announce.item,
         timing: clientInfo.timing
       }
       socket.emit(MSG_ANNOUNCE_ITEM, msg)

@@ -10,7 +10,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 7
+export const CURRENT_VERSION:number = 8
 
 export interface ClientTiming {
   clientSendTime:number
@@ -34,6 +34,7 @@ export interface ClientHello {
   clientSendTime:number
   timing?:ClientTiming
   configurationVersion?:string // if already configured
+  performanceid:string
 }
 
 // body of MSG_PING

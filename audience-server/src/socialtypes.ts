@@ -25,6 +25,7 @@ export interface SimpleItem extends Item {
 
 export interface RepostItem extends Item {
   item:Item
+  submitted?:number // date
 }
 
 export interface SelfieItem extends Item {
@@ -32,6 +33,7 @@ export interface SelfieItem extends Item {
   rejected?:boolean
   approved?:boolean
   moderator?:string
+  submitted?:number // date
 }
 
 export interface SelfieImage {
@@ -40,6 +42,7 @@ export interface SelfieImage {
   rejected?:boolean
   approved?:boolean
   moderator?:string
+  submitted?:number // date
 }
 
 export interface QuizOrPollItem extends Item {
@@ -59,9 +62,14 @@ export interface QuizOption {
   selected?:boolean // internal
 }
 
-export const REDIS_CHANNEL_ANNOUNCE = 'lhva.announce.v1'
+export const REDIS_CHANNEL_ANNOUNCE = 'lhva.announce.v2'
 
-export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v2'
+export interface Announce {
+    performanceid:string
+    item:Item
+}
+
+export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v3'
 
 export interface LikeItem {
   id:string
@@ -74,6 +82,7 @@ export interface ChooseOption {
 }
 
 export interface Feedback {
+  performanceid:string
   likeItem?:LikeItem
   chooseOption?:ChooseOption
   selfieImage?:SelfieImage

@@ -8,7 +8,7 @@ import * as fs from 'fs'
 import * as socketio from 'socket.io'
 //import * as bodyParser from 'body-parser'
 import * as redis from 'redis'
-import { startOSCBridge } from './osc-bridge'
+import { OSCBridge } from './osc-bridge'
 
 import { SelfieStore } from './moderation'
 
@@ -24,6 +24,12 @@ import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem,
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback, Announce
 } from './socialtypes'
+
+
+/** 
+ * OSC bridge
+ */
+let oscBridge = new OSCBridge()
 
 function startRedisPubSub() {
   // redis set-up
@@ -322,6 +328,7 @@ io.on('connection', function (socket) {
         }
         console.log(`start performance ${msg.performance.id}: ${msg.performance.title}`)
         performance = msg.performance
+        oscBridge.setPerformanceid(performance.id)
         let msgp :AnnouncePerformance = { performance: msg.performance }
         io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_PERFORMANCE, msgp)
         items = []
@@ -399,10 +406,6 @@ io.on('connection', function (socket) {
     })
 });
 
-/** 
- * OSC bridge
- */
-startOSCBridge()
 /**
  * Listen on provided port, on all network interfaces.
  */
