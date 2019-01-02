@@ -18,7 +18,7 @@ export class SelfieStore {
       redis_config.auth_pass = process.env.STORE_PASSWORD;
     }
     
-    console.log('using local store config ' + JSON.stringify(redis_config));
+    console.log('moderation using local store config ' + JSON.stringify(redis_config));
     this.store = redis.createClient(redis_config);
     this.store.on('error', function (err) {
       console.log(`ERROR: image store: ${err.message}`, err)

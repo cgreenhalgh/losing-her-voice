@@ -260,6 +260,27 @@ export class SyncService {
     }
     this.socket.emit(MSG_FEEDBACK, msg)
   }
+  shareItem(item:Item): void {
+    let name = this.getName()
+    if (!name) {
+      console.log(`error: cannot share item ${item.id} with no name set`)
+      return
+    }
+    console.log(`share item ${item.id} as ${name}`)
+    let now = (new Date()).getTime()
+    this.clientTiming.clientSendTime = now
+    let msg:FeedbackMsg = {
+      feedback: {
+        performanceid:this.performanceid,
+        shareItem: {
+          id: item.id,
+          user_name: name,
+        }
+      },
+      timing:this.clientTiming,
+    }
+    this.socket.emit(MSG_FEEDBACK, msg)
+  }
   chooseOption(item:Item, option:number): void {
     console.log(`choose item ${item.id} option ${option}`)
     let now = (new Date()).getTime()

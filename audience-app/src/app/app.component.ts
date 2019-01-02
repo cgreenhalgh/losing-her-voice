@@ -32,6 +32,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   currentRepostItem:RepostItem
   currentSimpleItem:SimpleItem
   currentItemLiked:boolean
+  currentItemShared:boolean
   currentQuizItem:QuizOrPollItem
   currentItemSelected:boolean
   currentQuizOption:number
@@ -121,6 +122,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
       this.currentItem = item
       this.currentItemLiked = false
+      this.currentItemShared = false
       if (item && ItemType.SIMPLE == item.itemType)
         this.currentSimpleItem = item as SimpleItem
       else
@@ -287,6 +289,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.currentItemLiked = true
     if (this.currentItem) {
       this.syncService.likeItem(this.currentItem)
+    }
+  }
+  onShareCurrentItem() {
+    this.currentItemShared = true
+    if (this.currentItem) {
+      this.syncService.shareItem(this.currentItem)
     }
   }
   selectQuizOption(optionIndex:number) {

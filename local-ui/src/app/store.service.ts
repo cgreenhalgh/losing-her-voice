@@ -8,7 +8,7 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS, VideoState, 
   MSG_VIDEO_STATE, MSG_SELFIE_IMAGE, MSG_ANNOUNCE_PERFORMANCE,
   MSG_START_PERFORMANCE, AnnouncePerformance, StartPerformance,
-  Performance } from './types';
+  Performance, MSG_MAKE_ITEM, MakeItem } from './types';
 import { Item, SelfieImage } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -114,6 +114,15 @@ export class StoreService {
         else
           scheduleItem.postCount = 1+scheduleItem.postCount
         this.socket.emit(MSG_POST_ITEM, msg)
+        //this.items.next(controlItem.item);
+    }
+    makeItem(scheduleItem:ScheduleItem) {
+        let msg:MakeItem = { scheduleId: scheduleItem.id, itemType: scheduleItem.itemType }
+        if (!scheduleItem.postCount)
+          scheduleItem.postCount = 1
+        else
+          scheduleItem.postCount = 1+scheduleItem.postCount
+        this.socket.emit(MSG_MAKE_ITEM, msg)
         //this.items.next(controlItem.item);
     }
     closePolls(scheduleItem:ScheduleItem) {

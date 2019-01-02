@@ -27,7 +27,7 @@ Recovery:
 
 #### Audience app view
 
-Server subscribes to channel 'lhva.state'. 
+Server subscribes to channel 'lhva.state.v2'. 
 Message is a JSON object with properties:
 - `state` (string) - state, see below
 - `performanceid` (string) performance ID
@@ -66,6 +66,8 @@ Management UI post:
 - server updates items (and ControlItem) and sends MSG_ANNOUNCE_ITEM = 'lhr.announce.item' to all clients
 - client updates (live) UI with newly posted item
 
+## Network interaction
+
 ### Messages from local to audience server
 
 - announce simple item
@@ -74,7 +76,10 @@ Management UI post:
 - (not repost?)
 - (not selfie?)
 
-Use redis channel 'lhva.announce.v1'.
+Use redis channel 'lhva.announce.v2'.
+
+See [audience-server/src/socialtypes.ts](../audience-server/src/socialtypes) for details of types and messages.
+
 Send JSON-encoded object with:
 - `performanceid` (string) performance ID
 - `item` (Item) (subtype).
@@ -86,5 +91,9 @@ Send JSON-encoded object with:
 - response to poll/quiz
 - submit selfie image
 - share selfie
+
+Add to redis list `lhva:feedback:v4` and send ping on redis channel `lhva.feedback.v4`
+
+See [audience-server/src/socialtypes.ts](../audience-server/src/socialtypes) for details of types and messages.
 
 (each includes performance ID)

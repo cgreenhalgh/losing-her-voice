@@ -138,10 +138,19 @@ img.item_image {
 .quiz_prompt {
 	margin: 5px;
 }
+div.row {
+}
+div.row:after {
+	clear:both;
+}
+div.half {
+	width:50%;
+	float:left;
+}
 /* like etc. */
 div.item_like {
 	display: block;
-	width: 50%;
+	/*width: 100%;*/
 	border: 1px solid #555;
 	border-radius: 0.2em;
 	margin: 0.2em;

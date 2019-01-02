@@ -16,7 +16,8 @@ import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello,
   ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
   AnnounceItem, MSG_FEEDBACK, FeedbackMsg, 
   CONFIGURATION_FILE_VERSION } from './types'
-import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce } from './socialtypes'
+import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce,
+  REDIS_LIST_FEEDBACK } from './socialtypes'
 import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
 
 const app = express()
@@ -215,7 +216,14 @@ io.on('connection', function (socket) {
         fb.feedback.performanceid = clientInfo.performanceid
         let msg = JSON.stringify(fb.feedback)
         console.log(`relay feedback ${msg.substring(0,50)}...`)
-        redisPub.publish(REDIS_CHANNEL_FEEDBACK, msg)
+        redisPub.rpush(REDIS_LIST_FEEDBACK, msg, (err, reply) => {
+          if (err) {
+            console.log(`ERROR saving feedback ${msg.substring(0,50)}...: ${err.message}`)
+            // give up?!
+            return
+          }
+          redisPub.publish(REDIS_CHANNEL_FEEDBACK, '')
+        })
       }
     })
     sockets[socket.id] = socket

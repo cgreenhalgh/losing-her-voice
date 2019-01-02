@@ -78,12 +78,13 @@ export const MSG_ANNOUNCE_ITEMS = 'lhr.announce.items'
 export const MSG_ANNOUNCE_ITEM = 'lhr.announce.item'
 export const MSG_START_PERFORMANCE = 'lhr.start.performance'
 export const MSG_POST_ITEM = 'lhr.post.item'
+export const MSG_MAKE_ITEM = 'lhr.make.item'
 export const MSG_UPDATE_ITEM = 'lhr.update.item'
 export const MSG_CLOSE_POLLS = 'lhr.close.polls'
 export const MSG_VIDEO_STATE = 'lhr.video.state'
 export const MSG_SELFIE_IMAGE = 'lhr.selfie.image'
 
-export const LOCAL_PROTOCOL_VERSION = 6
+export const LOCAL_PROTOCOL_VERSION = 7
 
 export interface ClientHello {
   version:number
@@ -113,7 +114,10 @@ export interface PostItem {
     scheduleId:string
     item:Item
 }
-
+export interface MakeItem {
+  scheduleId:string
+  itemType:ItemType
+}
 export interface UpdateItem {
     item:Item
 }

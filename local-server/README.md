@@ -88,6 +88,25 @@ Server needs to maintain:
 - audience reposts
 - video state
 
+### Items
+
+Need to persist including server-allocated IDs, e.g. to allow reposting after reboot
+
+### Selfie images
+
+Stored in local redis, under keys `image:v1:HASH` where `HASH` is hex sha256 hash of image.
+
+Content is JSON-encoded SelfieImage (from socialtypes.ts).
+
+### Audience reposts
+
+Need to count number of shares by each user_name to push new names to the top. `lhva:reposts:v1:PERFORMANCEID:NAME` = number
+
+Need to post each repost once (only). `lhva:share:v1:PERFORMANCEID:PADNPOSTS:DATETIME:INDEX` = ShareItem (id, user_name)
+(Note, ordered by increasing NPosts, then datetime; index for uniqueness)
+
+Note: note very useful without persistent items (above0
+
 ### To do
 
 Social media support:
@@ -107,8 +126,8 @@ Social media support:
 - [x] audience app create & submit selfie image -> relay through redis -> update server selfie image pool
 - [x] moderation UI view - view server selfie image pool
 - [x] moderate selfie image -> update server selfie image pool
+- [x] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
 
-- [ ] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
 - [ ] selfie live view mark 2 (TBD - export to isadora? fly around animations? ...?)
 - [ ] CSS/images for styling
 
@@ -118,8 +137,9 @@ Local server/control:
 - [x] control UI schedule (order of post type, timing?)
 - [x] schedule in external file (reload option)
 - [x] server reset schedule
+- [x] persist selfie images on audience server for local server offline
 
-- [ ] persist selfie images on audience server for local server offline
+- [ ] persist items across server restart?!
 - [ ] control UI cleaner (table) view
 - [ ] control UI schedule simple control (default/next)
 - [ ] send OSC?
@@ -148,6 +168,7 @@ Audience app:
 - [x] app reset option to clear name/selfie
 - [x] check/edit name from social media view
 - [x] separate testing and each performance (i.e. unique client URL, etc.)
+- [x] social media re-share? (to server -> local server)
 
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
@@ -161,7 +182,6 @@ Audience app:
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] flickering images (act 2 scene 5b)
 - [ ] social media share selfie (to server -> local server) (= "publish" ?!)
-- [ ] social media re-share? (to server -> local server)
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
@@ -192,4 +212,4 @@ Content
 - [ ] libretto formatted for subtitles
 
 To don't:
-- don't add Geraldine to selfie
+- [x] don't add Geraldine to selfie

@@ -11,6 +11,7 @@ import * as redis from 'redis'
 import { OSCBridge } from './osc-bridge'
 
 import { SelfieStore } from './moderation'
+import { UgcStore } from './ugc'
 
 import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO, 
   LOCAL_PROTOCOL_VERSION, ClientHello, MSG_OUT_OF_DATE, OutOfDate, 
@@ -19,10 +20,12 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   PostItem, MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS,
   VideoState, MSG_VIDEO_STATE, VideoMode, MSG_SELFIE_IMAGE,
   Performance, MSG_ANNOUNCE_PERFORMANCE, AnnouncePerformance,
-  MSG_START_PERFORMANCE, StartPerformance } from './types';
+  MSG_START_PERFORMANCE, StartPerformance, MSG_MAKE_ITEM, MakeItem,
+  MSG_ANNOUNCE_SHARE_ITEM } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
-  REDIS_CHANNEL_FEEDBACK, Feedback, Announce
+  REDIS_CHANNEL_FEEDBACK, Feedback, Announce, REDIS_LIST_FEEDBACK,
+  ShareItem, 
 } from './socialtypes'
 
 
@@ -189,6 +192,7 @@ function readConfig() {
 readConfig()
 
 let items:Item[] = []
+let shareItems:ShareItem[] = []
 
 const ITEM_ID_PREFIX = '_server_'
 let nextItemId = 1
@@ -201,8 +205,32 @@ const DEFAULT_VIDEO_STATE:VideoState = {
 let videoState:VideoState = DEFAULT_VIDEO_STATE
 
 let selfieStore = new SelfieStore()
+let ugcStore = new UgcStore()
 
 redisSub.on("message", function (channel, message) {
+  if (!performance) {
+    console.log(`Note: delaying feedback while performance not set`)
+    return
+  }
+  console.log(`feedback ping - checking`)
+  checkForFeedback()
+})
+function checkForFeedback() {
+  redisPub.lpop(REDIS_LIST_FEEDBACK, (err, message) => {
+    if (err) {
+      console.log(`error getting feedback from ${REDIS_LIST_FEEDBACK}: ${err.message}`)
+      return
+    }
+    if (!message) {
+      console.log(`no (more) feedback in list ${REDIS_LIST_FEEDBACK}`)
+      return
+    }
+    handleFeedback(message)
+    // tail recurse?
+    setTimeout(checkForFeedback, 0)
+  })
+}
+function handleFeedback(message:string) {
   console.log(`feedback: ${message.substring(0,50)}...`)
   try {
     let feedback = JSON.parse(message) as Feedback
@@ -285,11 +313,35 @@ redisSub.on("message", function (channel, message) {
       } else {
         console.log(`warning: could not find quiz item ${feedback.chooseOption.itemId}`)
       }
-    } 
+    } else if (feedback.shareItem) {
+      console.log(`shareItem ${feedback.shareItem.id} by ${feedback.shareItem.user_name}`)
+      ugcStore.addShareItem(feedback.shareItem, performance.id, onNewShareItem)
+    } else {
+      console.log(`warning: unhandled feedback ${message.substring(0,50)}...`)
+    }
   } catch (err) {
-    console.log(`error parsing feedback: {err.message}`)
+    console.log(`error parsing feedback: ${err.message}`)
   }
-})
+}
+
+function onNewShareItem(si:ShareItem) {
+  if (!si.key) {
+      console.log(`Error: ignore ShareItem with no key`)
+      return
+  }
+  shareItems.push(si)
+  console.log(`new ShareItem: got ${shareItems.length} ShareItems`)
+  io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_SHARE_ITEM, si)
+  shareItems.sort((a,b) => a.key.localeCompare(b.key))
+}
+function addItem(item:Item) {
+  items.push(item);
+  let msgai:AnnounceItem = { item: item }
+  io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_ITEM, msgai)
+  if (item.toAudience) {
+    announceItem(item)
+  }
+}
 
 io.on('connection', function (socket) {
     console.log('new socket io connection...')
@@ -332,11 +384,16 @@ io.on('connection', function (socket) {
         let msgp :AnnouncePerformance = { performance: msg.performance }
         io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_PERFORMANCE, msgp)
         items = []
+        shareItems = []
+        ugcStore.clearPerformance(performance.id)
         configuration.scheduleItems.forEach((si) => si.postCount = 0)
         let msgconfig:ConfigurationMsg = { configuration: configuration }
         io.to(ITEM_ROOM).emit(MSG_CONFIGURATION, msgconfig)
         videoState = DEFAULT_VIDEO_STATE
         io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
+        // if persistent
+        //ugcStore.getShareItems(performance.id, onNewShareItem)
+        checkForFeedback()
     })
     socket.on(MSG_POST_ITEM, (data) => {
         let msg = data as PostItem
@@ -359,11 +416,71 @@ io.on('connection', function (socket) {
           }
         }
         console.log(`post item ${msg.item.id}`)
-        items.push(msg.item);
-        let msgai:AnnounceItem = { item: msg.item }
-        io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_ITEM, msgai)
-        if (msg.item.toAudience) {
-          announceItem(msg.item)
+        addItem(msg.item)
+    })
+    socket.on(MSG_MAKE_ITEM, (data) => {
+        let msg = data as MakeItem
+        if (!msg.itemType) {
+            console.log('Error: make item with no itemType', msg)
+            return
+        }
+        if (msg.scheduleId) {
+          let si = configuration.scheduleItems.find((si) => msg.scheduleId == si.id)
+          if (!si) {
+            console.log(`Warning: could not find posted schedule item ${msg.scheduleId}`)
+          } else if (!si.postCount){
+            si.postCount = 1;
+          } else {
+            si.postCount = 1+si.postCount;
+          }
+        }
+        console.log(`make item ${msg.itemType}`)
+        if (ItemType.REPOST == msg.itemType) {
+          while (shareItems.length>0) {
+            let shareItem = shareItems.splice(0, 1)[0]
+            ugcStore.deleteShareItem(shareItem)
+            let originalItem = items.find((i) => i.id == shareItem.id)
+            if (!originalItem) {
+                console.log(`Error: cannot find original item ${shareItem.id} to share`)
+                continue
+            }
+            let item:RepostItem = {
+              itemType:ItemType.REPOST,
+              user_name:shareItem.user_name,
+              user_icon:originalItem.user_icon,
+              item:originalItem,
+              toAudience:originalItem.toAudience,
+            }
+            console.log(`posted repost from ${shareItem.user_name} (${shareItem.key})`)
+            addItem(item)
+            return
+          }
+          if (configuration && configuration.reposters && configuration.reposters.length>0) {
+            let simplePosts = items.filter((si) => (si.itemType==ItemType.SIMPLE && si.toAudience))
+            if (simplePosts.length>0) {
+              let ix = Math.floor(Math.random()*simplePosts.length)
+              let post = simplePosts[ix] as SimpleItem
+              let rix = Math.floor(Math.random()*configuration.reposters.length)
+              if (configuration.reposters[rix].user_name == post.user_name)
+                rix = (rix+1) % configuration.reposters.length
+              let reposter = configuration.reposters[rix]
+              let repost:RepostItem = {
+                user_name: reposter.user_name,
+                user_icon: reposter.user_icon,
+                itemType: ItemType.REPOST,
+                toAudience: post.toAudience,
+                item: post
+              }
+              console.log(`created new repost from reposter ${reposter.user_name}`)
+              addItem(repost)
+            } else {
+              console.log(`warning: no posted items to repost`)
+            } 
+          } else {
+            console.log(`warning: no reposters defined`)
+          }
+        } else {
+          console.log(`warning: ignoring make item request for type ${msg.itemType}`)
         }
     })
     socket.on(MSG_CLOSE_POLLS, (data) => {

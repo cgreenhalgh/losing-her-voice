@@ -69,11 +69,18 @@ export interface Announce {
     item:Item
 }
 
-export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v3'
+export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v4'
+export const REDIS_LIST_FEEDBACK = 'lhva:feedback:v4'
+
+// ping can be any message! must be sent after adding to list
 
 export interface LikeItem {
   id:string
   likes?:number
+}
+export interface ShareItem {
+  id:string
+  user_name:string
 }
 export interface ChooseOption {
   itemId:string
@@ -84,6 +91,7 @@ export interface ChooseOption {
 export interface Feedback {
   performanceid:string
   likeItem?:LikeItem
+  shareItem?:ShareItem
   chooseOption?:ChooseOption
   selfieImage?:SelfieImage
 }

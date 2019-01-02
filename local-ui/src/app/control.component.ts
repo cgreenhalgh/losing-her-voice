@@ -59,14 +59,16 @@ export class ControlComponent {
       if (scheduleItem.item) {
         this.store.postItem(scheduleItem, scheduleItem.item);
       } else if (scheduleItem.itemType == ItemType.SELFIE) {
-        if (this.configuration && this.configuration.selfies && this.configuration.selfies.length>0) {
+/*        if (this.configuration && this.configuration.selfies && this.configuration.selfies.length>0) {
           let six = (this.nextSelfieIndex++) % this.configuration.selfies.length
           this.store.postItem(scheduleItem, this.configuration.selfies[six])
         } else {
           console.log(`warning: no selfies available`)
         }
+*/
+        this.store.makeItem(scheduleItem)
       } else if (scheduleItem.itemType == ItemType.REPOST) {
-        if (this.configuration && this.configuration.reposters && this.configuration.reposters.length>0) {
+/*        if (this.configuration && this.configuration.reposters && this.configuration.reposters.length>0) {
           let simplePosts = this.items.filter((si) => (si.itemType==ItemType.SIMPLE && si.toAudience))
           if (simplePosts.length>0) {
             let ix = Math.floor(Math.random()*simplePosts.length)
@@ -89,6 +91,8 @@ export class ControlComponent {
         } else {
           console.log(`warning: no reposters defined`)
         }
+*/
+        this.store.makeItem(scheduleItem)
       } else if (scheduleItem.itemType) {
         // TODO
         console.log(`ERROR: cannout post undefined item ${scheduleItem.id} type ${scheduleItem.itemType} '${scheduleItem.title}'`);
