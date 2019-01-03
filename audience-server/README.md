@@ -16,6 +16,7 @@ Object with:
 - `menuItems`, array of Menu Items, see below
 - `views`, array of Views, see below
 - `nameParts`, array of NamePart, see below
+- `fileVersion`, currently "lhv/audience/v3"
 
 Metadata, config file metadata; object with:
 - `title` (string) - configuration title
@@ -41,11 +42,24 @@ View, i.e. app state/view associated with a particular part (e.g. scene) of the 
 - `audioDelaySeconds` (number, optional, default 0) - delay to start of audio (`audioFile`) compared to start of view
 - `audioJitterSeconds` (number, optional, default 0) - additional random delay added to `audioDelaySeconds`
 - `audioVolume` (number, optional, default 1) - volume of audio
+- `showItems` (boolean, default false) - show social media
+- `postSelfie` (boolean, default false) - show option to post/publish selfie
+- `dark` (boolean, default false) - dark/blank(ish) view
+- `flicker` (FlickerConfig, optional) - flickering image settings, see below
 
 NamePart, object with:
 - `title` (string)
 - `required` (boolean, default false)
 - `options` (array of string)
+
+FlickerConfig, object with:
+- `images` (array of URLs), images to show
+- `minFraction` (number, default 0) min fraction of image to show
+- `maxFraction` (number, default 1) max fraction of image to show
+- `minShowSeconds` (number, default 0) min visible time (seconds)
+- `maxShowSeconds` (number, default 1) max visible time (seconds)
+- `minBlankSeconds` (number, default 0) min blank time (seconds)
+- `maxBlankSeconds` (number, default 1) max blank time (seconds)
 
 ## To do
 

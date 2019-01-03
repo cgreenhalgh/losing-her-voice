@@ -1,4 +1,4 @@
-<h1>
+<h1 [ngClass]="{dark: view && view.dark}">
 	<span *ngIf="showMenuItem || showMenu" class="button" (click)="onShowMenu()"><mat-icon>menu</mat-icon></span>
 	<span (click)="toggleFullScreen()">
 	Losing Her Voice 
@@ -33,17 +33,22 @@
 <div *ngIf="showMenuItem && showMenuItem.id=='reset'">
   <reset-view></reset-view>
 </div>
-<div *ngIf="view && !view.showItems">
-  <div><hr></div>
+<div class="flickerDiv" #flickerDiv>
+  <div #flickerImg class="flickerInner">
+    <img *ngIf="flickerImage" [src]="flickerImage" class="flickerImg">
+  </div>
+</div>
+<div *ngIf="view && !view.showItems" [ngClass]="{dark: view && view.dark}">
+  <div><hr [ngClass]="{dark: view && view.dark}"></div>
   <div *ngFor="let card of view.cards">
     <div [innerHTML]="card.html"></div>
-    <div><hr></div>
+    <div><hr [ngClass]="{dark: view && view.dark}"></div>
   </div>
   <div *ngIf="showPlay">
     <div class="button" (click)="onPlayAudio()">Play</div>
   </div>
 </div>
-<div *ngIf="view && view.showItems">
+<div *ngIf="view && view.showItems" [ngClass]="{dark: view && view.dark}">
 	<div class="profile_name" (click)="onToggleEditProfile()">
 		{{profileName}}<mat-icon *ngIf="!profileName" >create</mat-icon>
 	</div>

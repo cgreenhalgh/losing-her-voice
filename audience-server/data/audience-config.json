@@ -2,9 +2,9 @@
   "metadata": {
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
-    "version": "0.6",
+    "version": "0.7",
     "author": "Chris Greenhalgh",
-    "fileVersion": "lhv/audience/v2"
+    "fileVersion": "lhv/audience/v3"
   },
   "menuItems":[
     {
@@ -169,8 +169,7 @@
       "cards":[
         { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2><p>[social media activities]</p>" }
       ],
-      "showItems": true,
-      "postSelfie": false
+      "showItems": true
     },
     {
       "id":"act2.scene4c",
@@ -185,8 +184,9 @@
       "id":"act2.scene4d",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 4</h1>[to black]" }
-      ]
+        { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2>" }
+      ],
+      "dark": true
     },
     {
       "id":"act2.scene5a",
@@ -236,7 +236,19 @@
       ],
       "audioFile": "habanera-sample-20.mp3",
       "audioDelaySeconds": 0.1,
-      "audioJitterSeconds": 5
+      "audioJitterSeconds": 5,
+      "dark":true,
+      "flicker": {
+        "images":[
+          "sassy-geraldine.jpg"
+        ],
+        "minFraction": 0.15,
+        "maxFraction": 0.35,
+        "minShowSeconds": 0.1,
+        "maxShowSeconds": 0.2,
+        "minBlankSeconds": 0.1,
+        "maxBlankSeconds": 0.5
+      }
     }
   ],
   "nameParts": [

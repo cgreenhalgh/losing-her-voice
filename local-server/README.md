@@ -172,6 +172,8 @@ Audience app:
 - [x] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
 - [x] social media share selfie (to server -> local server) (= "publish" ?!)
 - [x] better selfie-taking instructions
+- [x] blank(ish) view (e.g. fading out) (act2.scene4d)
+- [x] flickering images (act2.scene5f)
 
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] selfie post with hash not image?
@@ -182,8 +184,6 @@ Audience app:
 - [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
-- [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
-- [ ] flickering images (act 2 scene 5b)
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??

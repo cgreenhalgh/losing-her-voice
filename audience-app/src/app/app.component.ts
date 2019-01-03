@@ -7,6 +7,12 @@ import { Item, SimpleItem, ItemType, QuizOrPollItem, RepostItem } from './social
 
 const SMALL_DELAY:number = 0.01
 
+function getDefault(value:number, def:number) : number {
+  if (value===null || value===undefined)
+    return def
+  return value
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,6 +20,8 @@ const SMALL_DELAY:number = 0.01
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('audio') audio: ElementRef
+  @ViewChild('flickerImg') flickerImg: ElementRef
+  @ViewChild('flickerDiv') flickerDiv: ElementRef
   loading:boolean = true
   currentState:CurrentState = null
   allMenuItems:MenuItem[]
@@ -41,7 +49,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   editProfile:boolean
   selfieConfirmed:boolean
   selfieSent:boolean
-    
+  flickerImage:string
+  flickerTimer:any
+  
   constructor(
     private syncService:SyncService,
     @Inject(DOCUMENT) private document: any
@@ -91,6 +101,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       if (this.allMenuItems) {
         this.menuItems = this.allMenuItems.filter((item) => (this.currentState && this.currentState.postPerformance) || !item.postPerformance)
       }
+      this.flickerImage = null
+      this.updateFlicker(false)
       if (this.currentState && this.currentState.forceView) {
         // force a view
         this.showMenu = false
@@ -104,6 +116,22 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             this.audioDelaySeconds = this.view.audioDelaySeconds
           if (this.view.audioJitterSeconds)
             this.audioDelaySeconds += Math.random()*this.view.audioJitterSeconds
+          // flicker defaults
+          if (this.view.flicker) {
+            this.view.flicker.minFraction = getDefault(this.view.flicker.minFraction, 0)
+            this.view.flicker.maxFraction = getDefault(this.view.flicker.maxFraction, 1)
+            if (this.view.flicker.maxFraction < this.view.flicker.minFraction)
+             this.view.flicker.maxFraction = this.view.flicker.minFraction
+            this.view.flicker.minShowSeconds = getDefault(this.view.flicker.minShowSeconds, 0)
+            this.view.flicker.maxShowSeconds = getDefault(this.view.flicker.maxShowSeconds, 1)
+            if (this.view.flicker.maxShowSeconds < this.view.flicker.minShowSeconds)
+             this.view.flicker.maxShowSeconds = this.view.flicker.minShowSeconds
+            this.view.flicker.minBlankSeconds = getDefault(this.view.flicker.minBlankSeconds, 0)
+            this.view.flicker.maxBlankSeconds = getDefault(this.view.flicker.maxBlankSeconds, 1)
+            if (this.view.flicker.maxBlankSeconds < this.view.flicker.minBlankSeconds)
+             this.view.flicker.maxBlankSeconds = this.view.flicker.minBlankSeconds
+            this.updateFlicker(true)
+          }
         }
       } else {
         if (this.view) {
@@ -330,5 +358,48 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
     this.selfieSent = true 
     this.syncService.sendSelfie()
+  }
+  updateFlicker(showImage:boolean) {
+    if (this.flickerTimer) {
+      clearTimeout(this.flickerTimer)
+      this.flickerTimer = null
+    }
+    if (!showImage) {
+      this.flickerImage = null
+      if (this.flickerDiv && this.flickerDiv.nativeElement) {
+        this.flickerDiv.nativeElement.style.display = "none"
+      }
+      if (this.view && this.view.flicker) {
+        let delay = Math.random()*(this.view.flicker.maxBlankSeconds - this.view.flicker.minBlankSeconds)+this.view.flicker.minBlankSeconds
+        this.flickerTimer = setTimeout(() => { this.updateFlicker(true) }, Math.floor(delay*1000))
+      }
+      return
+    }
+    if (this.view && this.view.flicker && this.view.flicker.images && this.view.flicker.images.length>0) {
+      this.flickerImage = 'assets/'+this.view.flicker.images[Math.floor(this.view.flicker.images.length*Math.random())]
+      // position
+      let size = Math.random()*(this.view.flicker.maxFraction - this.view.flicker.minFraction)+this.view.flicker.minFraction
+      let position1 = Math.random()*(1-size)
+      let position2 = Math.random()*(1-size)
+      if (this.flickerDiv && this.flickerDiv.nativeElement) {
+        this.flickerDiv.nativeElement.style.display = "block"
+      }
+      if (this.flickerImg && this.flickerImg.nativeElement) {
+        if (size<0.001)
+          size = 0.001
+        let invsize = 100/size
+        this.flickerImg.nativeElement.style.width = invsize+"%"
+        this.flickerImg.nativeElement.style.top = "-"+(invsize*position1)+"%"
+        this.flickerImg.nativeElement.style.left = "-"+(invsize*position1)+"%"
+        console.log(`position flicker width=${invsize}, top=-${invsize*position1}, left=-${invsize*position2}`)
+      } else {
+        console.log(`flickerImg not set`)
+      }
+      let delay = Math.random()*(this.view.flicker.maxShowSeconds - this.view.flicker.minShowSeconds)+this.view.flicker.minShowSeconds
+      this.flickerTimer = setTimeout(() => { this.updateFlicker(false) }, Math.floor(delay*1000))
+    }
+    else {
+      console.log(`warning: cannot flicker with no flicker/images`)
+    }
   }
 }

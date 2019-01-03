@@ -168,3 +168,49 @@ div.item_like.disabled {
 	color: #555;
 	border: 1px solid #333;
 }
+
+@keyframes fade {
+  from {color: #fff;}
+  to {color: #444;}
+}
+
+.dark {
+  animation-name: fade;
+  animation-duration: 0.25s;
+  color: #444;
+}
+@keyframes fadehr {
+  from {
+    color: #fff;
+    background-color: #fff;
+    border-color: #fff;
+  }
+  to {
+    color: #444;
+    background-color: #444;
+    border-color: #444;
+  }
+}
+hr.dark {
+  color: #444;
+  background-color: #444;
+  border-color: #444;
+  animation-name: fadehr;
+  animation-duration: 0.25s;
+}
+.flickerDiv {
+	display: none;
+	z-index: 1;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+.flickerInner {
+	position:relative;
+}
+.flickerImg {
+	width:100%;
+	height:auto;
+}

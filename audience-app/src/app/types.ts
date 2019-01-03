@@ -88,6 +88,18 @@ export interface View {
   audioVolume?:number
   showItems?:boolean // social media stuff...
   postSelfie?:boolean // prompt
+  dark?:boolean
+  flicker?:FlickerConfig
+}
+
+export interface FlickerConfig {
+  images:string[]
+  minFraction?:number
+  maxFraction?:number
+  minShowSeconds?:number
+  maxShowSeconds?:number
+  minBlankSeconds?:number
+  maxBlankSeconds?:number
 }
 
 export interface ConfigurationMetadata {
@@ -98,7 +110,7 @@ export interface ConfigurationMetadata {
   fileVersion:string
 }
 
-export const CONFIGURATION_FILE_VERSION = "lhv/audience/v2"
+export const CONFIGURATION_FILE_VERSION = "lhv/audience/v3"
 
 export interface NamePart {
   title:string
