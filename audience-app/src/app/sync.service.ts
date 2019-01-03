@@ -15,6 +15,7 @@ const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
 const NAME_KEY_PREFIX = 'namePart:'
 const IMAGE_KEY = 'selfie.image'
 const SELFIE_CONFIRMED_KEY = 'selfie.confirmed'
+const SELFIE_SENT_KEY = 'selfie.sent'
 
 
 @Injectable()
@@ -47,6 +48,7 @@ export class SyncService {
     this.configuration = new BehaviorSubject(null)
     this.profileName = new BehaviorSubject(this.getName())
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
+    this.selfieSent = new BehaviorSubject(this.getSelfieSent())
     this.item = new Subject()
     // base href?
     let baseHref = (document.getElementsByTagName('base')[0] || {}).href
@@ -324,6 +326,12 @@ export class SyncService {
   getSelfieConfirmedObservable(): Observable<boolean> {
     return this.selfieConfirmed
   }
+  getSelfieSent(): boolean {
+    return !!this.storage.get(SELFIE_SENT_KEY)
+  }
+  getSelfieSentObservable(): Observable<boolean> {
+    return this.selfieSent
+  }
   getSelfiePresent(): boolean {
     return !!this.storage.get(IMAGE_KEY)
   }
@@ -345,6 +353,26 @@ export class SyncService {
     }
     this.socket.emit(MSG_FEEDBACK, msg)
   }
+  sendSelfie(): void {
+    this.storage.set(SELFIE_SENT_KEY, 'true')
+    this.selfieSent.next(true)
+    let dataurl:string = this.getSelfieImage()
+    console.log(`send selfie`)
+    let now = (new Date()).getTime()
+    this.clientTiming.clientSendTime = now
+    // TODO use hash?
+    let msg:FeedbackMsg = {
+      feedback: {
+        performanceid:this.performanceid,
+        shareSelfie: {
+          user_name: this.getName(),
+          image: dataurl
+        }
+      },
+      timing:this.clientTiming,
+    }
+    this.socket.emit(MSG_FEEDBACK, msg)
+  }
   getSelfieImage(): string {
     return this.storage.get(IMAGE_KEY)
   }
@@ -356,6 +384,7 @@ export class SyncService {
   resetApp():void {
     console.log(`reset app state`)
     this.storage.remove(SELFIE_CONFIRMED_KEY)
+    this.storage.remove(SELFIE_SENT_KEY)
     this.storage.remove(IMAGE_KEY)
     this.storage.remove(NAME_KEY_PREFIX)
     if (this.configuration.value && this.configuration.value.nameParts) {
@@ -365,5 +394,6 @@ export class SyncService {
     }
     this.profileName.next(null)
     this.selfieConfirmed.next(false)
+    this.selfieSent.next(false)
   }
 }

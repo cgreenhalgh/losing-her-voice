@@ -1,31 +1,52 @@
 <div class='control'>
 	<h1>Control view</h1>
-	<p><a [routerLink]="['/live']">Live</a> <a [routerLink]="['/moderate']">Moderation</a></p>
+	<p>Views: <a [routerLink]="['/live']">Live</a> <a [routerLink]="['/moderate']">Moderation</a></p>
 	<div *ngIf="!configuration">Waiting for configuration...</div>
 	<div *ngIf="configuration">
 		<div>
-			Performance: <span *ngIf="currentPerformance">{{currentPerformance.title}} ({{currentPerformance.id}})</span>
+			Performance: <span *ngIf="currentPerformance">{{currentPerformance.title}} ({{currentPerformance.id}})</span><br>
 			<select [(ngModel)]="nextPerformanceId">
 				<option [ngValue]="null"></option>
 				<option *ngFor="let p of configuration.performances" value="{{p.id}}">{{p.title}} ({{p.id}})</option>
 			</select>
 			<input type="button" (click)="startPerformance()" value="Start Performance">
 		</div>
-		<div *ngFor="let scheduleItem of configuration.scheduleItems">
-			<div class="control-header">
-				<button *ngIf="scheduleItem.closePolls" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-close' : 'Close'}}</button>
-				<button *ngIf="scheduleItem.item || scheduleItem.itemType" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-post' : 'Post'}}</button>
-				<button *ngIf="scheduleItem.videoState" (click)="postItem(scheduleItem)">{{ scheduleItem.postCount ? 'Re-set' : 'Set'}}</button>
-				<span> {{scheduleItem.title}} </span>: 
-				<span *ngIf="scheduleItem.itemType"> {{scheduleItem.itemType}} </span>
-				<span *ngIf="scheduleItem.closePolls"> Close poll/quiz </span>
-				<span *ngIf="scheduleItem.videoState"> video mode {{scheduleItem.videoState.mode}} </span>
-				<span>(Posted {{scheduleItem.postCount}} times)</span>
-				<button *ngIf="scheduleItem.item" (click)="scheduleItem.showPreview = !scheduleItem.showPreview">show/hide preview</button>
-			</div>
-			<div class="item-preview" *ngIf="scheduleItem.item && scheduleItem.showPreview" >
-				<item-view [item]="scheduleItem.item"></item-view>
-			</div>
+		<div>
+			<div>Reposts received: {{shareItems.length}}. Approved selfies received: {{shareSelfies.length}}</div>
+		</div>
+		<div class="items">
+			<table>
+				<thead>
+					<th>Action</th>
+					<th>Posted</th>
+					<th>Description</th>
+					<th>Preview</th>
+				</thead>
+				<tbody>
+					<tr *ngFor="let scheduleItem of configuration.scheduleItems">
+						<td >
+							<button *ngIf="scheduleItem.closePolls" (click)="postItem(scheduleItem)">Close</button>
+							<button *ngIf="scheduleItem.item || scheduleItem.itemType" (click)="postItem(scheduleItem)">Post</button>
+							<button *ngIf="scheduleItem.videoState" (click)="postItem(scheduleItem)">Set</button>
+						</td>
+						<td><span>{{scheduleItem.postCount ? scheduleItem.postCount : ''}}</span></td>
+						<td>
+								<span> {{scheduleItem.title}} </span>: 
+								<span *ngIf="scheduleItem.itemType"> {{scheduleItem.itemType}} </span>
+								<span *ngIf="scheduleItem.closePolls"> Close poll/quiz </span>
+								<span *ngIf="scheduleItem.videoState"> video mode {{scheduleItem.videoState.mode}} </span>
+						</td>
+						<td>
+							<div class="control-header">
+								<button *ngIf="scheduleItem.item" (click)="scheduleItem.showPreview = !scheduleItem.showPreview">show/hide preview</button>
+							</div>
+							<div class="item-preview" *ngIf="scheduleItem.item && scheduleItem.showPreview" >
+								<item-view [item]="scheduleItem.item"></item-view>
+							</div>
+						</td>
+					</tr>
+				<tbody>
+			</table>
 		</div>
 	</div>
 </div>

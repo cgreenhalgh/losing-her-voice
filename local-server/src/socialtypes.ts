@@ -12,7 +12,7 @@ export interface Item {
   id?:string
   itemType:ItemType
   user_name:string
-  user_icon:string
+  user_icon?:string
   date?:string
   toAudience?:boolean
 }
@@ -30,6 +30,7 @@ export interface RepostItem extends Item {
 
 export interface SelfieItem extends Item {
   image:string  
+  hash?:string
   rejected?:boolean
   approved?:boolean
   moderator?:string
@@ -69,8 +70,8 @@ export interface Announce {
     item:Item
 }
 
-export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v4'
-export const REDIS_LIST_FEEDBACK = 'lhva:feedback:v4'
+export const REDIS_CHANNEL_FEEDBACK = 'lhva.feedback.v5'
+export const REDIS_LIST_FEEDBACK = 'lhva:feedback:v5'
 
 // ping can be any message! must be sent after adding to list
 
@@ -88,11 +89,17 @@ export interface ChooseOption {
   option:number // index from 0
   count?:number
 }
-
+export interface ShareSelfie {
+  user_name:string
+  image?:string // data url or base64 encoded?
+  hash?:string // required if image omitted
+  key?:string
+}
 export interface Feedback {
   performanceid:string
   likeItem?:LikeItem
   shareItem?:ShareItem
   chooseOption?:ChooseOption
   selfieImage?:SelfieImage
+  shareSelfie?:ShareSelfie
 }

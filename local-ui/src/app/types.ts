@@ -1,4 +1,4 @@
-import { Item, ItemType, SelfieItem } from './socialtypes'
+import { Item, ItemType, SelfieItem, ShareItem, ShareSelfie } from './socialtypes'
 
 /* OLD
 export interface Item {
@@ -83,8 +83,10 @@ export const MSG_UPDATE_ITEM = 'lhr.update.item'
 export const MSG_CLOSE_POLLS = 'lhr.close.polls'
 export const MSG_VIDEO_STATE = 'lhr.video.state'
 export const MSG_SELFIE_IMAGE = 'lhr.selfie.image'
+export const MSG_ANNOUNCE_SHARE_ITEM = 'lhr.announce.share_item'
+export const MSG_ANNOUNCE_SHARE_SELFIE = 'lhr.announce.share_selfie'
 
-export const LOCAL_PROTOCOL_VERSION = 7
+export const LOCAL_PROTOCOL_VERSION = 10
 
 export interface ClientHello {
   version:number
@@ -103,6 +105,12 @@ export interface AnnounceItems {
 }
 export interface AnnounceItem {
     item:Item
+}
+export interface AnnounceShareItem {
+  shareItem:ShareItem
+}
+export interface AnnounceShareSelfie {
+  shareSelfie:ShareSelfie
 }
 export interface AnnouncePerformance {
   performance:Performance

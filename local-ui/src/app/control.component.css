@@ -1,3 +1,6 @@
 .control {
-	width: 600px;
+	/*width: 600px;*/
+}
+.items {
+	overflow: scroll;
 }

@@ -8,8 +8,10 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_UPDATE_ITEM, UpdateItem, MSG_CLOSE_POLLS, VideoState, 
   MSG_VIDEO_STATE, MSG_SELFIE_IMAGE, MSG_ANNOUNCE_PERFORMANCE,
   MSG_START_PERFORMANCE, AnnouncePerformance, StartPerformance,
-  Performance, MSG_MAKE_ITEM, MakeItem } from './types';
-import { Item, SelfieImage } from './socialtypes';
+  Performance, MSG_MAKE_ITEM, MakeItem, MSG_ANNOUNCE_SHARE_ITEM,
+  AnnounceShareItem, MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie,
+  } from './types';
+import { Item, SelfieImage, ShareItem, ShareSelfie } from './socialtypes';
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_SERVER:string = 'http://localhost:8080'
@@ -17,6 +19,8 @@ const SOCKET_IO_SERVER:string = 'http://localhost:8080'
 @Injectable()
 export class StoreService {
     items:ReplaySubject<Item>
+    shareItems:ReplaySubject<ShareItem>
+    shareSelfies:ReplaySubject<ShareSelfie>
     socket:any
     performance:BehaviorSubject<Performance>
     configuration:BehaviorSubject<Configuration>
@@ -26,6 +30,8 @@ export class StoreService {
   
     constructor() {
         this.items = new ReplaySubject()
+        this.shareItems = new ReplaySubject()
+        this.shareSelfies = new ReplaySubject()
         this.performance = new BehaviorSubject(null)
         this.configuration = new BehaviorSubject(null)
         this.videoState= new BehaviorSubject(null)
@@ -56,6 +62,8 @@ export class StoreService {
           console.log(`announce performance ${msg.performance.id}: ${msg.performance.title}`)
           // replace/reset
           this.items = new ReplaySubject()
+          this.shareItems = new ReplaySubject()
+          this.shareSelfies = new ReplaySubject()
           this.performance.next(msg.performance)
         })
         this.socket.on(MSG_CONFIGURATION, (data) => {
@@ -72,7 +80,17 @@ export class StoreService {
         this.socket.on(MSG_ANNOUNCE_ITEM, (data) => {
             let msg = data as AnnounceItem
             console.log('got item from server')
-            this.items.next(data.item)
+            this.items.next(msg.item)
+        })
+        this.socket.on(MSG_ANNOUNCE_SHARE_ITEM, (data) => {
+            let msg = data as AnnounceShareItem
+            console.log('got share item from server')
+            this.shareItems.next(msg.shareItem)
+        })
+        this.socket.on(MSG_ANNOUNCE_SHARE_SELFIE, (data) => {
+            let msg = data as AnnounceShareSelfie
+            console.log('got share selfie from server')
+            this.shareSelfies.next(msg.shareSelfie)
         })
         this.socket.on(MSG_UPDATE_ITEM, (data) => {
             let msg = data as UpdateItem
@@ -93,6 +111,12 @@ export class StoreService {
 
     getItems() : Observable<Item> {
         return this.items;
+    }
+    getShareItems() : Observable<ShareItem> {
+        return this.shareItems;
+    }
+    getShareSelfies() : Observable<ShareSelfie> {
+        return this.shareSelfies;
     }
     
     getPerformance() : Observable<Performance> {

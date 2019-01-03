@@ -8,7 +8,7 @@
 		<canvas #canvas width="400" height="400"></canvas>
 	</div></div>
 	<div *ngIf="!selfieConfirmed">
-		<div class="text">Please set your selfie</div>
+		<div class="text">Use the input immediately below to take or select your selfie:</div>
 		<div>
 			<input #fileInput type="file" accept="image/*" capture="user" (change)="onChangeFile($event)">
 		</div>

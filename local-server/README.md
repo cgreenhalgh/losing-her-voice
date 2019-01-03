@@ -139,7 +139,7 @@ Local server/control:
 - [x] server reset schedule
 - [x] persist selfie images on audience server for local server offline
 
-- [ ] persist items across server restart?!
+- [ ] persist items & performance across server restart?!
 - [ ] control UI cleaner (table) view
 - [ ] control UI schedule simple control (default/next)
 - [ ] send OSC?
@@ -169,9 +169,12 @@ Audience app:
 - [x] check/edit name from social media view
 - [x] separate testing and each performance (i.e. unique client URL, etc.)
 - [x] social media re-share? (to server -> local server)
+- [x] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
+- [x] social media share selfie (to server -> local server) (= "publish" ?!)
+- [x] better selfie-taking instructions
 
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
-- [ ] audience app share selfie -> relay through redis -> update server selfie post pool -> control UI -> display shared selfie
+- [ ] selfie post with hash not image?
 - [ ] app disconnect warning
 - [ ] app smoother reconnect support
 - [ ] specific user guidance for in-browser vs PWA/home screen
@@ -181,13 +184,11 @@ Audience app:
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
 - [ ] blank(ish) view (e.g. fading out) (act 2 scene 5a)
 - [ ] flickering images (act 2 scene 5b)
-- [ ] social media share selfie (to server -> local server) (= "publish" ?!)
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
 - [ ] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [ ] iphone troubleshoot/fix audio non-playing (https??)
-- [ ] better selfie-taking instructions
 - [ ] CSS/images for styling
 
 Subtitles:

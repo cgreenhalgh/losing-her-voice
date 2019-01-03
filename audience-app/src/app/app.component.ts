@@ -39,7 +39,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   currentItemSent:boolean
   profileName:string
   editProfile:boolean
-  
+  selfieConfirmed:boolean
+  selfieSent:boolean
+    
   constructor(
     private syncService:SyncService,
     @Inject(DOCUMENT) private document: any
@@ -66,11 +68,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
     })
     syncService.getSelfieConfirmedObservable().subscribe((val) => {
+      this.selfieConfirmed = val
       if (this.allMenuItems) {
         let smi = this.allMenuItems.find((mi) => mi.id =='selfie')
         if (smi)
           smi.highlight = !val
       }
+    })
+    syncService.getSelfieSentObservable().subscribe((val) => {
+      this.selfieSent = val
     })
     syncService.getCurrentState().subscribe((newState) => {
       console.log('home update current state', newState)
@@ -292,6 +298,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
   onShareCurrentItem() {
+    if (!this.profileName) {
+      console.log(`cannot share item without profile name set`)
+      return
+    }
     this.currentItemShared = true
     if (this.currentItem) {
       this.syncService.shareItem(this.currentItem)
@@ -312,5 +322,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.currentItemSent = true
       this.syncService.chooseOption(this.currentQuizItem, this.currentQuizOption)
     }
+  }
+  onShareSelfie() {
+    if (!this.selfieConfirmed) {
+      console.log(`Error: attempt to share unconfirmed selfie`)
+      return
+    }
+    this.selfieSent = true 
+    this.syncService.sendSelfie()
   }
 }

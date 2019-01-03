@@ -21,11 +21,12 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   VideoState, MSG_VIDEO_STATE, VideoMode, MSG_SELFIE_IMAGE,
   Performance, MSG_ANNOUNCE_PERFORMANCE, AnnouncePerformance,
   MSG_START_PERFORMANCE, StartPerformance, MSG_MAKE_ITEM, MakeItem,
-  MSG_ANNOUNCE_SHARE_ITEM } from './types';
+  MSG_ANNOUNCE_SHARE_ITEM, AnnounceShareItem,
+  MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie, } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback, Announce, REDIS_LIST_FEEDBACK,
-  ShareItem, 
+  ShareItem, ShareSelfie,
 } from './socialtypes'
 
 
@@ -126,6 +127,7 @@ let configuration:Configuration = {
   selfies:[],
   reposters:[]
 }
+let nextSelfieIndex = 0
 
 function replaceImageUrl(obj:any, property:string) : string {
   let url = obj[property]
@@ -193,6 +195,7 @@ readConfig()
 
 let items:Item[] = []
 let shareItems:ShareItem[] = []
+let shareSelfies:ShareSelfie[] = []
 
 const ITEM_ID_PREFIX = '_server_'
 let nextItemId = 1
@@ -316,6 +319,27 @@ function handleFeedback(message:string) {
     } else if (feedback.shareItem) {
       console.log(`shareItem ${feedback.shareItem.id} by ${feedback.shareItem.user_name}`)
       ugcStore.addShareItem(feedback.shareItem, performance.id, onNewShareItem)
+    } else if (feedback.shareSelfie) {
+      // check if already moderated
+      console.log(`shareSelfie from ${feedback.shareSelfie.user_name} ${feedback.shareSelfie.image.substring(0,50)}...`)
+      // TODO delay check until used??
+      let si:SelfieImage = {
+        image: feedback.shareSelfie.image
+      }
+      selfieStore.addImage(si, (newsi, isNew) => {
+        console.log(`shared ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
+        if (isNew) {
+          io.to(ITEM_ROOM).emit(MSG_SELFIE_IMAGE, newsi)
+        }
+        if (newsi.approved) {
+          console.log(`shareSelfie ${newsi.hash} from ${feedback.shareSelfie.user_name}`)
+          ugcStore.addShareSelfie(feedback.shareSelfie, performance.id, onNewShareSelfie)
+        } else if (newsi.rejected) {
+          console.log(`ignore rejected selfie from ${feedback.shareSelfie.user_name}`)
+        } else {
+          console.log(`Warning: ignoring unmoderated selfie from ${feedback.shareSelfie.user_name}`)
+        }
+      })
     } else {
       console.log(`warning: unhandled feedback ${message.substring(0,50)}...`)
     }
@@ -331,8 +355,24 @@ function onNewShareItem(si:ShareItem) {
   }
   shareItems.push(si)
   console.log(`new ShareItem: got ${shareItems.length} ShareItems`)
-  io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_SHARE_ITEM, si)
+  let msg:AnnounceShareItem = {
+    shareItem:si
+  }
+  io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_SHARE_ITEM, msg)
   shareItems.sort((a,b) => a.key.localeCompare(b.key))
+}
+function onNewShareSelfie(ss:ShareSelfie) {
+  if (!ss.key) {
+      console.log(`Error: ignore ShareSelfie with no key`)
+      return
+  }
+  shareSelfies.push(ss)
+  console.log(`new ShareSelfie: got ${shareSelfies.length} ShareSelfies`)
+  let msg:AnnounceShareSelfie = {
+    shareSelfie:ss
+  }
+  io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_SHARE_SELFIE, msg)
+  shareSelfies.sort((a,b) => a.key.localeCompare(b.key))
 }
 function addItem(item:Item) {
   items.push(item);
@@ -385,6 +425,7 @@ io.on('connection', function (socket) {
         io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_PERFORMANCE, msgp)
         items = []
         shareItems = []
+        shareSelfies = []
         ugcStore.clearPerformance(performance.id)
         configuration.scheduleItems.forEach((si) => si.postCount = 0)
         let msgconfig:ConfigurationMsg = { configuration: configuration }
@@ -393,6 +434,7 @@ io.on('connection', function (socket) {
         io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
         // if persistent
         //ugcStore.getShareItems(performance.id, onNewShareItem)
+        //ugcStore.getShareSelfies(performance.id, onNewShareSelfie)
         checkForFeedback()
     })
     socket.on(MSG_POST_ITEM, (data) => {
@@ -445,6 +487,7 @@ io.on('connection', function (socket) {
                 continue
             }
             let item:RepostItem = {
+              id: ITEM_ID_PREFIX + (nextItemId++),
               itemType:ItemType.REPOST,
               user_name:shareItem.user_name,
               user_icon:originalItem.user_icon,
@@ -465,6 +508,7 @@ io.on('connection', function (socket) {
                 rix = (rix+1) % configuration.reposters.length
               let reposter = configuration.reposters[rix]
               let repost:RepostItem = {
+                id: ITEM_ID_PREFIX + (nextItemId++),
                 user_name: reposter.user_name,
                 user_icon: reposter.user_icon,
                 itemType: ItemType.REPOST,
@@ -478,6 +522,38 @@ io.on('connection', function (socket) {
             } 
           } else {
             console.log(`warning: no reposters defined`)
+          }
+        } else if (ItemType.SELFIE == msg.itemType) {
+          while (shareSelfies.length>0) {
+            let shareSelfie = shareSelfies.splice(0, 1)[0]
+            ugcStore.deleteShareSelfie(shareSelfie)
+            // Note, currently moderation checked before adding to shareSelfies
+            let item:SelfieItem = {
+              id: ITEM_ID_PREFIX + (nextItemId++),
+              itemType:ItemType.SELFIE,
+              user_name:shareSelfie.user_name,
+              user_icon:shareSelfie.image,
+              image:shareSelfie.image,
+              toAudience:false,
+            }
+            console.log(`posted selfie from ${shareSelfie.user_name} (${shareSelfie.key})`)
+            addItem(item)
+            return
+          }
+          if (configuration && configuration.selfies && configuration.selfies.length>0) {
+            let six = (nextSelfieIndex++) % configuration.selfies.length
+            let selfie = configuration.selfies[six]
+            let item:SelfieItem = {
+              id: ITEM_ID_PREFIX + (nextItemId++),
+              itemType:ItemType.SELFIE,
+              user_name:selfie.user_name,
+              user_icon:selfie.user_icon,
+              image:selfie.image,
+              toAudience:false,
+            }
+            addItem(item)
+          } else {
+            console.log(`warning: no selfies available`)
           }
         } else {
           console.log(`warning: ignoring make item request for type ${msg.itemType}`)

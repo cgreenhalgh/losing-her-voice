@@ -10,7 +10,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 8
+export const CURRENT_VERSION:number = 9
 
 export interface ClientTiming {
   clientSendTime:number
@@ -87,6 +87,7 @@ export interface View {
   audioJitterSeconds?:number
   audioVolume?:number
   showItems?:boolean // social media stuff...
+  postSelfie?:boolean // prompt
 }
 
 export interface ConfigurationMetadata {
