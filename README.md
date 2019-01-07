@@ -12,6 +12,13 @@ Overview:
 - audience-server - runs on externally accessible server, serves audience-app; receives updates via redis
 - audience-app - webapp (angular) for audience; configured via audience-config.json file from audience-server
 
+## See also
+
+- [local-server README](local-server/README.md) - configuration for social media items
+- [audience-server README](audience-server/README.md) - configuration for audience app (e.g. information to show in app other than social media items)
+- [OSC usage](docs/osc.md) - support for OSC
+- [internal protocol notes](docs/protocol.md) - notes on internal communication
+
 ## Build dev
 
 if using Vagrant

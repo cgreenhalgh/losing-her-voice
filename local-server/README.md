@@ -4,6 +4,11 @@
 
 See [../README.md](../README.md)
 
+## See also
+
+- [OSC usage](../docs/osc.md) - support for OSC
+- [internal protocol notes](../docs/protocol.md) - notes on internal communication
+
 ## Configuration
 
 Local (social media) UIs configuration file, [data/local-config.json](data/local-config.json).
