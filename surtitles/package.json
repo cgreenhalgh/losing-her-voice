@@ -1,0 +1,31 @@
+{
+	"name": "losing-her-voice-surtitles",
+	"version": "0.1.0",
+	"description": "surtitle libretto tools for losing her voice",
+	"main": "index.js",
+	"directories": {
+		"doc": "docs"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch & nodemon dist",
+		"tsc": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cgreenhalgh/losing-her-voice.git"
+	},
+	"author": "Chris Greenhalgh",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/cgreenhalgh/losing-her-voice/issues"
+	},
+	"homepage": "https://github.com/cgreenhalgh/losing-her-voice/#readme",
+	"dependencies": {
+		"@types/node": "^10.12.18",
+		"@types/sax": "^1.0.1",
+		"mammoth": "^1.4.7",
+		"sax": "^1.2.4"
+	}
+}
