@@ -4,7 +4,7 @@
     "description": "just initial testing placeholders",
     "version": "0.2",
     "author": "Chris Greenhalgh",
-    "fileVersion": "lhv/local/v2"
+    "fileVersion": "lhv/local/v3"
   },
   "performances": [
     {
@@ -38,6 +38,7 @@
   ],
   "scheduleItems": [
     {
+      "itemNumber":"first",
       "itemType": "simple",
       "title": "a first simple post (to audience)",
       "description": "just for initial tech testing",
@@ -51,6 +52,7 @@
       }
     },
     {
+      "itemNumber":"2",
       "itemType": "simple",
       "title": "a second simple post (to audience)",
       "description": "just for initial tech testing",

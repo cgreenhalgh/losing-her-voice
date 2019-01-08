@@ -13,9 +13,17 @@ if (process.env.REDIS_PASSWORD) {
 
 const OSC_LHVA_STATE = "/lhva/state"
 
+export type OscCommandCallback = (command:string, args:any[]) => void
+
+interface OscCommands {
+  [propName:string]:OscCommandCallback
+}
+
 export class OSCBridge {
   performanceid:string
-    
+  commands:OscCommands = {}
+  osc:OSC
+  
   constructor() {
       console.log('using redis config ' + JSON.stringify(redis_config));
     
@@ -36,7 +44,7 @@ export class OSCBridge {
         console.log(`socket error`, err)
       });
       */
-      const osc = new OSC({ 
+      this.osc = new OSC({ 
         plugin: new OSC.DatagramPlugin({
           open: {
             port: PORT,
@@ -44,10 +52,10 @@ export class OSCBridge {
           }
         }) 
       })
-      osc.on('open', () => {
+      this.osc.on('open', () => {
         console.log(`osc open`)
       })
-      osc.on(OSC_LHVA_STATE, (message) => {
+      this.osc.on(OSC_LHVA_STATE, (message) => {
         console.log(`osc /lhva/state message`, message.args)
         if (message.args.length!=1) {
           console.log(`ERROR: osc /lhva/state message with ${message.args.length} arguments`, message.args)
@@ -67,7 +75,13 @@ export class OSCBridge {
       //  console.log(`Warning: osc message`, message)
       //})
       console.log(`bridge OSC from port ${PORT} to redis ${REDIS_CHANNEL_VIEW_STATE}; expecting ${OSC_LHVA_STATE} "..."`)
-      osc.open()
+      this.osc.open()
+    }
+    addCommand(command:string, cb:OscCommandCallback): void {
+      this.commands[command] = cb
+      this.osc.on(command, (message) => {
+        cb(message.address, message.args)
+      })
     }
     setPerformanceid(performanceid:string) {
         this.performanceid = performanceid

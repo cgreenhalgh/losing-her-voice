@@ -22,7 +22,8 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   Performance, MSG_ANNOUNCE_PERFORMANCE, AnnouncePerformance,
   MSG_START_PERFORMANCE, StartPerformance, MSG_MAKE_ITEM, MakeItem,
   MSG_ANNOUNCE_SHARE_ITEM, AnnounceShareItem,
-  MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie, } from './types';
+  MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie, OSC_GO, OSC_RESET, 
+  OSC_PLAYHEAD_STAR, MSG_OSC_COMMAND, OscCommand } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback, Announce, REDIS_LIST_FEEDBACK,
@@ -598,6 +599,15 @@ io.on('connection', function (socket) {
         console.log(`selfie ${msg.hash} updated, approved=${msg.approved}, rejected=${msg.rejected}, moderator=${msg.moderator}`)
     })
 });
+
+function relayOsc(command:string, args:any[]) {
+  console.log(`relay OSC command to UI: ${command}`)
+  io.to(ITEM_ROOM).emit(MSG_OSC_COMMAND, { command: command })
+}
+oscBridge.addCommand(OSC_GO, relayOsc)
+oscBridge.addCommand(OSC_RESET, relayOsc)
+oscBridge.addCommand(OSC_PLAYHEAD_STAR, relayOsc)
+
 
 /**
  * Listen on provided port, on all network interfaces.

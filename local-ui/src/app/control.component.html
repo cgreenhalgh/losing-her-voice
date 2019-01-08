@@ -14,20 +14,29 @@
 		<div>
 			<div>Reposts received: {{shareItems.length}}. Approved selfies received: {{shareSelfies.length}}</div>
 		</div>
+		<div>
+			<input type="button" class="button" [ngClass]="{disabled: !currentPerformance}" [disabled]="!currentPerformance" value="Go" (click)="onGo()">
+			<!-- <input type="button" class="button" value="Reset" (click)="onReset()">  -->
+		</div>
 		<div class="items">
 			<table>
 				<thead>
+					<th>Next</th>
+					<th>Number</th>
 					<th>Action</th>
-					<th>Posted</th>
+					<th>Done</th>
 					<th>Description</th>
 					<th>Preview</th>
 				</thead>
 				<tbody>
-					<tr *ngFor="let scheduleItem of configuration.scheduleItems">
+					<tr *ngFor="let scheduleItem of configuration.scheduleItems; index as ix">
+						<td>
+							<span *ngIf="ix == playheadIx">=></span>
+						</td>
+						<td>{{scheduleItem.itemNumber}}</td>
 						<td >
-							<button *ngIf="scheduleItem.closePolls" (click)="postItem(scheduleItem)">Close</button>
-							<button *ngIf="scheduleItem.item || scheduleItem.itemType" (click)="postItem(scheduleItem)">Post</button>
-							<button *ngIf="scheduleItem.videoState" (click)="postItem(scheduleItem)">Set</button>
+							<input type="button" class="button" value="Cue" (click)="onCue(ix)">
+							<button (click)="postItem(scheduleItem)">Do</button>
 						</td>
 						<td><span>{{scheduleItem.postCount ? scheduleItem.postCount : ''}}</span></td>
 						<td>

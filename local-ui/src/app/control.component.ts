@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Configuration, ScheduleItem, Performance } from './types';
+import { Configuration, ScheduleItem, Performance, OscCommand,
+  OSC_RESET, OSC_GO, OSC_PLAYHEAD_STAR } from './types';
 import { Item, ItemType, SimpleItem, RepostItem, ShareItem, ShareSelfie } from './socialtypes';
 
 import { StoreService } from './store.service';
@@ -17,6 +18,7 @@ export class ControlComponent {
     shareSelfies:ShareSelfie[] = []
     nextPerformanceId:string = null
     currentPerformance:Performance
+    playheadIx:number = 0
     
     constructor(private store:StoreService) {
         this.store.getConfiguration().subscribe((config) => this.configuration = config)
@@ -45,6 +47,34 @@ export class ControlComponent {
             this.store.getShareSelfies().subscribe((item) => {
                 this.shareSelfies.push(item)
             })
+        })
+        this.store.getOscCommands().subscribe((command) => {
+            console.log(`got osc command ${command.command}`)
+            if (OSC_GO == command.command)
+                this.onGo()
+            else if (OSC_RESET == command.command) 
+                this.onReset()
+            else if (command.command && command.command.substring(0, OSC_PLAYHEAD_STAR.length-1) == OSC_PLAYHEAD_STAR.substring(0, OSC_PLAYHEAD_STAR.length-1)) {
+                let itemNumber = command.command.substring(OSC_PLAYHEAD_STAR.length-1)
+                if (this.configuration && this.configuration.scheduleItems) {
+                    // TODO move playhead
+                    for (let ix=0; ix<this.configuration.scheduleItems.length; ix++) {
+                        let si = this.configuration.scheduleItems[ix]
+                        if (si.itemNumber == itemNumber) {
+                            console.log(`move playhead to item ${itemNumber}, index ${ix}`)
+                            this.playheadIx = ix
+                            return
+                        }
+                    }
+                    let msg = `sorry, could not find item ${itemNumber} on ${OSC_PLAYHEAD_STAR}`
+                    console.log(msg)
+                    // TODO nicer errors than alert?!
+                    alert(msg)
+                }
+                else {
+                    console.log(`ignore ${command.command} with not configuration/schedule items`)
+                }
+            }
         })
     }
     startPerformance() {
@@ -78,5 +108,26 @@ export class ControlComponent {
         // TODO
         console.log(`ERROR: cannout post undefined item ${scheduleItem.id} type ${scheduleItem.itemType} '${scheduleItem.title}'`);
       } 
+    }
+    onGo() {
+      if (!this.currentPerformance) {
+        let msg = `Cannot go with no current performance`
+        console.log(msg)
+        // TODO nicer error?
+        alert(msg)
+        return
+      }
+      if (this.playheadIx>=0 && this.configuration && this.configuration.scheduleItems && this.playheadIx < this.configuration.scheduleItems.length) {
+        let si = this.configuration.scheduleItems[this.playheadIx++]
+        this.postItem(si)
+      }
+    }
+    onReset() {
+      console.log(`Reset`)
+      this.playheadIx = 0
+    }
+    onCue(ix:number) {
+      console.log(`cue ${ix}`)
+      this.playheadIx = ix
     }
 }

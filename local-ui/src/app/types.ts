@@ -42,6 +42,7 @@ export interface VideoState {
   queue?:boolean
 }
 export interface ScheduleItem {
+  itemNumber?:string
   itemType:ItemType
   title:string
   description?:string
@@ -85,8 +86,9 @@ export const MSG_VIDEO_STATE = 'lhr.video.state'
 export const MSG_SELFIE_IMAGE = 'lhr.selfie.image'
 export const MSG_ANNOUNCE_SHARE_ITEM = 'lhr.announce.share_item'
 export const MSG_ANNOUNCE_SHARE_SELFIE = 'lhr.announce.share_selfie'
+export const MSG_OSC_COMMAND = 'lhr.osc.command'
 
-export const LOCAL_PROTOCOL_VERSION = 10
+export const LOCAL_PROTOCOL_VERSION = 11
 
 export interface ClientHello {
   version:number
@@ -128,4 +130,12 @@ export interface MakeItem {
 }
 export interface UpdateItem {
     item:Item
+}
+
+export const OSC_GO = "/lhva/go"
+export const OSC_RESET = "/lhva/reset"
+export const OSC_PLAYHEAD_STAR = "/lhva/playhead/*"
+
+export interface OscCommand {
+  command:string
 }

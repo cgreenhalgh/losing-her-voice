@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Observable, BehaviorSubject } from "rxjs";
+import { ReplaySubject, Observable, BehaviorSubject, Subject } from "rxjs";
 
 import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION, 
   MSG_CONFIGURATION, Configuration, ScheduleItem, ConfigurationMsg, 
@@ -10,7 +10,7 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_START_PERFORMANCE, AnnouncePerformance, StartPerformance,
   Performance, MSG_MAKE_ITEM, MakeItem, MSG_ANNOUNCE_SHARE_ITEM,
   AnnounceShareItem, MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie,
-  } from './types';
+  MSG_OSC_COMMAND, OscCommand } from './types';
 import { Item, SelfieImage, ShareItem, ShareSelfie } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -27,6 +27,7 @@ export class StoreService {
     videoState:BehaviorSubject<VideoState>
     outOfDate:boolean = false
     selfieImages:ReplaySubject<SelfieImage>
+    oscCommands:Subject<OscCommand> = new Subject()
   
     constructor() {
         this.items = new ReplaySubject()
@@ -107,6 +108,11 @@ export class StoreService {
             console.log('got selfie image from server')
             this.selfieImages.next(msg)
         })
+        this.socket.on(MSG_OSC_COMMAND, (data) => {
+            let msg = data as OscCommand
+            console.log('got osc command from server: ${msg.command}')
+            this.oscCommands.next(msg)
+        })
     }
 
     getItems() : Observable<Item> {
@@ -130,6 +136,9 @@ export class StoreService {
     }
     getSelfieImages() : Observable<SelfieImage> {
         return this.selfieImages;
+    }
+    getOscCommands() : Observable<OscCommand> {
+        return this.oscCommands
     }
     postItem(scheduleItem:ScheduleItem, item:Item) {
         let msg:PostItem = { scheduleId: scheduleItem.id, item: item }

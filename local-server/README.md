@@ -25,7 +25,7 @@ Metadata, config file metadata; object with:
 - `description` (string, optional) - description
 - `author` (string, optional) - creator of configuration
 - `version` (string) - version identifier for configuration file (advisory only)
-- `fileVersion`, currently 'lhv/local/v2'
+- `fileVersion`, currently 'lhv/local/v3'
 
 Performance, is object with:
 - `id` (string) unique
@@ -143,12 +143,12 @@ Local server/control:
 - [x] schedule in external file (reload option)
 - [x] server reset schedule
 - [x] persist selfie images on audience server for local server offline
+- [x] control UI cleaner (table) view
+- [x] control UI schedule simple control (default/next)
+- [x] schedule remote control? (OSC?)
 
 - [ ] persist items & performance across server restart?!
-- [ ] control UI cleaner (table) view
-- [ ] control UI schedule simple control (default/next)
 - [ ] send OSC?
-- [ ] schedule remote control? (OSC?)
 - [ ] prune items in live view? (performance)
 
 Audience app:
