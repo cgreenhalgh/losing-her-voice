@@ -18,8 +18,11 @@ node dist/index.js data/LosingHerVoice_October2018Libretto-for-surtitles.docx da
 
 See [data/output.txt](data/output.txt) and [data/output.html](data/output.html)
 
+Note, can read output.txt into Glypheo - enter single newline as user-defined separator. 
+Character encoding (UTF-8) seems to be OK (e.g. elipsis, apostrophes).
+
 ## To do
 
 - [x] handle LHV libretto format
 - [x] output show running (HTML) version
-- [ ] output glypheo-compatible surtitle file
+- [x] output glypheo-compatible surtitle file

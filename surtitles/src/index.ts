@@ -156,8 +156,6 @@ mammoth.convertToHtml({path: path}, options)
     .then((lines) => {
         console.log(`read ${lines.length} lines`)
         let items:Item[] = []
-        //let commentRegex = new RegExp('([^(]+)(\\([^\\)]*\\))?', 'g')
-        let boldLineRegex = new RegExp('^<b>([^<]*)</b>$')
         let lastSurtitleBlank = false
       
         for (let line of lines) {
@@ -178,6 +176,16 @@ mammoth.convertToHtml({path: path}, options)
                             itemType: ItemType.COMMENT,
                             text: '('+comment,
                         })
+                    }
+                    // orphaned </...?
+                    if (bit.startsWith('</')) {
+                        let cix = bit.indexOf('>')
+                        if (cix<0) {
+                            console.log(`warning: unclosed orphan closing tag in ${line.text}: ${bit}`)
+                        } else {
+                            console.log(`note: skipping orphaned closing tag after comment, in ${line.text}: ${bit}`)
+                            bit = bit.substring(cix+1).trim()
+                        }
                     }
                     if (bit.length>0) {
                         items.push({
@@ -213,7 +221,7 @@ mammoth.convertToHtml({path: path}, options)
         //console.log(`read ${lines.length} lines`)
         let items:Item[] = []
         //let commentRegex = new RegExp('([^(]+)(\\([^\\)]*\\))?', 'g')
-        let boldLineRegex = new RegExp('^<b>([^<]*)</b>$')
+        let boldLineRegex = new RegExp('^<b>([^<]*)(</b>)?$')
         let surtitleCount:number = 0;
         for (let line of lines) {
             let m = boldLineRegex.exec(line.text)
