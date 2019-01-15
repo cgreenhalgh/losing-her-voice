@@ -180,6 +180,7 @@ Audience app:
 - [x] blank(ish) view (e.g. fading out) (act2.scene4d)
 - [x] flickering images (act2.scene5f)
 
+- [ ] fix (implement) postSelfie flag to enable publish selfie action
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] selfie post with hash not image?
 - [ ] app disconnect warning
