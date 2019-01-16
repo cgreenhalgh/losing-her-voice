@@ -147,6 +147,14 @@ Local server/control:
 - [x] control UI schedule simple control (default/next)
 - [x] schedule remote control? (OSC?)
 
+- [ ] fix redis subscription failure handling for feedback, e.g. (feedback not subsequently received; unclear if other direction still working but no corresponding error - subscription?)
+```
+ERROR redis error Error: Redis connection to music-mrl.nott.ac.uk:6379 failed -
+read ECONNRESET { Error: Redis connection to music-mrl.nott.ac.uk:6379 failed -
+read ECONNRESET
+    at TCP.onread (net.js:622:25) errno: 'ECONNRESET', code: 'ECONNRESET', syscall: 'read' }
+error getting feedback from lhva:feedback:v5: Redis connection lost and command aborted. It might have been processed.
+```
 - [ ] persist items & performance across server restart?!
 - [ ] send OSC?
 - [ ] prune items in live view? (performance)
