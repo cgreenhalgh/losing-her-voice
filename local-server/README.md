@@ -133,7 +133,8 @@ Social media support:
 - [x] moderate selfie image -> update server selfie image pool
 - [x] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
 
-- [ ] selfie live view mark 2 (TBD - export to isadora? fly around animations? ...?)
+- [ ] selfie live view mark 2 support = export to specific files in configured directory, selfies linked to performance on submission, copy only after performance set/started
+- [ ] show selfie on phone support?
 - [ ] CSS/images for styling
 
 Local server/control:
@@ -189,6 +190,9 @@ Audience app:
 - [x] flickering images (act2.scene5f)
 
 - [ ] fix (implement) postSelfie flag to enable publish selfie action
+- [ ] trap/handle back navigation (real html5 nav underneath??)
+- [ ] fix/support add to desktop with performance id, e.g. persist and default to performance id in local storage?
+- [ ] fix clear user data to clear name selection controls
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] selfie post with hash not image?
 - [ ] app disconnect warning

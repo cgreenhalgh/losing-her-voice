@@ -188,6 +188,7 @@
       }
     },
     {
+      "itemNumber":"showVideo",
       "title": "show video2",
       "description": "just for initial tech testing",
       "videoState": {
@@ -198,6 +199,7 @@
       }
     },
     {
+      "itemNumber":"showVideoWithSelfies",
       "title": "show video2 with selfies",
       "description": "just for initial tech testing",
       "videoState": {
@@ -208,11 +210,13 @@
       }
     },
     {
+      "itemNumber":"addSelfie1",
       "itemType": "selfie",
       "title": "a test selfie",
       "description": "just for initial tech testing"
     },
     {
+      "itemNumber":"hideVideo",
       "title": "hide video",
       "videoState": {
       	"mode": "hide"
