@@ -23,7 +23,8 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   MSG_START_PERFORMANCE, StartPerformance, MSG_MAKE_ITEM, MakeItem,
   MSG_ANNOUNCE_SHARE_ITEM, AnnounceShareItem,
   MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie, OSC_GO, OSC_RESET, 
-  OSC_PLAYHEAD_STAR, MSG_OSC_COMMAND, OscCommand } from './types';
+  OSC_PLAYHEAD_STAR, MSG_OSC_COMMAND, OscCommand, MSG_EXPORT_SELFIE_IMAGES,
+  ExportSelfieImages } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback, Announce, REDIS_LIST_FEEDBACK,
@@ -114,7 +115,7 @@ let io = socketio(server)
 let configFile = path.join(__dirname, '..', 'data', 'local-config.json');
 const SCHEDULE_ID_PREFIX = '_schedule_'
 let nextScheduleItemId = 1
-
+let selfieExportDir = path.join(__dirname, '..', 'selfies');
 
 // external but watched - empty default
 let configuration:Configuration = {
@@ -248,7 +249,8 @@ function handleFeedback(message:string) {
         console.log(`ignore selfieImage with no image`)
         return
       }
-      //console.log(`got new selfieItem...`)
+      feedback.selfieImage.performanceid = feedback.performanceid
+      //console.log(`got new selfieItem for performance ${feedback.performanceid}...`)
       selfieStore.addImage(feedback.selfieImage, (newsi, isNew) => {
         console.log(`got ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
         if (isNew) {
@@ -325,7 +327,8 @@ function handleFeedback(message:string) {
       console.log(`shareSelfie from ${feedback.shareSelfie.user_name} ${feedback.shareSelfie.image.substring(0,50)}...`)
       // TODO delay check until used??
       let si:SelfieImage = {
-        image: feedback.shareSelfie.image
+        image: feedback.shareSelfie.image,
+        performanceid: performance.id,
       }
       selfieStore.addImage(si, (newsi, isNew) => {
         console.log(`shared ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
@@ -597,6 +600,15 @@ io.on('connection', function (socket) {
         }
         selfieStore.update(msg)
         console.log(`selfie ${msg.hash} updated, approved=${msg.approved}, rejected=${msg.rejected}, moderator=${msg.moderator}`)
+    })
+    socket.on(MSG_EXPORT_SELFIE_IMAGES, (data) => {
+        let msg = data as ExportSelfieImages
+        if (!msg.performance || !msg.performance.id) {
+            console.log('Error: export selfie images with no performance id', msg)
+            return
+        }
+        console.log(`export selfies for performance ${msg.performance.id} to ${selfieExportDir}...`)
+        selfieStore.exportImages(msg.performance.id, selfieExportDir)
     })
 });
 

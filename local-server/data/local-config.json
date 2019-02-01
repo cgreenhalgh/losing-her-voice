@@ -2,7 +2,7 @@
   "metadata": {
     "title": "losing her voice local metadata",
     "description": "just initial testing placeholders",
-    "version": "0.2",
+    "version": "0.3",
     "author": "Chris Greenhalgh",
     "fileVersion": "lhv/local/v3"
   },
@@ -178,49 +178,10 @@
       "closePolls": true
     },
     {
-      "title": "show video1",
-      "description": "just for initial tech testing",
-      "videoState": {
-      	"mode": "fullscreen",
-      	"url": "http://music-mrl.nott.ac.uk/1/recordings/Rehearsal_480_v2.mp4",
-      	"loop": true,
-      	"queue": false
-      }
-    },
-    {
-      "itemNumber":"showVideo",
-      "title": "show video2",
-      "description": "just for initial tech testing",
-      "videoState": {
-      	"mode": "fullscreen",
-      	"url": "http://music-mrl.nott.ac.uk/1/recordings/Performance2_480_v2.mp4",
-      	"loop": true,
-      	"queue": true
-      }
-    },
-    {
-      "itemNumber":"showVideoWithSelfies",
-      "title": "show video2 with selfies",
-      "description": "just for initial tech testing",
-      "videoState": {
-      	"mode": "selfies",
-      	"url": "http://music-mrl.nott.ac.uk/1/recordings/Performance2_480_v2.mp4",
-      	"loop": true,
-      	"queue": true
-      }
-    },
-    {
       "itemNumber":"addSelfie1",
       "itemType": "selfie",
       "title": "a test selfie",
       "description": "just for initial tech testing"
-    },
-    {
-      "itemNumber":"hideVideo",
-      "title": "hide video",
-      "videoState": {
-      	"mode": "hide"
-      }
     }
   ],
   "selfies": [

@@ -39,6 +39,7 @@ export interface SelfieItem extends Item {
 
 export interface SelfieImage {
   image:string // data url or base64 encoded?
+  performanceid?:string // required on local server side
   hash?:string
   rejected?:boolean
   approved?:boolean

@@ -1,17 +1,21 @@
 <div>
 	<h1>Moderation view</h1>
 	<h2>To Moderate</h2>
+	<p>
+		Performance: <span *ngIf="currentPerformance">{{currentPerformance.title}} ({{currentPerformance.id}})</span>
+		<input type="button" class="button" value="Export images" [disabled]="!currentPerformance" [ngClass]="{disabled: !currentPerformance}" (click)="exportImages()">
+	</p>
 	<div class="image-block">
-		<selfie-image *ngFor="let si of toModerate; index as ix" [selfieImage]="si" (moderated)="onModerate($event, ix)"></selfie-image>
+		<selfie-image *ngFor="let si of toModerate; index as ix" [selfieImage]="si" (moderated)="onModerate($event, ix)" [ngClass]="{hidden: currentPerformance && si.performanceid!=currentPerformance.id}"></selfie-image>
 	</div>
 	<hr>
 	<h2>Approved</h2>
 	<div class="image-block">
-		<selfie-image *ngFor="let si of approved; index as ix" [selfieImage]="si" (moderated)="onChangeApproved($event, ix)"></selfie-image>
+		<selfie-image *ngFor="let si of approved; index as ix" [selfieImage]="si" (moderated)="onChangeApproved($event, ix)" [ngClass]="{hidden: currentPerformance && si.performanceid!=currentPerformance.id}"></selfie-image>
 	</div>
 	<hr>
 	<h2>Rejected</h2>
 	<div class="image-block">
-		<selfie-image *ngFor="let si of rejected; index as ix" [selfieImage]="si" (moderated)="onChangeRejected($event, false, true, ix)"></selfie-image>
+		<selfie-image *ngFor="let si of rejected; index as ix" [selfieImage]="si" (moderated)="onChangeRejected($event, false, true, ix)" [ngClass]="{hidden: currentPerformance && si.performanceid!=currentPerformance.id}"></selfie-image>
 	</div>
 </div>

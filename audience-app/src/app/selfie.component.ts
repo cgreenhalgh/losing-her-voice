@@ -89,8 +89,8 @@ export class SelfieComponent implements AfterViewInit {
         }
         ctx.putImageData(imgData, 0, 0);
         
-        // persist
-        let dataurl = this.canvasRef.nativeElement.toDataURL()
+        // persist - format, quality
+        let dataurl = this.canvasRef.nativeElement.toDataURL('image/jpeg', 0.8)
         this.syncService.setSelfieImage(dataurl)
         this.selfiePresent = true
       }

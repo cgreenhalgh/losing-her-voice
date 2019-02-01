@@ -9,6 +9,7 @@ RUN npm install --no-bin-links
 
 VOLUME /root/work/data/
 VOLUME /root/work/static/
+VOLUME /root/work/selfies/
 COPY tsconfig.json /root/work/
 COPY src/ /root/work/src/
 RUN tsc

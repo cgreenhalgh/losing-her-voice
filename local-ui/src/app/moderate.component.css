@@ -1,3 +1,6 @@
 div.image-block:after {
 	clear:both;
 }
+.hidden {
+	display:none;
+}

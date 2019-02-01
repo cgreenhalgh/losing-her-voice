@@ -10,7 +10,8 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   MSG_START_PERFORMANCE, AnnouncePerformance, StartPerformance,
   Performance, MSG_MAKE_ITEM, MakeItem, MSG_ANNOUNCE_SHARE_ITEM,
   AnnounceShareItem, MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie,
-  MSG_OSC_COMMAND, OscCommand } from './types';
+  MSG_OSC_COMMAND, OscCommand, MSG_EXPORT_SELFIE_IMAGES,
+  ExportSelfieImages } from './types';
 import { Item, SelfieImage, ShareItem, ShareSelfie } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -180,5 +181,15 @@ export class StoreService {
             performance:performance
         }
         this.socket.emit(MSG_START_PERFORMANCE, msg)
+    }
+    exportSelfieImages(performance:Performance) {
+        if (!performance) {
+          console.log(`Error: cannot export selfie images for undefined performance`)
+          return
+        }
+        let msg:ExportSelfieImages = {
+            performance:performance
+        }
+        this.socket.emit(MSG_EXPORT_SELFIE_IMAGES, msg)
     }
 }

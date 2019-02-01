@@ -1,4 +1,5 @@
 <img [src]="selfieImage.image">
+<p>Performance: {{selfieImage.performanceid}}</p>
 <div class="selfie-options">
 	<div class="selfie-option" [ngClass]="{active:selfieImage.approved}" (click)="onApprove()">{{selfieImage.approved ? 'Approved' : 'Approve'}}</div>
 	<div class="selfie-option" [ngClass]="{active:selfieImage.rejected}" (click)="onReject()">{{selfieImage.rejected ? 'Rejected' : 'Reject'}}</div>

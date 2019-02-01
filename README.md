@@ -87,6 +87,7 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -p :8080:8080 -p 9123:9123/udp \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
+  -v `pwd`/selfies:/root/work/selfies/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server
@@ -101,6 +102,7 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -p :8080:8080 -p 9123:9123/udp \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
+  -v `pwd`/selfies:/root/work/selfies/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server /bin/bash

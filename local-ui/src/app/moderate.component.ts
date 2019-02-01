@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SelfieImage } from './socialtypes';
-
+import { Performance } from './types';
 import { StoreService } from './store.service';
 
 @Component({
@@ -12,8 +12,12 @@ export class ModerateComponent {
   toModerate:SelfieImage[] = []
   approved:SelfieImage[] = []
   rejected:SelfieImage[] = []
+  currentPerformance:Performance
   
   constructor(private store:StoreService) {
+    this.store.getPerformance().subscribe((performance) => {
+      this.currentPerformance = performance;
+    })
     this.store.getSelfieImages().subscribe((si) => {
       console.log(`got selfie image ${si.hash}`)
       this.addImage(si)
@@ -41,5 +45,8 @@ export class ModerateComponent {
     this.rejected.splice(ix, 1)
     this.addImage(si)
     this.store.updateSelfieImage(si)
+  }
+  exportImages() {
+    this.store.exportSelfieImages(this.currentPerformance)
   }
 }

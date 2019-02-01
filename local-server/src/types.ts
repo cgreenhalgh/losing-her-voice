@@ -86,9 +86,10 @@ export const MSG_VIDEO_STATE = 'lhr.video.state'
 export const MSG_SELFIE_IMAGE = 'lhr.selfie.image'
 export const MSG_ANNOUNCE_SHARE_ITEM = 'lhr.announce.share_item'
 export const MSG_ANNOUNCE_SHARE_SELFIE = 'lhr.announce.share_selfie'
+export const MSG_EXPORT_SELFIE_IMAGES = 'lhr.export.selfie.images'
 export const MSG_OSC_COMMAND = 'lhr.osc.command'
 
-export const LOCAL_PROTOCOL_VERSION = 11
+export const LOCAL_PROTOCOL_VERSION = 12
 
 export interface ClientHello {
   version:number
@@ -130,6 +131,9 @@ export interface MakeItem {
 }
 export interface UpdateItem {
     item:Item
+}
+export interface ExportSelfieImages {
+  performance:Performance
 }
 
 export const OSC_GO = "/lhva/go"

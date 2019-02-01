@@ -99,18 +99,24 @@ Need to persist including server-allocated IDs, e.g. to allow reposting after re
 
 ### Selfie images
 
+(implemented)
+
 Stored in local redis, under keys `image:v1:HASH` where `HASH` is hex sha256 hash of image.
+(todo) -> `image:v2:PERFORMANCE:HASH`
 
 Content is JSON-encoded SelfieImage (from socialtypes.ts).
+(todo) -> SelfieImage will also include performanceid
 
 ### Audience reposts
+
+(not implemented)
 
 Need to count number of shares by each user_name to push new names to the top. `lhva:reposts:v1:PERFORMANCEID:NAME` = number
 
 Need to post each repost once (only). `lhva:share:v1:PERFORMANCEID:PADNPOSTS:DATETIME:INDEX` = ShareItem (id, user_name)
 (Note, ordered by increasing NPosts, then datetime; index for uniqueness)
 
-Note: note very useful without persistent items (above0
+Note: note very useful without persistent items (above)
 
 ### To do
 
