@@ -68,7 +68,7 @@
       "id":"act1.prelude",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1</h1><p>Act 1 is about to begin. Please ensure your phone is set to silent.</p>" }
+        { "html": "<h1>Act 1</h1><p>Act 1 is about to begin. Please ensure your phone is set to silent.</p><img src=\"assets/sassy-geraldine.jpg\" class=\"view_large\">" }
       ],
       "audioFile": "phone-to-silent.mp3",
       "audioDelaySeconds": 1,
