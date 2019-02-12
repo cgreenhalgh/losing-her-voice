@@ -2,19 +2,19 @@
   "metadata": {
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
-    "version": "0.7",
+    "version": "0.8",
     "author": "Chris Greenhalgh",
     "fileVersion": "lhv/audience/v3"
   },
   "menuItems":[
     {
       "id": "profile",
-      "title": "Profile",
+      "title": "Pick a profile for the performance",
       "postPerformance": false
     },
     {
       "id": "selfie",
-      "title": "Selfie",
+      "title": "Take a selfie for the performance",
       "postPerformance": false
     },
     {
@@ -22,7 +22,20 @@
       "title": "About Geraldine",
       "postPerformance": false,
       "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
+        { "html": "<p>Alice Geraldine Farrar (February 28, 1882 – March 11, 1967) was an American soprano opera singer and film actress, noted for her beauty, acting ability, and &quot;the intimate timbre of her voice.&quot; She had a large following among young women, who were nicknamed &quot;Gerry-flappers&quot;.</p>" },
+        { "html": "<p>Farrar was born in Melrose, Massachusetts, and at 5 she began studying music in Boston and by 14 was giving recitals. Later she studied voice with the American soprano Emma Thursby in New York City, in Paris, and finally with the Italian baritone Francesco Graziani in Berlin. Farrar created a sensation at the Berlin Hofoper with her debut as Marguerite in Charles Gounod&#39;s Faust in 1901 and remained with the company for three years, during which time she continued her studies with famed German soprano Lilli Lehmann. She appeared in the title roles of Ambroise Thomas&#39; Mignon and Jules Massenet&#39;s Manon, as well as Juliette in Gounod&#39;s Roméo et Juliette. Her admirers in Berlin included Crown Prince Wilhelm of Germany, with whom she is believed to have had a relationship beginning in 1903.</p>" },
+        { "html": "<p>After three years with the Monte Carlo Opera, she made her debut at the New York Metropolitan Opera in Romeo et Juliette on November 26, 1906. She appeared in the first Met performance of Giacomo Puccini&#39;s Madama Butterfly in 1907 and remained a member of the company until her retirement in 1922, singing 29 roles there in 672 performances. She developed a great popular following, especially among New York&#39;s young female opera-goers, who were known as &quot;Gerry-flappers&quot;.</p>" },
+        { "html": "<p>She recorded extensively for the Victor Talking Machine Company and she was one of the first performers to make a radio broadcast, in a 1907 publicity event singing over Lee De Forest&#39;s experimental AM radio transmitter in New York City. She appeared in silent movies, which were filmed between opera seasons. Farrar starred in more than a dozen films from 1915 to 1920, including Cecil B. De Mille&#39;s 1915 adaptation of Georges Bizet&#39;s opera Carmen, for which she was extensively praised.</p>" },
+        { "html": "<p>Farrar had a seven-year love affair with the Italian conductor Arturo Toscanini. Her ultimatum, that he leave his wife and children and marry her, resulted in Toscanini&#39;s abrupt resignation as principal conductor of the Metropolitan Opera in 1915. Farrar was close friends with the star tenor Enrico Caruso and there has been speculation that they too had a love affair, but no conclusive evidence of this has surfaced. Her marriage to cinema actor Lou Tellegen on February 8, 1916 was the source of considerable scandal. The marriage ended, as a result of her husband&#39;s numerous affairs, in a very public divorce in 1923. The circumstances of the divorce were brought again to public recollection by Tellegen&#39;s bizarre 1934 suicide in Hollywood. Farrar reportedly said &quot;Why should that interest me?&quot; when told of Tellegen&#39;s death.</p>" },
+        { "html": "<p>Farrar retired from opera in 1922 at the age of 40. Her final performance was as Leoncavallo&#39;s Zazà. By this stage, her voice was in premature decline due to overwork. Farrar quickly transitioned into concert recitals, and she continued to make recordings and give recitals throughout the 1920s and was briefly the intermission commentator for the Metropolitan Opera radio broadcasts during the 1934–35 season. Her unusual autobiography, Such Sweet Compulsion, published in 1938, was written in alternating chapters purporting to be her own words and those of her mother, with Mrs. Farrar rather floridly recounting her daughter&#39;s many accomplishments.</p>" },
+        { "html": "<p>Content sourced from https://en.wikipedia.org/wiki/Geraldine_Farrar.</p>" }
+      ]
+    },
+    {
+      "id": "synopsis",
+      "title": "Losing Her Voice Synopsis",
+      "postPerformance": false,
+      "cards": [
       ]
     },
     {
@@ -30,7 +43,14 @@
       "title": "Help",
       "postPerformance": false,
       "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
+        { "html": "<p>Throughout this performance of ‘Losing Her Voice’ some performance content and interactions will take place via your mobile device. Some of this content, such as the ‘Synopsis, ‘About Geraldine’, and ‘Credits’ can be browsed before the start of the performance, or during the interval. Other content will be displayed on the device during the performance itself.</p>" },
+        { "html": "<p>It is your choice whether you want to engage with this and it is not necessary to do so. If you would rather not then turn your device off, or set it to silent and put it somewhere safe.</p>" },
+        { "html": "<p>If you would like to, then please keep your device with you and active throughout the performance. You will be prompted, but could you please make sure your device is set to silent for Act 1.</p>" },
+        { "html": "<p>This audience app has a list of menu items:</p>" },
+        { "html": "<p>In ‘pick a profile for the performance’ you can choose an anonymous name that might feature at some point in performance. Please pick one before the performance starts, or in the interval. Note: you will not be able to pick a profile after the start of Act 2.</p>" },
+        { "html": "<p>In ‘take a selfie for the performance’ we would like to post a selfie photograph of yourself that might feature at some point in the performance, should you wish to. Be aware that if you do post a selfie, your photo might be displayed on stage for the audience, cast and crew to see. Furthermore, this performance is being filmed, so it may also be captured on that. In the ‘take a selfie for the performance’ page it will guide you through how to post a selfie and how to consent for us to use it in the performance. Should you wish, please take a selfie, and post it before the performance, or in the interval. Note: you will not be able to contribute a selfie after Act 2 has started.</p>" },
+        { "html": "<p>The ‘about Geraldine’ page gives you some background on Geraldine Farrar, the main protagonist in ‘Losing Her Voice’</p>" },
+        { "html": "<p>Select ‘Losing Her Voice Synopsis’ to read the synopsis of the opera. If you are experiencing any difficulties with this audience app or would like to talk to someone about, please ask a member of staff before the performance starts or during the interval.</p>" }
       ]
     },
     {
@@ -38,20 +58,12 @@
       "title": "Credits",
       "postPerformance": false,
       "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
+        { "html": "<p><em>Creative team:</em></p> <p>Composer and Librettist – Elizabeth Kelly</p> <p>Director – Martin Berry</p> <p>Musical Director – Calum Fraser</p> <p>Digital Design - Barret Hodgson</p> <p>Interactive Performance Technologies – Chris Greenhalgh &amp; Adrian Hazzard</p> <p>Etc</p> <p><em>Principle Singers:</em></p> <p>Geraldine Farrar</p> <p>Lilli Lehmann</p> <p>Lou Tellegen</p> <p>etc</p> <p><em>Chorus:</em></p> <p><em>Instrumentalists:</em></p>" }
       ]
     },
     {
       "id": "questionnaire",
       "title": "Research Questionnaire",
-      "postPerformance": true,
-      "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
-      ]
-    },
-    {
-      "id": "souvenir",
-      "title": "Souvenir",
       "postPerformance": true,
       "cards": [
         { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
