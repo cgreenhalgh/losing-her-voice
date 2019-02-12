@@ -1,174 +1,163 @@
 {
   "metadata": {
-    "title": "losing her voice local metadata",
-    "description": "just initial testing placeholders",
-    "version": "0.3",
-    "author": "Chris Greenhalgh",
-    "fileVersion": "lhv/local/v3"
+    "title": "LHV_Test1.1",
+    "version": "0.4",
+    "fileVersion": "lhv/local/v3",
+    "author": "adrian"
   },
   "performances": [
     {
-      "id":"test1",
-      "title":"test performance no.1",
-      "startDatetime":"2018-12-19T14:43:00Z",
-      "isPublic":false
+      "id": "test1",
+      "title": "test performance no.1",
+      "startDatetime": "2018-12-19T14:43:00Z",
+      "isPublic": false
     },
     {
-      "id":"test2",
-      "title":"test performance no.2",
-      "startDatetime":"2018-12-19T14:43:00Z",
-      "isPublic":false
+      "id": "test2",
+      "title": "test performance no.2",
+      "startDatetime": "2018-12-19T14:43:00Z",
+      "isPublic": false
     },
     {
-      "id":"20190406-premiere",
-      "title":"Premiere public performance",
-      "startDatetime":"2019-04-06T13:30:00Z",
-      "isPublic":true,
-      "durationSeconds":10800,
-      "timezone":"+01:00"
+      "id": "20190406-premiere",
+      "title": "Premiere public performance",
+      "startDatetime": "2019-04-06T13:30:00Z",
+      "isPublic": true,
+      "durationSeconds": 10800,
+      "timezone": "+01:00"
     },
     {
-      "id":"20190407-second",
-      "title":"Second public performance",
-      "startDatetime":"2019-04-07T18:00:00Z",
-      "isPublic":true,
-      "durationSeconds":10800,
-      "timezone":"+01:00"
+      "id": "20190407-second",
+      "title": "Second public performance",
+      "startDatetime": "2019-04-07T18:00:00Z",
+      "isPublic": true,
+      "durationSeconds": 10800,
+      "timezone": "+01:00"
     }
   ],
   "scheduleItems": [
     {
-      "itemNumber":"first",
+      "itemNumber": "1",
       "itemType": "simple",
-      "title": "a first simple post (to audience)",
-      "description": "just for initial tech testing",
+      "title": "post1",
+      "description": "~00:19:00",
+      "closePolls": false,
       "item": {
         "itemType": "simple",
-        "user_name": "A.N.Admirer", 
-        "user_icon": "user_icon/default_user.png", 
-        "content": "this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... this and this ... ",
-        "image": "user_icon/default_user.png",
-        "toAudience": true
-      }
-    },
-    {
-      "itemNumber":"2",
-      "itemType": "simple",
-      "title": "a second simple post (to audience)",
-      "description": "just for initial tech testing",
-      "item": {
-        "itemType": "simple",
-        "user_name": "A.N.Other-Admirer", 
-        "user_icon": "user_icon/default_user.png", 
-        "content": "this and this and the other... ",
-        "toAudience": true
-      }
-    },
-    {
-      "itemType": "repost",
-      "title": "Re-post",
-      "description": "re-post a previous simple post"
-    },
-    {
-      "itemType": "simple",
-      "title": "a simple post just to the screen (not audience)",
-      "description": "just for initial tech testing",
-      "item": {
-        "itemType": "simple",
-        "user_name": "A.N.Other-Admirer", 
-        "user_icon": "user_icon/default_user.png", 
-        "content": "only on the screen, this and this and the other... ",
-        "toAudience": false
-      }
-    },
-    {
-      "itemType": "quiz",
-      "title": "a test quiz (live update)",
-      "description": "just for initial tech testing",
-      "item": {
-        "itemType": "quiz",
-        "user_name": "The Real Geraldine", 
-        "user_icon": "user_icon/default_user.png", 
-        "content": "In what year was Geraldine born?",
+        "user_name": "Gerry Forever",
+        "user_icon": "user_icon/poster1.png",
         "toAudience": true,
+        "content": "Quick, everyone, have you seen the news! It’s all over the media",
+        "image": "user_icon/poster1.png"
+      }
+    },
+    {
+      "itemNumber": "2",
+      "itemType": "simple",
+      "title": "post2",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Me & Ge",
+        "user_icon": "user_icon/poster2.png",
+        "toAudience": true,
+        "content": "What is it, tell us?",
+        "image": "user_icon/poster2.png"
+      }
+    },
+    {
+      "itemNumber": "3",
+      "itemType": "simple",
+      "title": "post3",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Gerry Forever",
+        "user_icon": "user_icon/poster1.png",
+        "toAudience": true,
+        "content": "See for yourself",
+        "image": "user_icon/poster1.png"
+      }
+    },
+    {
+      "itemNumber": "4",
+      "itemType": "simple",
+      "title": "post4",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "James33",
+        "user_icon": "user_icon/poster3.png",
+        "toAudience": true,
+        "content": "Gerry is leaving the Metropolitan!",
+        "image": "user_icon/poster3.png"
+      }
+    },
+    {
+      "itemNumber": "5",
+      "itemType": "simple",
+      "title": "post5",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Me & Ge",
+        "user_icon": "user_icon/poster2.png",
+        "toAudience": true,
+        "content": "I don't believe it",
+        "image": "user_icon/poster2.png"
+      }
+    },
+    {
+      "itemNumber": "6",
+      "itemType": "simple",
+      "title": "post6",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Flapper No.1",
+        "user_icon": "user_icon/poster4.png",
+        "toAudience": true,
+        "content": "No! She can’t!",
+        "image": "user_icon/poster4.png"
+      }
+    },
+    {
+      "itemNumber": "7",
+      "itemType": "selfie",
+      "title": "post7",
+      "closePolls": false,
+      "item": {
+        "itemType": "selfie",
+        "user_name": "Carmen Luva",
+        "toAudience": true,
+        "image": "user_icon/post7_crowdsOnBroadway.png"
+      }
+    },
+    {
+      "itemNumber": "8",
+      "itemType": "poll",
+      "title": "poll1_post8",
+      "closePolls": false,
+      "item": {
+        "itemType": "poll",
+        "user_name": "Gerry Fan Hub",
+        "toAudience": true,
+        "content": "Is it time for Gerry to leave the Metropolitan?",
         "options": [
           {
-            "content":"A: 1882",
-            "correct":true
+            "content": "A: Yes",
+            "correct": false
           },
           {
-            "content":"B: 1879",
-            "correct":false
+            "content": "B: No",
+            "correct": false
           },
           {
-            "content":"C: 1884",
-            "correct":false
-          }
-        ],
-        "updateLive": true,
-        "openPrompt": "Choose now!",
-        "closedPrompt": "Time's up - were you right?"
-      }
-    },
-    {
-      "title": "close quiz",
-      "closePolls": true
-    },
-    {
-      "itemType": "quiz",
-      "title": "a test quiz (not live update)",
-      "description": "just for initial tech testing",
-      "item": {
-        "itemType": "quiz",
-        "user_name": "The Real Geraldine", 
-        "user_icon": "user_icon/default_user.png", 
-        "content": "In what year was Geraldine born?",
-        "toAudience": true,
-        "options": [
-          {
-            "content":"A: 1882",
-            "correct":true
-          },
-          {
-            "content":"B: 1879",
-            "correct":false
-          },
-          {
-            "content":"C: 1884",
-            "correct":false
+            "content": "C: Don't Know",
+            "correct": false
           }
         ],
         "updateLive": false,
-        "openPrompt": "Choose now!",
-        "closedPrompt": "Time's up - were you right?"
-      }
-    },
-    {
-      "title": "close quiz",
-      "closePolls": true
-    },
-    {
-      "itemType": "poll",
-      "title": "a test poll",
-      "description": "just for initial tech testing",
-      "item": {
-        "itemType": "poll",
-        "user_name": "The Real Geraldine", 
-        "user_icon": "user_icon/default_user.png", 
-        "content": "What do you like most about Geraldine?",
-        "toAudience": true,
-        "options": [
-          {
-            "content":"A: Her smile"
-          },
-          {
-            "content":"B: Her outfits"
-          },
-          {
-            "content":"C: Her voice"
-          }
-        ],
-        "updateLive": true,
         "openPrompt": "Choose now!",
         "closedPrompt": "Time's up"
       }
@@ -178,36 +167,380 @@
       "closePolls": true
     },
     {
-      "itemNumber":"addSelfie1",
-      "itemType": "selfie",
-      "title": "a test selfie",
-      "description": "just for initial tech testing"
-    }
-  ],
-  "selfies": [
-    {
-      "itemType": "selfie",
-      "user_name": "A.N.Admirer", 
-      "user_icon": "user_icon/default_user.png", 
-      "image": "user_icon/default_user.png",
-      "toAudience": false
+      "itemNumber": "9",
+      "itemType": "simple",
+      "title": "post9",
+      "description": "Rehearsal mark A",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "4 Gerry",
+        "user_icon": "user_icon/poster5.png",
+        "toAudience": true,
+        "content": "Who's got tickets for her last performance?",
+        "image": "user_icon/poster5.png"
+      }
     },
     {
-      "itemType": "selfie",
-      "user_name": "A.N.Other Admirer", 
-      "user_icon": "user_icon/default_user.png", 
-      "image": "user_icon/default_user.png",
-      "toAudience": false
-    }
-  ],
-  "reposters": [
-    {
-      "user_name": "A.N.Admirer", 
-      "user_icon": "user_icon/default_user.png"
+      "itemNumber": "10",
+      "itemType": "simple",
+      "title": "post10",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_icon": "user_icon/poster6.png",
+        "toAudience": true,
+        "content": "I'm going even if we can't get tickets, I must see her one last time",
+        "image": "user_icon/poster6.png"
+      }
     },
     {
-      "user_name": "A.N.Other-Admirer", 
-      "user_icon": "user_icon/default_user.png"
+      "itemNumber": "11",
+      "itemType": "poll",
+      "title": "poll2_post11",
+      "closePolls": false,
+      "item": {
+        "itemType": "poll",
+        "user_name": "Gerry Fan Hub",
+        "toAudience": true,
+        "content": "What was Gerry's greatest role?",
+        "options": [
+          {
+            "content": "A: Carmen?",
+            "correct": false
+          },
+          {
+            "content": "B: Romeo et Juliette?",
+            "correct": false
+          },
+          {
+            "content": "C: Königskinder?",
+            "correct": false
+          },
+          {
+            "content": "D: Madama Butterfly?",
+            "correct": false
+          }
+        ],
+        "updateLive": false,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up"
+      }
+    },
+    {
+      "title": "close poll",
+      "closePolls": true
+    },
+    {
+      "itemNumber": "12",
+      "itemType": "simple",
+      "title": "post12",
+      "description": "Rehearsal mark B",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Farr Fan",
+        "user_icon": "user_icon/poster3.png",
+        "toAudience": true,
+        "content": "No! I can't bear to see her go!!!",
+        "image": "user_icon/poster3.png"
+      }
+    },
+    {
+      "itemNumber": "13",
+      "itemType": "simple",
+      "title": "post13",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Helen26",
+        "user_icon": "user_icon/poster7.png",
+        "toAudience": true,
+        "content": "Thank you for everything Gerry, we love you! x",
+        "image": "user_icon/poster7.png"
+      }
+    },
+    {
+      "itemNumber": "14",
+      "itemType": "simple",
+      "title": "post14",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "RobH12",
+        "user_icon": "user_icon/poster8.png",
+        "toAudience": true,
+        "content": "We love you Gerry xx",
+        "image": "user_icon/poster8.png"
+      }
+    },
+    {
+      "itemNumber": "15",
+      "itemType": "simple",
+      "title": "post15",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Farr Fan",
+        "user_icon": "user_icon/poster9.png",
+        "toAudience": true,
+        "content": "Now, they’re singing ‘Hurrah, Farrar’ on Broadway!",
+        "image": "user_icon/poster9.png"
+      }
+    },
+    {
+      "itemNumber": "16",
+      "itemType": "quiz",
+      "title": "quiz1_post16",
+      "closePolls": false,
+      "item": {
+        "itemType": "quiz",
+        "user_name": "Gerry Fan Hub",
+        "toAudience": true,
+        "content": "What was Gerry's first role at the MET?",
+        "options": [
+          {
+            "content": "A: Königskinder?",
+            "correct": false
+          },
+          {
+            "content": "B: Romeo et Juliette?",
+            "correct": true
+          },
+          {
+            "content": "C: Suor Angelica?",
+            "correct": false
+          },
+          {
+            "content": "D: Madame Sans-Gêne?",
+            "correct": false
+          }
+        ],
+        "updateLive": false,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up - were you right?"
+      }
+    },
+    {
+      "itemNumber": "17",
+      "title": "close quiz",
+      "closePolls": true
+    },
+    {
+      "itemNumber": "18",
+      "itemType": "simple",
+      "title": "post17",
+      "description": "~01:54:00",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "James33",
+        "user_icon": "user_icon/poster3.png",
+        "toAudience": true,
+        "content": "We worship you Gerry!",
+        "image": "user_icon/poster3.png"
+      }
+    },
+    {
+      "itemNumber": "19",
+      "itemType": "simple",
+      "title": "post18",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Gerry Forever",
+        "user_icon": "user_icon/poster1.png",
+        "toAudience": true,
+        "content": "We're all crying, Gerry!",
+        "image": "user_icon/poster1.png"
+      }
+    },
+    {
+      "itemNumber": "20",
+      "itemType": "simple",
+      "title": "post19",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "4 Gerry",
+        "user_icon": "user_icon/poster5.png",
+        "toAudience": true,
+        "content": "Me too!",
+        "image": "user_icon/poster5.png"
+      }
+    },
+    {
+      "itemNumber": "21",
+      "itemType": "simple",
+      "title": "post20",
+      "description": "Rehearsal mark D",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Helen26",
+        "user_icon": "user_icon/poster7.png",
+        "toAudience": true,
+        "content": "Please don’t leave the Metropolitan, we need you in out lives! xx",
+        "image": "user_icon/poster7.png"
+      }
+    },
+    {
+      "itemNumber": "22",
+      "itemType": "simple",
+      "title": "post21",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Me & Ge",
+        "user_icon": "user_icon/poster2.png",
+        "toAudience": true,
+        "content": "We’ll all be listening Gerry!",
+        "image": "user_icon/poster2.png"
+      }
+    },
+    {
+      "itemNumber": "23",
+      "itemType": "simple",
+      "title": "post22",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Flapper No.1",
+        "user_icon": "user_icon/poster4.png",
+        "toAudience": true,
+        "content": "Yes, we will!",
+        "image": "user_icon/poster4.png"
+      }
+    },
+    {
+      "itemNumber": "24",
+      "itemType": "poll",
+      "title": "poll3_post23",
+      "closePolls": false,
+      "item": {
+        "itemType": "poll",
+        "user_name": "Gerry Fan Hub",
+        "toAudience": true,
+        "content": "What would you like to see Gerry do next?",
+        "options": [
+          {
+            "content": "A: Perform for other opera companies?",
+            "correct": false
+          },
+          {
+            "content": "B: Produce opera performances?",
+            "correct": false
+          },
+          {
+            "content": "C: Sing on the Radio?",
+            "correct": false
+          },
+          {
+            "content": "D: Go into politics?",
+            "correct": false
+          }
+        ],
+        "updateLive": false,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up"
+      }
+    },
+    {
+      "itemNumber": "25",
+      "title": "close poll",
+      "closePolls": true
+    },
+    {
+      "itemNumber": "26",
+      "itemType": "simple",
+      "title": "post24",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "MaggieT",
+        "user_icon": "user_icon/poster10.png",
+        "toAudience": true,
+        "content": "I’m going to send you my scrapbook Gerry, just to show you how much I love you xx",
+        "image": "user_icon/poster10.png"
+      }
+    },
+    {
+      "itemNumber": "27",
+      "itemType": "simple",
+      "title": "post25",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Jose123",
+        "user_icon": "user_icon/poster11.png",
+        "toAudience": true,
+        "content": "Me too! x",
+        "image": "user_icon/poster11.png"
+      }
+    },
+    {
+      "itemNumber": "28",
+      "itemType": "quiz",
+      "title": "quiz2_post26",
+      "description": "~03:48:00",
+      "closePolls": false,
+      "item": {
+        "itemType": "quiz",
+        "user_name": "Gerry Fan Hub",
+        "toAudience": true,
+        "content": "Where is Lou Tellegen now?",
+        "options": [
+          {
+            "content": "A: He is still acting",
+            "correct": false
+          },
+          {
+            "content": "B: He retired from acting",
+            "correct": true
+          },
+          {
+            "content": "C: Don’t know",
+            "correct": false
+          }
+        ],
+        "updateLive": false,
+        "openPrompt": "Choose now!",
+        "closedPrompt": "Time's up - were you right?"
+      }
+    },
+    {
+      "itemNumber": "29",
+      "title": "close quiz",
+      "closePolls": true
+    },
+    {
+      "itemNumber": "30",
+      "itemType": "simple",
+      "title": "post27",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Carmen Luva",
+        "user_icon": "user_icon/poster12.png",
+        "toAudience": true,
+        "content": "Who cares about Lou, it’s Gerry we love!",
+        "image": "user_icon/poster12.png"
+      }
+    },
+    {
+      "itemType": "simple",
+      "title": "post28",
+      "closePolls": false,
+      "item": {
+        "itemType": "simple",
+        "user_name": "Farr Fan",
+        "user_icon": "user_icon/poster3.png",
+        "toAudience": true,
+        "content": "Lou was only famous on the back of Gerry",
+        "image": "user_icon/poster3.png"
+      }
     }
-  ]
+  ],
+  "selfies": [],
+  "reposters": []
 }

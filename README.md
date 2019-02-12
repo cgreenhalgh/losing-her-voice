@@ -107,6 +107,10 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server /bin/bash
 node dist/index.js
+
+node dist/make-local-config.js data/LHV_AudienceInteraction_SpreadSheet.xlsx \
+  data/local-config-empty.json \
+  data/local-config.json
 ```
 
 ### audience ui
