@@ -83,7 +83,7 @@ Note: redis in the following should probably be the remote server
 
 ```
 sudo docker build -t local-server --network=internal local-server
-sudo docker run -it --rm --name=local-server --network=internal \
+sudo docker run -d --restart=always --name=local-server --network=internal \
   -p :8080:8080 -p 9123:9123/udp \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
@@ -91,6 +91,12 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server
+```
+Note, replace REDIS_HOST and REDIS_PASSWORD if connecting to remote audience server.
+
+Restart server:
+```
+sudo docker restart local-server
 ```
 
 Note, forwards OSC message '/lhva/state' to audience-server via redis. 
@@ -107,11 +113,17 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
   local-server /bin/bash
 node dist/index.js
+```
 
+Regenerate local config:
+```
+sudo docker exec -it local-server /bin/bash
 node dist/make-local-config.js data/LHV_AudienceInteraction_SpreadSheet.xlsx \
   data/local-config-empty.json \
   data/local-config.json
 ```
+
+Then probably restart local-server (as above).
 
 ### audience ui
 
@@ -170,7 +182,7 @@ publish lhva.state.v2 "{\"performanceid\":\"test1\",\"state\":\"act1.scene1\"}"
 
 publish POST, INTERVAL, RESET, act1.scene1, etc. (RELOAD - re-read config)
 
-### Redis public frontend
+### Nginx public frontend
 
 one-time...
 ```
