@@ -138,10 +138,9 @@ Social media support:
 - [x] moderation UI view - view server selfie image pool
 - [x] moderate selfie image -> update server selfie image pool
 - [x] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
+- [x] selfie live view mark 2 support = export to specific files in configured directory, selfies linked to performance on submission, copy only after performance set/started
 
-- [ ] * selfie live view mark 2 support = export to specific files in configured directory, selfies linked to performance on submission, copy only after performance set/started
-- [ ] show selfie on phone support?
-- [ ] * scroll posts down not up
+- [ ] ? scroll posts down not up
 - [ ] CSS/images for styling
 
 Local server/control:
@@ -196,7 +195,11 @@ Audience app:
 - [x] blank(ish) view (e.g. fading out) (act2.scene4d)
 - [x] flickering images (act2.scene5f)
 - [x] iphone troubleshoot/fix audio non-playing (https??)
+- [x] support for image(s) in view pages
 
+- [ ] check/fix like/share button can be pressed multiple times
+- [ ] visual alert for "turn sound on" ?!
+- [ ] show selfie on phone support?
 - [ ] * slide-out menu
 - [ ] * move fullscreen off whole title
 - [ ] * fix (implement) postSelfie flag to enable publish selfie action
@@ -217,7 +220,7 @@ Audience app:
 - [ ] personal scrapbook - social media??
 - [ ] * iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [ ] CSS/images for styling
-- [ ] * support for image(s) in view pages
+- [ ] log usage
 
 Subtitles:
 
