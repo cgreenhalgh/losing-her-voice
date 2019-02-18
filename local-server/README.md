@@ -221,6 +221,8 @@ Audience app:
 - [ ] * iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [ ] CSS/images for styling
 - [ ] log usage
+- [ ] * clarify wording for mute/unmute (i.e. media volume, not ring or alarm)
+- [ ] * troubleshoot/fix audio playback (problems on some devices...)
 
 Subtitles:
 
