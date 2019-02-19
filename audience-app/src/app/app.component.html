@@ -1,6 +1,6 @@
 <h1 [ngClass]="{dark: view && view.dark}">
-	<span *ngIf="showMenuItem || showMenu" class="button" (click)="onShowMenu()"><mat-icon>menu</mat-icon></span>
-	<span (click)="toggleFullScreen()">
+	<span *ngIf="!view" class="button" (click)="onShowMenu()"><mat-icon>menu</mat-icon></span>
+	<span>
 	Losing Her Voice 
 	</span>
 	<span (click)="toggleFullScreen()" class="toggleFullscreen"><mat-icon>fullscreen</mat-icon><!-- (toggle fullscreen) --></span>
@@ -12,26 +12,11 @@
 <div *ngIf="currentState && currentState.error" padding>
   Sorry, {{currentState.error}}
 </div>
-<div *ngIf="showMenu">
+<div class="sidenav" [ngClass]="{'sidenavopen': showMenu && !view}">
+  <a href="javascript:void(0)" class="closebtn" (click)="onShowMenu()">&times;</a>
   <div *ngFor="let menuItem of menuItems">
     <div class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
   </div>
-</div>
-<div *ngIf="showMenuItem && showMenuItem.cards">
-  <div><hr></div>
-  <div *ngFor="let card of showMenuItem.cards">
-    <div [innerHTML]="card.html"></div>
-    <div><hr></div>
-  </div>
-</div>
-<div *ngIf="showMenuItem && showMenuItem.id=='profile'">
-  <profile-view></profile-view>
-</div>
-<div *ngIf="showMenuItem && showMenuItem.id=='selfie'">
-  <selfie-view></selfie-view>
-</div>
-<div *ngIf="showMenuItem && showMenuItem.id=='reset'">
-  <reset-view></reset-view>
 </div>
 <div class="flickerDiv" #flickerDiv>
   <div #flickerImg class="flickerInner">
@@ -54,7 +39,7 @@
 	</div>
 	<profile-view *ngIf="editProfile" (fullNameSet)="onToggleEditProfile()"></profile-view>
 	<div *ngIf="!editProfile"><hr></div>
-	<div *ngIf="selfieConfirmed && !!profileName && !selfieSent" class="row">
+	<div *ngIf="selfieConfirmed && !!profileName && !selfieSent && view.postSelfie" class="row">
 		<div class="item_like" [ngClass]="{item_liked: selfieSent, disabled: !selfieConfirmed || !profileName}" (click)="onShareSelfie()">Publish my Selfie</div>
 	</div>
   <div *ngIf="currentItem" class="item">
@@ -94,3 +79,5 @@
 <div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (touchstart)="onTouchLanding()" (touchend)="onDismissLanding($event)" (mousedown)="onTouchLanding()" (mouseup)="onDismissLanding($event)">
   <p>Touch to start...</p>
 </div>
+
+<router-outlet *ngIf="!view"></router-outlet>

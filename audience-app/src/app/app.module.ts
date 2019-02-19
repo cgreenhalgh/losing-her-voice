@@ -5,10 +5,13 @@ import { MatIconModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { StorageServiceModule } from 'ngx-webstorage-service';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './profile.component';
 import { SelfieComponent } from './selfie.component';
 import { ResetComponent } from './reset.component';
+import { HomeComponent } from './home.component';
+import { ItemComponent } from './item.component';
 import { SyncService } from './sync.service';
 
 @NgModule({
@@ -16,15 +19,22 @@ import { SyncService } from './sync.service';
     AppComponent,
     ProfileComponent,
     SelfieComponent,
-    ResetComponent
+    ResetComponent,
+    HomeComponent,
+    ItemComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     MatIconModule,
-    StorageServiceModule
+    StorageServiceModule,
+    AppRoutingModule
   ],
-  providers: [{provide: DOCUMENT, useValue: document }, SyncService],
+  providers: [
+    {provide: DOCUMENT, useValue: document },
+    { provide: Window, useValue: window }, 
+    SyncService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

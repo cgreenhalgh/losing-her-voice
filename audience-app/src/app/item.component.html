@@ -1,0 +1,10 @@
+<div *ngIf="menuItem && menuItem.cards">
+  <div><hr></div>
+  <div *ngFor="let card of menuItem.cards">
+    <div [innerHTML]="card.html"></div>
+    <div><hr></div>
+    <div class="row">
+      <div *ngIf="menuItem.url" class="button" (click)="openUrl()">{{ menuItem.urlTitle ? menuItem.urlTitle : 'Open in Browser'}}</div>
+    </div>
+  </div>
+</div>

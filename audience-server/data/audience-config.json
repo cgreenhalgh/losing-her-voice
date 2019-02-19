@@ -6,16 +6,55 @@
     "author": "Chris Greenhalgh",
     "fileVersion": "lhv/audience/v3"
   },
+  "performances": [
+    {
+      "id":"test1",
+      "title":"test performance no.1",
+      "startDatetime":"2018-12-19T14:43:00Z",
+      "isPublic":false
+    },
+    {
+      "id":"test2",
+      "title":"test performance no.2",
+      "startDatetime":"2018-12-19T14:43:00Z",
+      "isPublic":false
+    },
+    {
+      "id":"20190406-premiere",
+      "title":"Premiere public performance",
+      "startDatetime":"2019-04-06T13:30:00Z",
+      "isPublic":true,
+      "durationSeconds":10800,
+      "timezone":"+01:00"
+    },
+    {
+      "id":"20190407-second",
+      "title":"Second public performance",
+      "startDatetime":"2019-04-07T18:00:00Z",
+      "isPublic":true,
+      "durationSeconds":10800,
+      "timezone":"+01:00"
+    }
+  ],
   "menuItems":[
+    {
+      "id": "home",
+      "title": "Home",
+      "postPerformance": false,
+      "cards": [
+      ]
+    },
     {
       "id": "profile",
       "title": "Pick a profile for the performance",
-      "postPerformance": false
+      "postPerformance": false,
+      "showOnHome":true
     },
     {
       "id": "selfie",
       "title": "Take a selfie for the performance",
-      "postPerformance": false
+      "postPerformance": false,
+      "showOnHome":true
     },
     {
       "id": "about.geraldine",
@@ -29,14 +68,16 @@
         { "html": "<p>Farrar had a seven-year love affair with the Italian conductor Arturo Toscanini. Her ultimatum, that he leave his wife and children and marry her, resulted in Toscanini&#39;s abrupt resignation as principal conductor of the Metropolitan Opera in 1915. Farrar was close friends with the star tenor Enrico Caruso and there has been speculation that they too had a love affair, but no conclusive evidence of this has surfaced. Her marriage to cinema actor Lou Tellegen on February 8, 1916 was the source of considerable scandal. The marriage ended, as a result of her husband&#39;s numerous affairs, in a very public divorce in 1923. The circumstances of the divorce were brought again to public recollection by Tellegen&#39;s bizarre 1934 suicide in Hollywood. Farrar reportedly said &quot;Why should that interest me?&quot; when told of Tellegen&#39;s death.</p>" },
         { "html": "<p>Farrar retired from opera in 1922 at the age of 40. Her final performance was as Leoncavallo&#39;s Zazà. By this stage, her voice was in premature decline due to overwork. Farrar quickly transitioned into concert recitals, and she continued to make recordings and give recitals throughout the 1920s and was briefly the intermission commentator for the Metropolitan Opera radio broadcasts during the 1934–35 season. Her unusual autobiography, Such Sweet Compulsion, published in 1938, was written in alternating chapters purporting to be her own words and those of her mother, with Mrs. Farrar rather floridly recounting her daughter&#39;s many accomplishments.</p>" },
         { "html": "<p>Content sourced from https://en.wikipedia.org/wiki/Geraldine_Farrar.</p>" }
-      ]
+      ],
+      "showOnHome":true
     },
     {
       "id": "synopsis",
       "title": "Losing Her Voice Synopsis",
       "postPerformance": false,
       "cards": [
-      ]
+      ],
+      "showOnHome":true
     },
     {
       "id": "help",
@@ -51,7 +92,8 @@
         { "html": "<p>In ‘take a selfie for the performance’ we would like to post a selfie photograph of yourself that might feature at some point in the performance, should you wish to. Be aware that if you do post a selfie, your photo might be displayed on stage for the audience, cast and crew to see. Furthermore, this performance is being filmed, so it may also be captured on that. In the ‘take a selfie for the performance’ page it will guide you through how to post a selfie and how to consent for us to use it in the performance. Should you wish, please take a selfie, and post it before the performance, or in the interval. Note: you will not be able to contribute a selfie after Act 2 has started.</p>" },
         { "html": "<p>The ‘about Geraldine’ page gives you some background on Geraldine Farrar, the main protagonist in ‘Losing Her Voice’</p>" },
         { "html": "<p>Select ‘Losing Her Voice Synopsis’ to read the synopsis of the opera. If you are experiencing any difficulties with this audience app or would like to talk to someone about, please ask a member of staff before the performance starts or during the interval.</p>" }
-      ]
+      ],
+      "showOnHome":true
     },
     {
       "id": "credits",
@@ -59,15 +101,18 @@
       "postPerformance": false,
       "cards": [
         { "html": "<p><em>Creative team:</em></p> <p>Composer and Librettist – Elizabeth Kelly</p> <p>Director – Martin Berry</p> <p>Musical Director – Calum Fraser</p> <p>Digital Design - Barret Hodgson</p> <p>Interactive Performance Technologies – Chris Greenhalgh &amp; Adrian Hazzard</p> <p>Etc</p> <p><em>Principle Singers:</em></p> <p>Geraldine Farrar</p> <p>Lilli Lehmann</p> <p>Lou Tellegen</p> <p>etc</p> <p><em>Chorus:</em></p> <p><em>Instrumentalists:</em></p>" }
-      ]
+      ],
+      "showOnHome":true
     },
     {
       "id": "questionnaire",
       "title": "Research Questionnaire",
       "postPerformance": true,
       "cards": [
-        { "html": "<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah.</p>" }
-      ]
+        { "html": "<p>We would be grateful if you could complete this anonymous online questionnaire about your experience of Losing Her Voice.</p>" }
+      ],
+      "urlTitle":"Open questionnaire in browser",
+      "url": "http://www.cs.nott.ac.uk/~pszcmg/"
     },
     {
       "id": "reset",
@@ -204,14 +249,25 @@
       "id":"act2.scene5a",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent!</p>" }
-      ]
+        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone!</p>" }
+      ],
+      "flicker": {
+        "images":[
+          "sassy-geraldine.jpg"
+        ],
+        "minFraction": 1,
+        "maxFraction": 1,
+        "minShowSeconds": 0.5,
+        "maxShowSeconds": 0.5,
+        "minBlankSeconds": 1.5,
+        "maxBlankSeconds": 1.5
+      }
     },
     {
       "id":"act2.scene5b",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [ringing]</p>" }
+        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone! [ringing]</p>" }
       ],
       "audioFile": "phone-ringing.mp3",
       "audioDelaySeconds": 0.1
@@ -220,14 +276,14 @@
       "id":"act2.scene5c",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [stop ringing]</p>" }
+        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone! [stop ringing]</p>" }
       ]
     },
     {
       "id":"act2.scene5d",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent! [habanera]</p>" }
+        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone! [habanera]</p>" }
       ],
       "audioFile": "habanera-sample-20.mp3",
       "audioDelaySeconds": 0.1,

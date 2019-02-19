@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, Inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 
 import { SyncService } from './sync.service';
@@ -30,7 +31,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   showMenu:boolean = false
   view:View
   audioDelaySeconds:number
-  showMenuItem:MenuItem
   showPlay:boolean
   playWhenReady:boolean
   audioTimeout:any = null
@@ -54,6 +54,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   
   constructor(
     private syncService:SyncService,
+    private router: Router,
     @Inject(DOCUMENT) private document: any
   ) 
   {
@@ -93,11 +94,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.currentState = newState
       this.loading = !this.currentState
       if (this.currentState && this.currentState.allowMenu) {
-        this.showMenu = true
+        //this.showMenu = true
       } else {
         this.showMenu = false
       }
-      this.showMenuItem = null
       if (this.allMenuItems) {
         this.menuItems = this.allMenuItems.filter((item) => (this.currentState && this.currentState.postPerformance) || !item.postPerformance)
       }
@@ -137,10 +137,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         if (this.view) {
           // stop forcing any view
           if (this.view.defaultMenuId) {
-            this.showMenuItem = this.menuItems.find((item) => item.id == this.view.defaultMenuId)
-            if (this.showMenuItem) {
-              this.showMenu = false
-            }
+            this.router.navigate([`/${this.view.defaultMenuId}`])
+            this.showMenu = false
           } 
           this.view = null
         }
@@ -183,12 +181,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   onShowMenuItem(menuItem:MenuItem):void {
     console.log(`show menu item`, menuItem)
     this.showMenu = false
-    this.showMenuItem = menuItem
+    this.router.navigate([`/${menuItem.id}`])
   }
   onShowMenu():void {
-    console.log('show menu')
-    this.showMenu = true
-    this.showMenuItem = null
+    this.showMenu = !this.showMenu
   }
   onToggleEditProfile() :void {
     this.editProfile = !this.editProfile
@@ -320,12 +316,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
   onLikeCurrentItem() {
+    if (this.currentItemLiked)
+      return
     this.currentItemLiked = true
     if (this.currentItem) {
       this.syncService.likeItem(this.currentItem)
     }
   }
   onShareCurrentItem() {
+    if (this.currentItemShared)
+      return
     if (!this.profileName) {
       console.log(`cannot share item without profile name set`)
       return

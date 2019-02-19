@@ -1,0 +1,22 @@
+<div *ngIf="menuItems">
+  <div *ngFor="let menuItem of menuItems">
+    <div *ngIf="menuItem.showOnHome" class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
+  </div>
+</div>
+<div *ngIf="performance">
+	<div><hr></div>
+    <p>{{performance.title}}</p>
+    <p>Starts: {{startDatetime}}</p>
+	<div><hr></div>
+</div>
+<div *ngIf="!performance">
+	<div><hr></div>
+    <p>Sorry, I don't know which performance this is meant to be.</p>
+    <div><hr></div>
+</div>
+<div *ngIf="menuItem && menuItem.cards">
+  <div *ngFor="let card of menuItem.cards">
+    <div [innerHTML]="card.html"></div>
+    <div><hr></div>
+  </div>
+</div>

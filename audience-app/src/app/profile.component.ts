@@ -26,6 +26,14 @@ export class ProfileComponent {
                 }
             }
         })
+        this.syncService.getNameObservable().subscribe((name) => {
+            if (!name) {
+                // reset
+                for (let np of this.nameParts) {
+                    np.value = null // ''?
+                }
+            }
+        })
     }
     onSelectChange($event) {
         this.syncService.saveName(this.nameParts)

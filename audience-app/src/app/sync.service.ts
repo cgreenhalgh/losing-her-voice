@@ -16,7 +16,7 @@ const NAME_KEY_PREFIX = 'namePart:'
 const IMAGE_KEY = 'selfie.image'
 const SELFIE_CONFIRMED_KEY = 'selfie.confirmed'
 const SELFIE_SENT_KEY = 'selfie.sent'
-
+const PERFORMANCE_ID_KEY = 'performance.id'
 
 @Injectable()
 export class SyncService {
@@ -158,13 +158,22 @@ export class SyncService {
         if (params['p']!==undefined) {
           if (!this.performanceid) {
             this.performanceid = params['p'];
+            this.storage.set(PERFORMANCE_ID_KEY, this.performanceid)
             console.log(`setting performanceid: ${this.performanceid}`)
             this.trySendHello()
           }
         } else if (!this.performanceid) {
-          alert(`Sorry, the URL seems to be wrong (there is no performance specified)`)
-          console.log(`Error: no performanceid (p) in url`, params)
+            this.performanceid = this.storage.get(PERFORMANCE_ID_KEY)
+            if (!this.performanceid) {
+                alert(`Sorry, the URL seems to be wrong (there is no performance specified)`)
+                console.log(`Error: no performanceid (p) in url`, params)
+            } else {
+                console.log(`using saved performanceid ${this.performanceid}`)
+            }
         }
+  }
+  getPerformanceid(): string {
+      return this.performanceid
   }
   trySendHello():void {
       if (!this.shouldSendHello || !this.performanceid)

@@ -1,0 +1,12 @@
+div.button {
+	display: block;
+	/*width: 100%;*/
+	border: 1px solid #555;
+	border-radius: 0.2em;
+	margin: 0.2em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0.1em;
+	padding-bottom: 0.1em;
+	text-align: center;
+}

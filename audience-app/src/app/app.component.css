@@ -32,9 +32,63 @@ div.button {
 	padding-top: 0.1em;
 	padding-bottom: 0.1em;
 }
+a.button {
+	display: inline-block;
+	text-decoration: underline;
+/*	background: #333;
+	border: 1px solid #555;
+	border-radius: 0.2em;
+*/	margin: 0.2em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	padding-top: 0.1em;
+	padding-bottom: 0.1em;
+}
 span.toggleFullscreen {
 	font-size: 0.4em;
 	color: #666;
+}
+.sidenav {
+  height: 100%;
+  width: 80%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: -80%;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.2s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+.sidenav.sidenavopen {
+    /*width: 80%;*/
+    left: 0;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
 }
 
 /* item layout - just copied from local-ui to start off with */

@@ -74,6 +74,9 @@ export interface MenuItem {
   postPerformance:boolean
   cards:Card[]
   highlight?:boolean // internal
+  url?:string // optional external url
+  urlTitle?:string
+  showOnHome?:boolean
 }
 
 // view
@@ -119,8 +122,18 @@ export interface NamePart {
   value?:string // internal
 }
 
+export interface Performance {
+  id:string
+  title:string
+  isPublic?:boolean
+  startDatetime:string // RFC3339 GMT
+  durationSeconds?:number
+  timezone?:string
+}
+
 export interface Configuration {
   metadata:ConfigurationMetadata
+  performances:Performance[]
   menuItems:MenuItem[]
   views:View[]
   nameParts:NamePart[]

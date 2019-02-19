@@ -197,23 +197,24 @@ Audience app:
 - [x] iphone troubleshoot/fix audio non-playing (https??)
 - [x] support for image(s) in view pages
 - [x] disable HTTP access and/or replace with redirect
+- [x] check/fix like/share button can be pressed multiple times
+- [x] move fullscreen off whole title
+- [x] fix (implement) postSelfie flag to enable publish selfie action
+- [x] trap/handle back navigation (real html5 nav underneath??)
+- [x] fix clear user data to clear name selection controls
+- [x] slide-out menu
+- [x] fix/support add to desktop with performance id, e.g. persist and default to performance id in local storage?
+- [x] clarify wording for mute/unmute (i.e. media volume, not ring or alarm)
+- [x] support link from app page to external questionnaire
+- [x] visual alert for "turn sound on" ?!
 
-- [ ] check/fix like/share button can be pressed multiple times
-- [ ] visual alert for "turn sound on" ?!
 - [ ] show selfie on phone support?
-- [ ] * slide-out menu
-- [ ] * move fullscreen off whole title
-- [ ] * fix (implement) postSelfie flag to enable publish selfie action
-- [ ] * trap/handle back navigation (real html5 nav underneath??)
-- [ ] * fix/support add to desktop with performance id, e.g. persist and default to performance id in local storage?
-- [ ] * fix clear user data to clear name selection controls
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] selfie post with hash not image?
 - [ ] app disconnect warning
 - [ ] app smoother reconnect support
 - [ ] specific user guidance for in-browser vs PWA/home screen
 - [ ] disable communication after event ?! (or otherwise limit traffic)
-- [ ] support link from app page to external questionnaire
 - [ ] card navigation within view/page
 - [ ] card navigation animation, e.g. newspaper, social media, scrap book
 - [ ] personal scrapbook - souvenir audio
@@ -222,7 +223,6 @@ Audience app:
 - [ ] * iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [ ] CSS/images for styling
 - [ ] log usage
-- [ ] * clarify wording for mute/unmute (i.e. media volume, not ring or alarm)
 - [ ] * troubleshoot/fix audio playback (problems on some devices...)
 
 Subtitles:
@@ -245,6 +245,7 @@ Content
 - [ ] selfie images
 - [ ] reposter names
 - [ ] libretto formatted for subtitles
+- [ ] questionnaire
 
 To don't:
 - [x] don't add Geraldine to selfie

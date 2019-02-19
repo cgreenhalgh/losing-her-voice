@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { SyncService } from './sync.service';
 import { NamePart } from './types';
 
@@ -11,10 +12,12 @@ export class ResetComponent {
   isReset:boolean = false
   constructor(
       private syncService:SyncService,
+      private router: Router,
   ) {
   }
   onReset() {
     this.syncService.resetApp()
     this.isReset = true
+    this.router.navigate([`/home`])
   }
 }
