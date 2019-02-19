@@ -196,8 +196,8 @@ Audience app:
 - [x] flickering images (act2.scene5f)
 - [x] iphone troubleshoot/fix audio non-playing (https??)
 - [x] support for image(s) in view pages
+- [x] disable HTTP access and/or replace with redirect
 
-- [ ] disable HTTP access and/or replace with redirect
 - [ ] check/fix like/share button can be pressed multiple times
 - [ ] visual alert for "turn sound on" ?!
 - [ ] show selfie on phone support?
