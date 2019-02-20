@@ -63,12 +63,19 @@ export interface Performance {
   timezone?:string
 }
 
+// actually for audience app config
+export interface NamePart {
+  title:string
+  options:string[]
+}
+
 export interface Configuration {
   metadata:ConfigurationMetadata
   performances:Performance[]
   scheduleItems:ScheduleItem[]
   selfies:SelfieItem[]
   reposters:Reposter[]
+  nameParts?:NamePart[]
 }
 
 export const MSG_CLIENT_HELLO = 'lhr.client.hello'

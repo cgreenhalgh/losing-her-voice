@@ -1,7 +1,7 @@
 // spreadsheet handling
 import * as xlsx from 'xlsx'
 import * as fs from 'fs'
-import { ConfigurationMetadata, CONFIGURATION_FILE_VERSION, Configuration, ScheduleItem } from './types'
+import { ConfigurationMetadata, CONFIGURATION_FILE_VERSION, Configuration, ScheduleItem, NamePart } from './types'
 import { Item, ItemType, SelfieItem, ShareItem, ShareSelfie, SimpleItem, QuizOrPollItem, QuizOption } from './socialtypes'
 
 // excel cell name from column,row (start from 0)
@@ -206,6 +206,26 @@ try {
       console.log(`warning: item ${si.itemNumber} unhandled item type ${si.itemType}`)
     }
     configuration.scheduleItems.push(si)
+  }
+  let sn = workbook.Sheets['Names']
+  if ( !sn) 
+    console.log(`no "Names" sheet in workbook`)
+  else {
+    let names:Sheet = readSheet(sn)
+    console.log(`read ${names.rows.length} Names`)
+    configuration.nameParts = []
+    for (let heading of names.headings) {
+        let namePart:NamePart = {
+            title: heading,
+            options: []
+        }
+        for (let row of names.rows) {
+            let name = row[heading]
+            if (name)
+                namePart.options.push(name)
+        }
+        configuration.nameParts.push(namePart)
+    }
   }
   let outfile = process.argv[4]
   console.log(`write to ${outfile}`)
