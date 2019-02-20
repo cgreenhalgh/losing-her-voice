@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { SyncService } from './sync.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MenuItem, Configuration } from './types'
@@ -15,6 +15,7 @@ export class ItemComponent {
   constructor(
       private route: ActivatedRoute,
       private syncService:SyncService,
+      @Inject('Window') private window: Window,
   ) {
   }
   ngOnInit() {
@@ -41,6 +42,6 @@ export class ItemComponent {
       console.log(`show menu item ${this.itemId}: ${this.menuItem.title}`)
   }
   openUrl() {
-      window.open(this.menuItem.url, "_blank");
+      this.window.open(this.menuItem.url, "_blank");
   }
 }

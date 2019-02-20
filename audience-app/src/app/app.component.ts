@@ -55,7 +55,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   constructor(
     private syncService:SyncService,
     private router: Router,
-    @Inject(DOCUMENT) private document: any
+    @Inject(DOCUMENT) private document: any,
+    @Inject('Window') private window: Window
   ) 
   {
     syncService.getConfiguration().subscribe((configuration) => {
@@ -307,7 +308,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       if (requestFullScreen)
         requestFullScreen.call(docEl);
       else
-        window.scrollTo(0,1)
+        this.window.scrollTo(0,1)
     }
     else {
       console.log(`cancel full screen`)

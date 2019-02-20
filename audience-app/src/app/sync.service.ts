@@ -42,6 +42,7 @@ export class SyncService {
   constructor(
     @Inject(DOCUMENT) private document: any,
     @Inject(LOCAL_STORAGE) private storage: StorageService,
+    @Inject('Window') private window: Window,
   ) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
@@ -149,7 +150,7 @@ export class SyncService {
         // Regex for replacing addition symbol with a space
         var search = /([^&=]+)=?([^&]*)/g;
         var decode = function(s) { return decodeURIComponent(s.replace(pl, " ")); }
-        var query  = window.location.search.substring(1);
+        var query  = this.window.location.search.substring(1);
         let params = {};
         var match
         while (match = search.exec(query))

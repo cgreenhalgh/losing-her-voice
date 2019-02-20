@@ -32,7 +32,7 @@ import { SyncService } from './sync.service';
   ],
   providers: [
     {provide: DOCUMENT, useValue: document },
-    { provide: Window, useValue: window }, 
+    { provide: 'Window', useValue: window }, 
     SyncService
   ],
   bootstrap: [AppComponent]
