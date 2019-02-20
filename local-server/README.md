@@ -207,6 +207,7 @@ Audience app:
 - [x] clarify wording for mute/unmute (i.e. media volume, not ring or alarm)
 - [x] support link from app page to external questionnaire
 - [x] visual alert for "turn sound on" ?!
+- [x] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 
 - [ ] show selfie on phone support?
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
@@ -220,10 +221,10 @@ Audience app:
 - [ ] personal scrapbook - souvenir audio
 - [ ] personal scrapbook - selfie
 - [ ] personal scrapbook - social media??
-- [ ] * iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [ ] CSS/images for styling
 - [ ] log usage
 - [ ] * troubleshoot/fix audio playback (problems on some devices...)
+- [ ] add ServiceWorker support?!
 
 Subtitles:
 
