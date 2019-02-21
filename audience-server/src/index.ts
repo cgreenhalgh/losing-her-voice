@@ -17,7 +17,7 @@ import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello,
   AnnounceItem, MSG_FEEDBACK, FeedbackMsg, 
   CONFIGURATION_FILE_VERSION } from './types'
 import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce,
-  REDIS_LIST_FEEDBACK } from './socialtypes'
+  REDIS_LIST_FEEDBACK, ItemType } from './socialtypes'
 import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
 
 const app = express()
@@ -70,6 +70,23 @@ function getCurrentState(performanceid:string): CurrentState {
         currentStates[performanceid] = currentState
     }
     return currentState
+}
+interface CurrentItems {
+    [performanceid:string] : Item
+}
+let currentItems:CurrentItems = {}
+function getCurrentItem(performanceid:string): Item {
+    if (!performanceid)
+        return null
+    let currentItem:Item = currentItems[performanceid]
+    if (!currentItem) {
+        currentItem = {
+            itemType:ItemType.BLANK,
+            user_name: 'audience-server'
+        }
+        currentItems[performanceid] = currentItem
+    }
+    return currentItem
 }
 let configFile = path.join(__dirname, '..', 'data', 'audience-config.json');
 
@@ -198,6 +215,14 @@ io.on('connection', function (socket) {
       currentState: currentState,
       timing: timing,
     })
+    let currentItem = getCurrentItem(msg.performanceid)
+    if (currentItem) {
+      let imsg:AnnounceItem = {
+        item:currentItem,
+        timing: timing
+      }
+      socket.emit(MSG_ANNOUNCE_ITEM, imsg)
+    }
     socket.on(MSG_CLIENT_PING, (data2) => {
       let ping:ClientPing = data2 as ClientPing
       let now = (new Date()).getTime()
@@ -330,6 +355,7 @@ redisSub2.on("message", function (channel, message) {
         return
     }
     console.log(`announce item ${announce.item.id} (${announce.item.itemType})`);
+    currentItems[announce.performanceid] = announce.item
     for (let socketId in sockets) {
       let socket = sockets[socketId]
       let clientInfo:ClientInfo = socket.myClientInfo

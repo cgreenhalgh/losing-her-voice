@@ -36,7 +36,7 @@ Performance, is object with:
 - `timezone` (string, optional) timezone in which performance takes place (for local time display)
 
 Schedule Item is object with:
-- `itemType` (string, optional), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie'
+- `itemType` (string, optional), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie', 'blank'
 - `title` (string) schedule item title
 - `description` (string) schedule item description
 - `item` (social media Item), where a specific instance is provided, i.e. simple, quiz or poll
@@ -139,6 +139,8 @@ Social media support:
 - [x] moderate selfie image -> update server selfie image pool
 - [x] audience app re-post -> relay through redis -> update server repost pool -> control UI -> display repost
 - [x] selfie live view mark 2 support = export to specific files in configured directory, selfies linked to performance on submission, copy only after performance set/started
+- [x] blank item support
+- [x] avoid spurious warnings in spreadsheet processor
 
 - [ ] ? scroll posts down not up
 - [ ] CSS/images for styling
@@ -208,6 +210,7 @@ Audience app:
 - [x] support link from app page to external questionnaire
 - [x] visual alert for "turn sound on" ?!
 - [x] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
+- [x] show last social item on reload
 
 - [ ] show selfie on phone support?
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
@@ -236,10 +239,10 @@ Content
 
 - [x] initial profile names
 - [x] initial menu items
+- [x] name options for profile
 
 - [ ] menu items and associated content
 - [ ] views and associated cards/content - for every scene
-- [ ] name options for profile
 - [ ] posts (text and images)
 - [ ] quizes
 - [ ] polls

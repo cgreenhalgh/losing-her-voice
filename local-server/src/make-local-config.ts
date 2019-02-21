@@ -202,6 +202,27 @@ try {
         //likes
       }
       si.item = selfie
+    } else if (si.itemType == ItemType.BLANK) {
+      let blank:Item = {
+        // id?:string
+        itemType:ItemType.BLANK,
+        user_name:'system',
+        //user_icon:row['user_icon'],
+        //date?:string
+        toAudience:'true'==row['toAudience'],
+      }
+      si.item = blank
+      if (!blank.toAudience) {
+        console.log(`warning: blank item ${si.itemNumber} is not toAudience`)
+      }
+    } else if (si.itemType == ItemType.SELFIE || si.itemType == ItemType.REPOST) {
+        if (row['user_name'] || row['user_icon'] || row['image']) {
+            console.log(`warning: ${si.itemType} item ${si.itemNumber} has some content defined, but this will be ignored`)
+        }
+    } else if (si.itemType === undefined) {
+        if (!si.closePolls) {
+            console.log(`warning: item ${si.itemNumber} with undefined type, not closePolls`)
+        }
     } else {
       console.log(`warning: item ${si.itemNumber} unhandled item type ${si.itemType}`)
     }

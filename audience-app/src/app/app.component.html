@@ -42,7 +42,7 @@
 	<div *ngIf="selfieConfirmed && !!profileName && !selfieSent && view.postSelfie" class="row">
 		<div class="item_like" [ngClass]="{item_liked: selfieSent, disabled: !selfieConfirmed || !profileName}" (click)="onShareSelfie()">Publish my Selfie</div>
 	</div>
-  <div *ngIf="currentItem" class="item">
+  <div *ngIf="currentItem && !currentItemIsBlank" class="item">
 		<div *ngIf="currentRepostItem" class="item_repost_header"><em>{{currentRepostItem.user_name}}</em> shared</div>
 		<div class="item_header">
 			<div class="item_user_icon"><img class="item_user_icon" [src]="currentItem.user_icon"></div>

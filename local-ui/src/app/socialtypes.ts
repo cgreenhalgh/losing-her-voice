@@ -6,6 +6,7 @@ export enum ItemType {
   SELFIE = 'selfie',
   QUIZ = 'quiz',
   POLL = 'poll',
+  BLANK = 'blank',
 }
 
 export interface Item {

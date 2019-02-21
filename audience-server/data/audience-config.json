@@ -181,7 +181,8 @@
         { "html": "<h1>Act 1, Scene 7</h1><h2>Losing Her Voice</h2><p>Geraldine pushes through the throng from the previous scene to confront the audience stating that despite appearances, she controlled her own story. She sings of her rise to international fame and the emergence of her ‘Gerryflapper’ female fans who prompted her to become a recording artist so that they could take her voice home.</p>" },
         { "html": "<p>As the scene progresses, Geraldine sings vocalises from Carmen ‘Habanera’ into a microphone, in front of a mirror, and the Gerryflappers walk out around the audience where there are phonographs. They play the same ‘habanera’ from Carmen on their machines. Geraldine literally sings herself hoarse as the male press sing headlines about how she has lost her voice.</p>" },
         { "html": "<p>As the recorded sound supplants Geraldine’s voice, a telephone is heard ringing. Cecil B. Demille calls from offstage to offer her a role in his silent film. Lilli cautions her against taking a role in this crass new genre, but ultimately Geraldine accepts. </p>" }
-      ]
+      ],
+      "defaultMenuId":"selfie"
     },
     {
       "id":"act2.prelude",
@@ -317,7 +318,8 @@
         "maxShowSeconds": 0.2,
         "minBlankSeconds": 0.1,
         "maxBlankSeconds": 0.5
-      }
+      },
+      "defaultMenuId":"questionnaire"
     }
   ],
   "nameParts": [

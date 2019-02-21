@@ -45,6 +45,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   currentItemSelected:boolean
   currentQuizOption:number
   currentItemSent:boolean
+  currentItemIsBlank:boolean
   profileName:string
   editProfile:boolean
   selfieConfirmed:boolean
@@ -177,6 +178,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
       else
         this.currentQuizItem = null
+      this.currentItemIsBlank = (item.itemType == ItemType.BLANK)
     })
   }
   onShowMenuItem(menuItem:MenuItem):void {

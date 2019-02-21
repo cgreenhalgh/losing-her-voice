@@ -88,6 +88,9 @@ export class LiveComponent implements AfterViewInit {
                         return
                     }
                 }
+                if (item.itemType == ItemType.BLANK)
+                    // ignore
+                    return
                 this.items.push(item)
                 if (this.feedChild && this.itemsChild)
                     this.update()
