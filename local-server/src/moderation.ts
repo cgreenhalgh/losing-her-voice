@@ -128,6 +128,10 @@ export class SelfieStore {
           }
           try {
             let si:SelfieImage = JSON.parse(reply)
+            if (!si.approved) {
+                console.log(`ignore ${si.rejected ? 'rejected' : 'unapproved'} image ${key}`)
+                return
+            }
             // e.g. data:image/png;base64,...
             //https://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata
             if (!si.image) {

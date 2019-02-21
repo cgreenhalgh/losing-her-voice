@@ -83,7 +83,8 @@ let configuration:Configuration = {
   },
   menuItems:[],
   views:[],
-  nameParts:[]
+  nameParts:[],
+  performances:[]
 }
 
 function readConfig() {
