@@ -2,6 +2,7 @@
 	border: 1px solid white;
 	margin: 5px;
 	padding: 4px;
+	font-size: 140%;
 }
 .item_repost_header {
 	margin-bottom: 3pt;
@@ -26,7 +27,7 @@ img.item_user_icon {
 /*	width:420px; */
 }
 .item_header {
-	
+
 }
 .item_date {
 	color: grey;
