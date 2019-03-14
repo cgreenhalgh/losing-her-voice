@@ -142,8 +142,10 @@ Social media support:
 - [x] blank item support
 - [x] avoid spurious warnings in spreadsheet processor
 
-- [ ] ? scroll posts down not up
-- [ ] CSS/images for styling
+- [ ] scroll posts down not up
+- [ ] CSS/images/fonts for styling - sans (helvetica?) font, small post separator, no border
+- [ ] size/scale for live view 768x768 (SR) / 728x1024 (SL) minus borders
+- [ ] scheduled item that will clear the posts from the main screen
 
 Local server/control:
 
@@ -164,6 +166,7 @@ read ECONNRESET
     at TCP.onread (net.js:622:25) errno: 'ECONNRESET', code: 'ECONNRESET', syscall: 'read' }
 error getting feedback from lhva:feedback:v5: Redis connection lost and command aborted. It might have been processed.
 ```
+- [ ] applescipt to open and resize CEF?!
 - [ ] persist items & performance across server restart?!
 - [ ] send OSC?
 - [ ] prune items in live view? (performance)
@@ -212,28 +215,37 @@ Audience app:
 - [x] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [x] show last social item on reload
 
-- [ ] show selfie on phone support?
+- [ ] * control over option to share/like (no by default)
+- [ ] post/quiz view in menu mode
+- [ ] menu mode notification/popup for post/quiz
+- [ ] notification/alert facility, e.g. from scene change
+- [ ] option for releasing new menu items in the interval
+- [ ] option to fade images in scene info view
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
-- [ ] selfie post with hash not image?
-- [ ] app disconnect warning
-- [ ] app smoother reconnect support
-- [ ] specific user guidance for in-browser vs PWA/home screen
-- [ ] disable communication after event ?! (or otherwise limit traffic)
-- [ ] card navigation within view/page
-- [ ] card navigation animation, e.g. newspaper, social media, scrap book
-- [ ] personal scrapbook - souvenir audio
-- [ ] personal scrapbook - selfie
-- [ ] personal scrapbook - social media??
-- [ ] CSS/images for styling
-- [ ] log usage
+- [ ] specific user guidance for in-browser vs PWA/home screen?
+- [ ] disable communication before and after event ?! (or otherwise limit traffic)
+- [ ] CSS/images/fonts for styling
+- [ ] background images/scrapbook styling?!
+- [ ] * log usage
 - [ ] * troubleshoot/fix audio playback (problems on some devices...)
+- [ ] research subject ID allocate and view?
 - [ ] add ServiceWorker support?!
+- [ ] app disconnect warning?
+- [ ] app smoother reconnect support?
+
+probably not...
+- [ ] ? selfie post with hash not image?
+- [ ] ? show selfie on phone support?
+- [ ] ? card navigation within view/page
+- [ ] ? card navigation animation, e.g. newspaper, social media, scrap book
+- [ ] ? personal scrapbook - souvenir audio
+- [ ] ? personal scrapbook - selfie
+- [ ] ? personal scrapbook - social media??
 
 Subtitles:
 
 - [x] agree strategy & technology - on screen? from qlab??
 - [x] tool to convert libretto document to cues
-- [ ] tool to sync libretto changes to cues
 
 Content
 
@@ -253,3 +265,4 @@ Content
 
 To don't:
 - [x] don't add Geraldine to selfie
+- [x] no need to sync libretto changes to cues
