@@ -7,12 +7,12 @@ See [libretto notes](../docs/libretto.md)
 ## Build
 
 ```
-sudo docker build -t surtitles .
+sudo docker build --network=internal -t surtitles .
 ```
 
 Run
 ```
-sudo docker run --rm -it --name=surtitles -v `pwd`/data:/root/work/data surtitles
+sudo docker run --rm -it --name=surtitles --network=internal -v `pwd`/data:/root/work/data surtitles
 node dist/index.js data/LosingHerVoice_October2018Libretto-for-surtitles.docx data/output
 ```
 
