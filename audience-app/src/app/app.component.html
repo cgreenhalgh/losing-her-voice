@@ -66,10 +66,10 @@
   </div>
   <div class="row">
     <div class="half">
-      <div *ngIf="currentSimpleItem" class="item_like" [ngClass]="{item_liked: currentItemLiked}" (click)="onLikeCurrentItem()">Like</div>
+      <div *ngIf="currentSimpleItem && currentSimpleItem.canLike" class="item_like" [ngClass]="{item_liked: currentItemLiked}" (click)="onLikeCurrentItem()">Like</div>
     </div>
     <div class="half">
-      <div *ngIf="currentSimpleItem" class="item_like" [ngClass]="{item_liked: currentItemShared, disabled: !profileName}" (click)="onShareCurrentItem()">Share</div>
+      <div *ngIf="currentSimpleItem && currentSimpleItem.canShare" class="item_like" [ngClass]="{item_liked: currentItemShared, disabled: !profileName}" (click)="onShareCurrentItem()">Share</div>
     </div>
     <div *ngIf="currentQuizItem && !currentQuizItem.closed" class="item_like" [ngClass]="{item_liked: currentItemSent, disabled: !currentItemSelected}" (click)="onSendCurrentItem()">Send</div>
   </div>

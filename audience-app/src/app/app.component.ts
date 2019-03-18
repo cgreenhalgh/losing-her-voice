@@ -178,7 +178,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
       else
         this.currentQuizItem = null
-      this.currentItemIsBlank = (item.itemType == ItemType.BLANK)
+      this.currentItemIsBlank = (item.itemType == ItemType.BLANK || item.itemType == ItemType.RESET)
     })
   }
   onShowMenuItem(menuItem:MenuItem):void {

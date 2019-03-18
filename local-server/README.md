@@ -36,7 +36,7 @@ Performance, is object with:
 - `timezone` (string, optional) timezone in which performance takes place (for local time display)
 
 Schedule Item is object with:
-- `itemType` (string, optional), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie', 'blank'
+- `itemType` (string, optional), as per Item: 'simple', 'repost', 'quiz', 'poll', 'selfie', 'blank', 'reset'
 - `title` (string) schedule item title
 - `description` (string) schedule item description
 - `item` (social media Item), where a specific instance is provided, i.e. simple, quiz or poll
@@ -52,7 +52,7 @@ VideoState has:
 
 Item has:
 - `id` (string)
-- `itemType` (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie'
+- `itemType` (string) - 'simple', 'repost', 'quiz', 'poll', 'selfie', 'blank', 'reset'
 - `user_name` (string)
 - `user_icon` (url)
 - `toAudience` (boolean)
@@ -61,6 +61,8 @@ Simple item has (extends Item):
 - `content` (string) - html??
 - `image` (url, optional), probably relative to static/ but may need converting to data urls for audience app??
 - `likes` (number, default 0)
+- `canLike` (boolean, default false)
+- `canShare` (boolean, default false)
 
 Selfie item has (extends Item):
 - (?? `content` (string) - html??)
@@ -141,11 +143,11 @@ Social media support:
 - [x] selfie live view mark 2 support = export to specific files in configured directory, selfies linked to performance on submission, copy only after performance set/started
 - [x] blank item support
 - [x] avoid spurious warnings in spreadsheet processor
+- [x] scheduled item that will clear the posts from the main screen
 
 - [ ] scroll posts down not up
 - [ ] CSS/images/fonts for styling - sans (helvetica?) font, small post separator, no border
 - [ ] size/scale for live view 768x768 (SR) / 728x1024 (SL) minus borders
-- [ ] scheduled item that will clear the posts from the main screen
 
 Local server/control:
 
@@ -214,8 +216,8 @@ Audience app:
 - [x] visual alert for "turn sound on" ?!
 - [x] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [x] show last social item on reload
+- [x] control over option to share/like (no by default)
 
-- [ ] * control over option to share/like (no by default)
 - [ ] post/quiz view in menu mode
 - [ ] menu mode notification/popup for post/quiz
 - [ ] notification/alert facility, e.g. from scene change

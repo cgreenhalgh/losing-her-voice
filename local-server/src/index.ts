@@ -385,6 +385,10 @@ function addItem(item:Item) {
   if (item.toAudience) {
     announceItem(item)
   }
+  if (item.itemType == ItemType.RESET) {
+    console.log("RESET items")
+    items = []
+  }
 }
 
 io.on('connection', function (socket) {

@@ -160,6 +160,8 @@ try {
         content:row['content'],
         image:row['image'],
         //likes
+        canLike:'true'==row['canLike'],
+        canShare:'true'==row['canShare'],
       }
       si.item = simple
     } else if (si.itemType == ItemType.QUIZ || si.itemType == ItemType.POLL) {
@@ -202,10 +204,10 @@ try {
         //likes
       }
       si.item = selfie
-    } else if (si.itemType == ItemType.BLANK) {
+    } else if (si.itemType == ItemType.BLANK || si.itemType == ItemType.RESET) {
       let blank:Item = {
         // id?:string
-        itemType:ItemType.BLANK,
+        itemType:si.itemType,
         user_name:'system',
         //user_icon:row['user_icon'],
         //date?:string
@@ -213,7 +215,7 @@ try {
       }
       si.item = blank
       if (!blank.toAudience) {
-        console.log(`warning: blank item ${si.itemNumber} is not toAudience`)
+        console.log(`warning: ${si.itemType} item ${si.itemNumber} is not toAudience`)
       }
     } else if (si.itemType == ItemType.SELFIE || si.itemType == ItemType.REPOST) {
         if (row['user_name'] || row['user_icon'] || row['image']) {

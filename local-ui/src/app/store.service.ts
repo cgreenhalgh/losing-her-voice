@@ -12,7 +12,7 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   AnnounceShareItem, MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie,
   MSG_OSC_COMMAND, OscCommand, MSG_EXPORT_SELFIE_IMAGES,
   ExportSelfieImages } from './types';
-import { Item, SelfieImage, ShareItem, ShareSelfie } from './socialtypes';
+import { Item, SelfieImage, ShareItem, ShareSelfie, ItemType } from './socialtypes';
 import * as io from 'socket.io-client';
 
 const SOCKET_IO_SERVER:string = 'http://localhost:8080'
@@ -82,7 +82,16 @@ export class StoreService {
         this.socket.on(MSG_ANNOUNCE_ITEM, (data) => {
             let msg = data as AnnounceItem
             console.log('got item from server')
-            this.items.next(msg.item)
+            if (msg.item.itemType == ItemType.RESET) {
+              // replace/reset
+              this.items = new ReplaySubject()
+              // fake performance change
+              let p = this.performance.value
+              this.performance.next(null)
+              this.performance.next(p)
+            } else {
+              this.items.next(msg.item)
+            }
         })
         this.socket.on(MSG_ANNOUNCE_SHARE_ITEM, (data) => {
             let msg = data as AnnounceShareItem

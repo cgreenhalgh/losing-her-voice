@@ -7,6 +7,7 @@ export enum ItemType {
   QUIZ = 'quiz',
   POLL = 'poll',
   BLANK = 'blank',
+  RESET = 'reset',
 }
 
 export interface Item {
@@ -22,6 +23,8 @@ export interface SimpleItem extends Item {
   content?:string
   image?:string
   likes?:number
+  canLike?:boolean
+  canShare?:boolean
 }
 
 export interface RepostItem extends Item {
