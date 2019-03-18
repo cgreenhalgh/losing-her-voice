@@ -1,8 +1,8 @@
 <div *ngIf="menuItem && menuItem.cards">
-  <div><hr></div>
+  <div><div class="divider"><img src="/assets/Divider.png"></div></div>
   <div *ngFor="let card of menuItem.cards">
     <div [innerHTML]="card.html"></div>
-    <div><hr></div>
+    <div><div class="divider"><img src="/assets/Divider.png"></div></div>
     <div class="row">
       <div *ngIf="menuItem.url" class="button" (click)="openUrl()">{{ menuItem.urlTitle ? menuItem.urlTitle : 'Open in Browser'}}</div>
     </div>

@@ -1,3 +1,15 @@
+div.bodyPaper {
+	background: #e0d2bc;
+	background-image: url("/assets/Paper.jpg");
+	background-repeat: repeat;
+	color: black;
+	margin: 8px;
+}
+div.bodyView {
+	background: #000;
+	color: white;
+	margin: 8px;
+}
 div.landing {
 	z-index: 10;
 	position: fixed;
@@ -5,21 +17,77 @@ div.landing {
 	top: 0;
 	left: 0;
 	right: 0;
-	background: black;
-	border: 3px solid #333;
+	background: #2a3a2d;
+	//border: 3px solid #333;
+	background-image: url("/assets/BookCover.jpg");
+	//height: 823px;
+	background-position: center; 
+	background-repeat: repeat;
+}
+div.geraldineFace {
+	margin-top: 5%;
+	width: 65%;
+	height: auto;
+	margin: auto;
+}
+div.geraldineFace > img {
+	width: 100%;
+}
+div.landingBorder {
+	width: 95%;
+	margin: auto;
+}
+div.landingL {
+	width: 15%;
+	height: auto;
+	display: inline-block;
+}
+div.landingL > img {
+	width: 100%;
+	height: auto;
+}
+div.landingM {
+	width: 69%;
+	display: inline-block;
+}
+div.landingR {
+	width: 15%;
+	height: auto;
+	display: inline-block;
+}
+div.landingR > img {
+	width: 100%;
+	height: auto;
 }
 div.landing.touched {
-	background: #222;
-	border: 3px solid #555;
+	//background: #222;
+	//border: 3px solid #555;
 }
 
-div.landing > p {
-	color: white;
-	font-size: 36pt;
+p.coverText {
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+	margin-left: 5px;
+	margin-right: 5px;
+	color: #cbb043;
+	font-size: 28pt;
 	text-align: center;
 	vertical-align: middle;
+	font-family: "CATChilds", Times, serif;
 }
-
+.titleText {
+	font-family: "CATChilds", Times, serif;
+}
+.menuItem {
+	font-family: "CATChilds", Times, serif;
+	margin-top: 0.4em;
+	margin-bottom: 0.4em;
+	margin-left: 0.1em;
+	margin-right: 0.1em;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 170%;
+}
 div.button {
 	display: inline-block;
 	text-decoration: underline;
@@ -50,15 +118,18 @@ span.toggleFullscreen {
 }
 .sidenav {
   height: 100%;
-  width: 80%;
+  width: 100%;
   position: fixed;
   z-index: 1;
   top: 0;
-  left: -80%;
-  background-color: #111;
+  left: -101%;
+  background: #e0d2bc;
+  background-image: url("/assets/Paper.jpg");
+  background-repeat: repeat;
   overflow-x: hidden;
   transition: 0.2s;
   padding-top: 60px;
+  border-right: 2px solid #333;
 }
 
 .sidenav a {
@@ -85,6 +156,9 @@ span.toggleFullscreen {
     /*width: 80%;*/
     left: 0;
 }
+.sidenav > h1 {
+	position: relative;
+}
 
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
@@ -93,7 +167,7 @@ span.toggleFullscreen {
 
 /* item layout - just copied from local-ui to start off with */
 .item {
-	border: 1px solid white;
+	/*border: 1px solid white;*/
 	margin: 5px;
 	padding: 4px;
 }
@@ -104,6 +178,10 @@ span.toggleFullscreen {
 	content: "";
 	display: table;
 	clear: both;
+}
+.item_title {
+	padding-left: 0.2em;
+	font-family: "CATChilds", Times, serif;
 }
 div.item_user_icon {
 	float:left;
@@ -252,6 +330,17 @@ hr.dark {
   animation-name: fadehr;
   animation-duration: 0.25s;
 }
+div.viewDivider {
+	width: 50%;
+	margin: auto;
+}
+div.viewDivider.dark {
+	opacity: 0.3;
+}
+div.viewDivider > img {
+	width: 100%;
+	height: auto;
+}
 .flickerDiv {
 	display: none;
 	z-index: 1;
@@ -289,4 +378,10 @@ hr.dark {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+:host ::ng-deep h1 {
+	font-family: "CATChilds", Times, serif;
+}
+:host ::ng-deep h2 {	
+	font-family: "CATChilds", Times, serif;
 }

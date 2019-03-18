@@ -1,6 +1,6 @@
 <div *ngIf="menuItems">
   <div *ngFor="let menuItem of menuItems">
-    <div *ngIf="menuItem.showOnHome" class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
+    <div *ngIf="menuItem.showOnHome" class="menuItem" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
   </div>
 </div>
 <div *ngIf="performance">

@@ -1,6 +1,8 @@
+<div [ngClass]="{bodyPaper: !view, bodyDark: view}">
+
 <h1 [ngClass]="{dark: view && view.dark}">
 	<span *ngIf="!view" class="button" (click)="onShowMenu()"><mat-icon>menu</mat-icon></span>
-	<span>
+	<span class="titleText">
 	Losing Her Voice 
 	</span>
 	<span (click)="toggleFullScreen()" class="toggleFullscreen"><mat-icon>fullscreen</mat-icon><!-- (toggle fullscreen) --></span>
@@ -13,9 +15,10 @@
   Sorry, {{currentState.error}}
 </div>
 <div class="sidenav" [ngClass]="{'sidenavopen': showMenu && !view}">
+  <!-- <h1><span class="titleText">Losing Her Voice</span></h1> -->
   <a href="javascript:void(0)" class="closebtn" (click)="onShowMenu()">&times;</a>
   <div *ngFor="let menuItem of menuItems">
-    <div class="button" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
+    <div class="menuItem" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
   </div>
 </div>
 <div class="flickerDiv" #flickerDiv>
@@ -24,10 +27,10 @@
   </div>
 </div>
 <div *ngIf="view && !view.showItems" [ngClass]="{dark: view && view.dark}">
-  <div><hr [ngClass]="{dark: view && view.dark}"></div>
+  <div><div class="viewDivider" [ngClass]="{dark: view && view.dark}"><img src="/assets/ViewDivider.png"></div></div>
   <div *ngFor="let card of view.cards">
     <div [innerHTML]="card.html"></div>
-    <div><hr [ngClass]="{dark: view && view.dark}"></div>
+    <div><div class="viewDivider" [ngClass]="{dark: view && view.dark}"><img src="/assets/ViewDivider.png"></div></div>
   </div>
   <div *ngIf="showPlay">
     <div class="button" (click)="onPlayAudio()">Play</div>
@@ -38,7 +41,7 @@
 		{{profileName}}<mat-icon *ngIf="!profileName" >create</mat-icon>
 	</div>
 	<profile-view *ngIf="editProfile" (fullNameSet)="onToggleEditProfile()"></profile-view>
-	<div *ngIf="!editProfile"><hr></div>
+	<div *ngIf="!editProfile"><div class="viewDivider"><img src="/assets/ViewDivider.png"></div></div>
 	<div *ngIf="selfieConfirmed && !!profileName && !selfieSent && view.postSelfie" class="row">
 		<div class="item_like" [ngClass]="{item_liked: selfieSent, disabled: !selfieConfirmed || !profileName}" (click)="onShareSelfie()">Publish my Selfie</div>
 	</div>
@@ -77,7 +80,21 @@
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
 
 <div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (touchstart)="onTouchLanding()" (touchend)="onDismissLanding($event)" (mousedown)="onTouchLanding()" (mouseup)="onDismissLanding($event)">
-  <p>Touch to start...</p>
+  <p class="coverText">Losing Her Voice</p>
+  <div class="landingBorder">
+  	<div class="landingL"><img src="assets/CoverTopLeft.png"></div>
+  	<div class="landingM"></div>
+  	<div class="landingR"><img src="assets/CoverTopRight.png"></div>
+  </div>
+  <div class="geraldineFace"><img src="assets/SplashScreenFace.png"></div>
+  <p class="coverText">Touch to start</p>
+  <div class="landingBorder">
+  	<div class="landingL"><img src="assets/CoverBottomLeft.png"></div>
+  	<div class="landingM"></div>
+  	<div class="landingR"><img src="assets/CoverBottomRight.png"></div>
+  </div>
 </div>
 
 <router-outlet *ngIf="!view"></router-outlet>
+
+</div>

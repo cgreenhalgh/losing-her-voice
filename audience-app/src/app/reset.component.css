@@ -1,7 +1,7 @@
 div.button {
 	display: block;
 /*	text-decoration: underline; */
-	background: #333;
+	//background: #ddd;
 	border: 1px solid #555;
 	border-radius: 0.2em;
 	margin: 0.2em;
@@ -11,8 +11,9 @@ div.button {
 	padding-bottom: 0.1em;
 	cursor:default;
 	text-align: center;
+	//opacity: 0.5;
 }
 div.button.disabled {
-	color: #555;
-	border: 1px solid #333;
+	color: #aaa;
+	border: 1px solid #ccc;
 }

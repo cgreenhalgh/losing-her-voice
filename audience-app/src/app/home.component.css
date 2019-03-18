@@ -11,3 +11,13 @@ div.button {
 	padding-bottom: 0.5em;
 	text-align: center;
 }
+.menuItem {
+	font-family: "CATChilds", Times, serif;
+	margin-top: 0.4em;
+	margin-bottom: 0.4em;
+	margin-left: 0.1em;
+	margin-right: 0.1em;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 170%;
+}

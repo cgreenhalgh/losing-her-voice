@@ -37,7 +37,7 @@ div.half {
 }
 div.selfie_button {
 	display: block;
-	border: 1px solid #555;
+	border: 1px solid #aaa;
 	border-radius: 0.2em;
 	margin: 0.2em;
 	padding-left: 0.5em;
@@ -48,11 +48,11 @@ div.selfie_button {
 }
 div.selfie_button.active {
 	color: #888;
-	background: #333;
+	background: #e0d2bc;
 }
 div.selfie_button.disabled {
-	color: #555;
-	border: 1px solid #333;
+	color: #aaa;
+	border: 1px solid #ccc;
 }
 div.text {
 	margin-left: 0.5em;

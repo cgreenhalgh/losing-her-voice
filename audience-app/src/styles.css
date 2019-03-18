@@ -1,6 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 body {
-	background: black;
+	background: #000;
 	color: white;
-	font-family: "Times New Roman", Times, serif;
+	font-family: Helvetica, Ariel, sans-serif;
+	margin: 0px;
+}
+@font-face {
+  font-family: CATChilds;
+  src: url("assets/CATChilds.ttf");
 }
