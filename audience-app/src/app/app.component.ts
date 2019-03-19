@@ -101,7 +101,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.showMenu = false
       }
       if (this.allMenuItems) {
-        this.menuItems = this.allMenuItems.filter((item) => (this.currentState && this.currentState.postPerformance) || !item.postPerformance)
+        this.menuItems = this.allMenuItems.filter((item) => 
+        ((this.currentState && this.currentState.postPerformance && item.postPerformance) ||
+         (this.currentState && this.currentState.inPerformance && item.inPerformance) ||
+         (this.currentState && this.currentState.prePerformance && item.prePerformance) ||
+         (!item.prePerformance && !item.inPerformance && !item.postPerformance)))
       }
       this.flickerImage = null
       this.updateFlicker(false)

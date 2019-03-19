@@ -15,7 +15,7 @@
 			There is a chance to share your selfie in Act 2. 
 			This will mean that your picture is seen by everyone in theatre, 
 			and will also mean that your picture is visible in any recordings of the performance.
-			These recordings will be publicly accessible after the show.
+			These recordings may be publicly accessible after the show.
 		</div>
 		<div class="text">
 			If you are happy to publish this picture and give consent for it to be used in this way, then please confirm below.
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div *ngIf="selfieAccepted">
-			<div class="text">Are you sure? You can't change or withdraw the picture after this, although you will still be able to decide whether to post it publicly.</div>
+			<div class="text">Are you sure? You can't change or withdraw the picture after this.</div>
 			<div class="row">
 				<div class="half">
 					<div class="selfie_button" (click)="onDecline()">No thanks</div>
@@ -44,10 +44,10 @@
 		<div class="text">
 			Thank you for confirming that you are happy for your picture is seen by everyone in theatre, 
 			and for your picture to be included in any recordings of the performance.
-			These recordings will be publicly accessible after the show.
+			These recordings may be publicly accessible after the show.
 		</div>
 		<div *ngIf="!selfiePosted" class="text">
-			You can't change or withdraw the picture now, but you can still decide whether to post it publicly.
+			You can't change or withdraw the picture now.
 		</div>
 	</div>
 </div>

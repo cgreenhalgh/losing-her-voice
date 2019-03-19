@@ -219,11 +219,11 @@ Audience app:
 - [x] control over option to share/like (no by default)
 - [x] CSS/images/fonts for styling
 - [x] background images/scrapbook styling?!
+- [x] option for releasing new menu items in the interval
 
 - [ ] post/quiz view in menu mode
 - [ ] menu mode notification/popup for post/quiz
 - [ ] notification/alert facility, e.g. from scene change
-- [ ] option for releasing new menu items in the interval
 - [ ] option to fade images in scene info view
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] specific user guidance for in-browser vs PWA/home screen?

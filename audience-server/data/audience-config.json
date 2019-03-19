@@ -40,26 +40,26 @@
     {
       "id": "home",
       "title": "Home",
-      "postPerformance": false,
       "cards": [
       ]
     },
     {
       "id": "profile",
       "title": "Pick a profile for the performance",
-      "postPerformance": false,
+      "prePerformance": true,
+      "inPerformance": true,
       "showOnHome":true
     },
     {
       "id": "selfie",
       "title": "Take a selfie for the performance",
-      "postPerformance": false,
+      "prePerformance": true,
+      "inPerformance": true,
       "showOnHome":true
     },
     {
       "id": "about.geraldine",
       "title": "About Geraldine",
-      "postPerformance": false,
       "cards": [
         { "html": "<p>Alice Geraldine Farrar (February 28, 1882 – March 11, 1967) was an American soprano opera singer and film actress, noted for her beauty, acting ability, and &quot;the intimate timbre of her voice.&quot; She had a large following among young women, who were nicknamed &quot;Gerry-flappers&quot;.</p>" },
         { "html": "<p>Farrar was born in Melrose, Massachusetts, and at 5 she began studying music in Boston and by 14 was giving recitals. Later she studied voice with the American soprano Emma Thursby in New York City, in Paris, and finally with the Italian baritone Francesco Graziani in Berlin. Farrar created a sensation at the Berlin Hofoper with her debut as Marguerite in Charles Gounod&#39;s Faust in 1901 and remained with the company for three years, during which time she continued her studies with famed German soprano Lilli Lehmann. She appeared in the title roles of Ambroise Thomas&#39; Mignon and Jules Massenet&#39;s Manon, as well as Juliette in Gounod&#39;s Roméo et Juliette. Her admirers in Berlin included Crown Prince Wilhelm of Germany, with whom she is believed to have had a relationship beginning in 1903.</p>" },
@@ -81,9 +81,37 @@
       "showOnHome":true
     },
     {
+      "id": "prePerformance",
+      "title": "Before the Show",
+      "prePerformance": true,
+      "cards": [
+          { "html": "<p>Interesting stuff to read before the show...</p>" }
+      ],
+      "showOnHome":true
+    },
+    {
+      "id": "inPerformance",
+      "title": "Interval Update",
+      "inPerformance": true,
+      "cards": [
+          { "html": "<p>Interesting stuff to read during the interval...</p>" }
+      ],
+      "showOnHome":true
+    },
+    {
+      "id": "postPerformance",
+      "title": "What Happened Next?",
+      "postPerformance": true,
+      "cards": [
+          { "html": "<p>Interesting stuff to read after the show...</p>" }
+      ],
+      "showOnHome":true
+    },
+    {
       "id": "help",
       "title": "Help",
-      "postPerformance": false,
+      "prePerformance": true,
+      "inPerformance": true,
       "cards": [
         { "html": "<p>Throughout this performance of ‘Losing Her Voice’ some performance content and interactions will take place via your mobile device. Some of this content, such as the ‘Synopsis, ‘About Geraldine’, and ‘Credits’ can be browsed before the start of the performance, or during the interval. Other content will be displayed on the device during the performance itself.</p>" },
         { "html": "<p>It is your choice whether you want to engage with this and it is not necessary to do so. If you would rather not then turn your device off, or set it to silent and put it somewhere safe.</p>" },
@@ -99,7 +127,6 @@
     {
       "id": "credits",
       "title": "Credits",
-      "postPerformance": false,
       "cards": [
         { "html": "<p><em>Creative team:</em></p> <p>Composer and Librettist – Elizabeth Kelly</p> <p>Director – Martin Berry</p> <p>Musical Director – Calum Fraser</p> <p>Digital Design - Barret Hodgson</p> <p>Interactive Performance Technologies – Chris Greenhalgh &amp; Adrian Hazzard</p> <p>Etc</p> <p><em>Principle Singers:</em></p> <p>Geraldine Farrar</p> <p>Lilli Lehmann</p> <p>Lou Tellegen</p> <p>etc</p> <p><em>Chorus:</em></p> <p><em>Instrumentalists:</em></p>" }
       ],
@@ -113,12 +140,12 @@
         { "html": "<p>We would be grateful if you could complete this anonymous online questionnaire about your experience of Losing Her Voice.</p>" }
       ],
       "urlTitle":"Open questionnaire in browser",
-      "url": "https://nottingham.onlinesurveys.ac.uk/losing-her-voice-audience-survey-v1"
+      "url": "https://nottingham.onlinesurveys.ac.uk/losing-her-voice-audience-survey-v1",
+      "showOnHome":true
     },
     {
       "id": "reset",
-      "title": "Clear user data",
-      "postPerformance": false
+      "title": "Clear user data"
     }
   ],
   "views":[

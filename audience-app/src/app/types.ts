@@ -10,7 +10,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 9
+export const CURRENT_VERSION:number = 10
 
 export interface ClientTiming {
   clientSendTime:number
@@ -52,6 +52,8 @@ export interface OutOfDate {
 export interface CurrentState {
   forceView?:string
   allowMenu:boolean
+  prePerformance:boolean
+  inPerformance:boolean
   postPerformance:boolean
   serverStartTime:number
   serverSendTime:number
@@ -71,7 +73,9 @@ export interface Card {
 export interface MenuItem {
   id:string
   title:string
-  postPerformance:boolean
+  prePerformance?:boolean
+  inPerformance?:boolean
+  postPerformance?:boolean
   cards:Card[]
   highlight?:boolean // internal
   url?:string // optional external url

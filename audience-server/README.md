@@ -28,6 +28,8 @@ Menu Item, i.e. entry in normal navigational menu such as "About Geraldine"; obj
 - `id` (string) - unique internal ID, referred to from View `defaultMenuId`
 - `title` (string) - menu item text and page title
 - `postPerformance` (boolean, default false) - item is only visible after performance
+- `prePerformance` (boolean, default false) - item is only visible before performance
+- `inPerformance` (boolean, default false) - item is only visible during the interval
 - `cards`, array of Cards, see below
 
 Card, i.e. page of content in a Menu Item or View, object with:

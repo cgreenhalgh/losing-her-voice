@@ -101,6 +101,8 @@ export class SyncService {
         this.currentState.next({
           allowMenu:false,
           postPerformance:false,
+          prePerformance:false,
+          inPerformance:false,
           error:`trying to re-connect...`,
           serverSendTime:0,
           serverStartTime:0,
@@ -138,6 +140,8 @@ export class SyncService {
       this.currentState.next({
         allowMenu:false,
         postPerformance:false,
+        prePerformance:false,
+        inPerformance:false,
         error:`the client and server versions do not match - try re-loading this page or re-installing/updating if this is an app (client version ${CURRENT_VERSION}, server version ${msg.serverVersion})`,
         serverSendTime:0,
         serverStartTime:0,

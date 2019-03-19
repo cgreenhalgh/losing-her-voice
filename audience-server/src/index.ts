@@ -64,6 +64,8 @@ function getCurrentState(performanceid:string): CurrentState {
         currentState = {
             allowMenu:true,
             postPerformance:false,
+            prePerformance:true,
+            inPerformance:false,
             serverStartTime:(new Date()).getTime(),
             serverSendTime:(new Date()).getTime(),
         }
@@ -294,16 +296,22 @@ redisSub.on("message", function (channel, message) {
         currentState.forceView = null
         currentState.allowMenu = true
         currentState.postPerformance = false
+        currentState.prePerformance = true
+        currentState.inPerformance = false
       } else if (STATE_INTERVAL == state) {
         console.log(`${vs.performanceid}: interval state`)
         currentState.forceView = null
         currentState.allowMenu = true
         currentState.postPerformance = false
+        currentState.prePerformance = false
+        currentState.inPerformance = true
       } else if (STATE_POST == state) {
         console.log(`${vs.performanceid}: post state`)
         currentState.forceView = null
         currentState.allowMenu = true
         currentState.postPerformance = true
+        currentState.prePerformance = false
+        currentState.inPerformance = false
       } else if (SERVER_RELOAD == state) {
         console.log('NOTE: reload configuration!')
         readConfig()
@@ -313,6 +321,8 @@ redisSub.on("message", function (channel, message) {
         currentState.forceView = state as string
         currentState.allowMenu = false
         currentState.postPerformance = false
+        currentState.prePerformance = false
+        currentState.inPerformance = false
       }
       currentState.serverStartTime = now
       currentState.serverSendTime = now
