@@ -439,3 +439,6 @@ div.viewDivider > img {
 :host ::ng-deep h2 {	
 	font-family: "CATChilds", Times, serif;
 }
+:host ::ng-deep .centerText {
+  text-align: center;
+}

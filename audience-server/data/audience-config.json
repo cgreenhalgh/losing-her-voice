@@ -128,7 +128,7 @@
       "id": "credits",
       "title": "Credits",
       "cards": [
-        { "html": "<p><em>Creative team:</em></p> <p>Composer and Librettist – Elizabeth Kelly</p> <p>Director – Martin Berry</p> <p>Musical Director – Calum Fraser</p> <p>Digital Design - Barret Hodgson</p> <p>Interactive Performance Technologies – Chris Greenhalgh &amp; Adrian Hazzard</p> <p>Etc</p> <p><em>Principle Singers:</em></p> <p>Geraldine Farrar</p> <p>Lilli Lehmann</p> <p>Lou Tellegen</p> <p>etc</p> <p><em>Chorus:</em></p> <p><em>Instrumentalists:</em></p>" }
+        { "html": "<div class=\"centerText\"><p><em>Creative team:</em></p> <p>Composer and Librettist – Elizabeth Kelly</p> <p>Director – Martin Berry</p> <p>Musical Director – Calum Fraser</p> <p>Digital Design - Barret Hodgson</p> <p>Interactive Performance Technologies – Chris Greenhalgh &amp; Adrian Hazzard</p> <p>Etc</p> <p><em>Principle Singers:</em></p> <p>Geraldine Farrar</p> <p>Lilli Lehmann</p> <p>Lou Tellegen</p> <p>etc</p> <p><em>Chorus:</em></p> <p><em>Instrumentalists:</em></p></div>" }
       ],
       "showOnHome":true
     },

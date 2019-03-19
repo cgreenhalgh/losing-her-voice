@@ -18,3 +18,34 @@ div.divider > img {
 	width: 100%;
 	height: auto;
 }
+/* content images, note workaround for https://github.com/angular/angular/issues/7845 */
+:host ::ng-deep .view_large {
+	width: 100%;
+	height: auto;
+}
+/* content images */
+:host ::ng-deep .view_medium {
+	width: 66%;
+	height: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* content images */
+:host ::ng-deep .view_small {
+	width: 33%;
+	height: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+:host ::ng-deep h1 {
+	font-family: "CATChilds", Times, serif;
+}
+:host ::ng-deep h2 {	
+	font-family: "CATChilds", Times, serif;
+}
+:host ::ng-deep .centerText {
+  text-align: center;
+
+}

@@ -67,6 +67,10 @@ FlickerConfig, object with:
 
 In html content (i.e. in cards), for now use standard tags: H1, H2, P. 
 
+h1 and h2 and formatted in the CATChild font.
+
+Style "centerText" should center-align text.
+
 For an image on its own typically this will be a relative path "assets/...".
 Style with CSS class "view_large" (100% width), "view_medium" (66% width) or "view_small" (33% width).
 
