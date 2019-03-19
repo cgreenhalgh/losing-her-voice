@@ -3,12 +3,13 @@ div.bodyPaper {
 	background-image: url("/assets/Paper.jpg");
 	background-repeat: repeat;
 	color: black;
-	margin: 8px;
+	padding: 8px;
+	min-height: 823px;
 }
-div.bodyView {
+div.bodyDark {
 	background: #000;
 	color: white;
-	margin: 8px;
+	padding: 8px;
 }
 div.landing {
 	z-index: 10;
@@ -23,6 +24,7 @@ div.landing {
 	//height: 823px;
 	background-position: center; 
 	background-repeat: repeat;
+	overflow: scroll;
 }
 div.geraldineFace {
 	margin-top: 5%;
@@ -78,6 +80,9 @@ p.coverText {
 .titleText {
 	font-family: "CATChilds", Times, serif;
 }
+.profile_name {
+	font-family: "CATChilds", Times, serif;
+}
 .menuItem {
 	font-family: "CATChilds", Times, serif;
 	margin-top: 0.4em;
@@ -120,7 +125,7 @@ span.toggleFullscreen {
   height: 100%;
   width: 100%;
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   top: 0;
   left: -101%;
   background: #e0d2bc;
@@ -165,6 +170,55 @@ span.toggleFullscreen {
   .sidenav a {font-size: 18px;}
 }
 
+h1.title {
+	margin-top: 0.2em;
+	margin-bottom: 0.3em;
+}
+div.mediaSpacer {
+	height: 0.5em;
+}
+div.mediaTopBorder {
+	width: 100%;
+	margin: auto;
+	height: 1.2em;
+	overflow: visible;
+}
+div.mediaBottomBorder {
+	width: 100%;
+	margin: auto;
+	position: relative;
+	top: -1.2em;
+	overflow: visible;
+}
+div.mediaL {
+	width: 15%;
+	height: auto;
+	display: inline-block;
+}
+div.mediaL > img {
+	width: 100%;
+	height: auto;
+}
+div.mediaM {
+	width: 69%;
+	display: inline-block;
+}
+div.mediaR {
+	width: 15%;
+	height: auto;
+	display: inline-block;
+}
+div.mediaR > img {
+	width: 100%;
+	height: auto;
+}
+div.mediaHolder {
+	position: relative;
+	min-height: 200px;
+	width: 90%;
+	margin: auto;
+	z-index: 1;
+}
 /* item layout - just copied from local-ui to start off with */
 .item {
 	/*border: 1px solid white;*/
@@ -343,7 +397,7 @@ div.viewDivider > img {
 }
 .flickerDiv {
 	display: none;
-	z-index: 1;
+	z-index: 2;
 	position: fixed;
 	top: 0;
 	bottom: 0;

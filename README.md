@@ -143,7 +143,7 @@ sudo docker run -it --rm --name=audience-app --network=internal \
   -v `pwd`/html/2/:/root/work/static/ \
   audience-app /bin/bash
 ng serve --host=0.0.0.0
-ng build --prod --base-href=/2/losing-her-voice/
+ng build --prod --base-href=/2/losing-her-voice/ --deploy-url=/2/losing-her-voice/
 cp -r dist/losing-her-voice static/
 ```
 

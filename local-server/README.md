@@ -217,6 +217,8 @@ Audience app:
 - [x] iphone selfie image rotation fix - maybe EXIF tag? see [this](https://stackoverflow.com/questions/20600800/js-client-side-exif-orientation-rotate-and-mirror-jpeg-images)
 - [x] show last social item on reload
 - [x] control over option to share/like (no by default)
+- [x] CSS/images/fonts for styling
+- [x] background images/scrapbook styling?!
 
 - [ ] post/quiz view in menu mode
 - [ ] menu mode notification/popup for post/quiz
@@ -226,10 +228,8 @@ Audience app:
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] specific user guidance for in-browser vs PWA/home screen?
 - [ ] disable communication before and after event ?! (or otherwise limit traffic)
-- [ ] CSS/images/fonts for styling
-- [ ] background images/scrapbook styling?!
 - [ ] * log usage
-- [ ] * troubleshoot/fix audio playback (problems on some devices...)
+- [ ] * troubleshoot/fix audio playback (problems on some devices...) (could have been click vs touch??)
 - [ ] research subject ID allocate and view?
 - [ ] add ServiceWorker support?!
 - [ ] app disconnect warning?

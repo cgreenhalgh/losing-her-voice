@@ -16,7 +16,7 @@ VOLUME /root/work/static/
 
 COPY . /root/work/
 
-RUN ng build --prod --base-href=/2/losing-her-voice/
+RUN ng build --prod --base-href=/2/losing-her-voice/ --deploy-url=/2/losing-her-voice/
 
 #EXPOSE 8100
 

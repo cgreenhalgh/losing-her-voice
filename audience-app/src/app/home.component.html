@@ -4,15 +4,15 @@
   </div>
 </div>
 <div *ngIf="performance">
-	<div><hr></div>
-    <p>{{performance.title}}</p>
-    <p>Starts: {{startDatetime}}</p>
-	<div><hr></div>
+    <div><div class="divider"><img src="assets/Divider.png"></div></div>
+    <p class="performanceInfo">{{performance.title}}</p>
+    <p class="performanceInfo">Starts: {{startDatetime}}</p>
+    <div><div class="divider"><img src="assets/Divider.png"></div></div>
 </div>
 <div *ngIf="!performance">
-	<div><hr></div>
-    <p>Sorry, I don't know which performance this is meant to be.</p>
-    <div><hr></div>
+    <div><div class="divider"><img src="assets/Divider.png"></div></div>
+    <p class="performanceInfo">Sorry, I don't know which performance this is meant to be.</p>
+    <div><div class="divider"><img src="assets/Divider.png"></div></div>
 </div>
 <div *ngIf="menuItem && menuItem.cards">
   <div *ngFor="let card of menuItem.cards">

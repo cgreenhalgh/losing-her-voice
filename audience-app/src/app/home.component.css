@@ -21,3 +21,14 @@ div.button {
 	vertical-align: middle;
 	font-size: 170%;
 }
+div.divider {
+	width: 50%;
+	margin: auto;
+}
+div.divider > img {
+	width: 100%;
+	height: auto;
+}
+p.performanceInfo {
+	text-align: center;
+}

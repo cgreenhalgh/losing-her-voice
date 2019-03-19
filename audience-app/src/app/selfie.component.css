@@ -1,8 +1,8 @@
 input {
-	color:white;
+	color:black;
 	margin: 3pt;
 	padding: 3pt;
-	font-family: "Times New Roman", Times, serif;
+/*	font-family: "Times New Roman", Times, serif; */
 /*	font-size: 100%;*/
 }
 .image_holder {
