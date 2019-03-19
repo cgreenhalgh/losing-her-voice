@@ -22,7 +22,6 @@ function getDefault(value:number, def:number) : number {
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('audio') audio: ElementRef
   @ViewChild('audioNotification') audioNotification: ElementRef
-  @ViewChild('audioSilence') audioSilence: ElementRef
   @ViewChild('flickerImg') flickerImg: ElementRef
   @ViewChild('flickerDiv') flickerDiv: ElementRef
   loading:boolean = true
@@ -301,31 +300,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     $event.preventDefault()
     this.showLanding = false;
     this.playAudio()
-    this.playSilence()
+    this.playNotification()
     // dodgy?!
     this.toggleFullScreen()
   }
-  playSilence() {
-	  if (this.audioSilence) {
-		  let audio = this.audioSilence.nativeElement
-		  audio.pause()
-		  audio.currentTime = 0
-          audio.play()
-		      .catch((err) => { 
-		        console.log(`play audio (silence) error ${err.messsage}`, err);
-		      })
-	  }
-  }
   playNotification() {
-	  if (this.audioNotification) {
-		  let audio = this.audioNotification.nativeElement
-		  audio.pause()
-		  audio.currentTime = 0
-          audio.play()
-		      .catch((err) => { 
-		        console.log(`play audio (notification) error ${err.messsage}`, err);
-		      })
-	  }
+    if (this.audioNotification) {
+      let audio = this.audioNotification.nativeElement
+      audio.pause()
+      audio.currentTime = 0
+      audio.play()
+        .then(() => { console.log('play notification ok') })
+        .catch((err) => { 
+          console.log(`play audio (notification) error ${err.messsage}`, err);
+        })
+    } else {
+      console.log(`play audio (notification) error - element not set`)
+    }
   }
   toggleFullScreen() {    
     // https://developers.google.com/web/fundamentals/native-hardware/fullscreen/
