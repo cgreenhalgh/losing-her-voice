@@ -48,7 +48,11 @@ const server = http.createServer(app)
 /**
  * add socket.io
  */
-let io = socketio(server)
+let io = socketio(server, {
+  pingInterval: 20000,
+  // increase timeout because of throttled client thread timers
+  pingTimeout: 20000
+})
 
 const UPDATE_ROOM = "room.currentState"
 
