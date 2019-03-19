@@ -229,11 +229,14 @@ Audience app:
 - [ ] specific user guidance for in-browser vs PWA/home screen?
 - [ ] disable communication before and after event ?! (or otherwise limit traffic)
 - [ ] * log usage
-- [ ] * troubleshoot/fix audio playback (problems on some devices...) (could have been click vs touch??)
+- [ ] * troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!)
 - [ ] research subject ID allocate and view?
 - [ ] add ServiceWorker support?!
 - [ ] app disconnect warning?
 - [ ] app smoother reconnect support?
+- [ ] reduce title font size on iphone se and smaller ?! (spacing between characters is greater on iphone!) may font-kerning: normal; letter-spacing: normal; text-rendering: optimizeLegibility; font-feature-settings: "kern"; -webkit-font-feature-settings: "kern"; -moz-font-feature-settings: "kern"; -moz-font-feature-settings: "kern=1";?
+- [ ] trouble-shoot failure to persist performance id on iphone
+- [ ] cover page sizing problem? (often slightly too wide?)
 
 probably not...
 - [ ] ? selfie post with hash not image?

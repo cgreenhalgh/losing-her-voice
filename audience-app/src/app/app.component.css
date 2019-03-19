@@ -135,6 +135,7 @@ span.toggleFullscreen {
   transition: 0.2s;
   padding-top: 60px;
   border-right: 2px solid #333;
+  overflow-y: scroll;
 }
 
 .sidenav a {

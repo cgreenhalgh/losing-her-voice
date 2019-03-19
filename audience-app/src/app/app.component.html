@@ -1,11 +1,13 @@
 <div [ngClass]="{bodyPaper: !view, bodyDark: view}">
 
 <div class="sidenav" [ngClass]="{'sidenavopen': showMenu && !view}">
+ <div class="sidenavContent">
   <!-- <h1><span class="titleText">Losing Her Voice</span></h1> -->
   <a href="javascript:void(0)" class="closebtn" (click)="onShowMenu()">&times;</a>
   <div *ngFor="let menuItem of menuItems">
     <div class="menuItem" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
   </div>
+ </div>
 </div>
 
 <h1 [ngClass]="{dark: view && view.dark}" class="title">
@@ -95,6 +97,8 @@
 
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
+<audio #audioNotification src="assets/tick.mp3"></audio>
+<audio #audioSilence src="assets/silence.mp3"></audio>
 
 <div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (click)="onDismissLanding($event)">
  <div>
