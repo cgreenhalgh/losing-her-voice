@@ -2,7 +2,7 @@
   "metadata": {
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
-    "version": "0.9",
+    "version": "0.10",
     "author": "Chris Greenhalgh",
     "fileVersion": "lhv/audience/v4"
   },
@@ -52,7 +52,7 @@
     },
     {
       "id": "profile",
-      "title": "Pick a profile for the performance",
+      "title": "Pick a Gerryflapper name for the performance",
       "prePerformance": true,
       "inPerformance": true,
       "showOnHome":true
@@ -65,16 +65,11 @@
       "showOnHome":true
     },
     {
-      "id": "about.geraldine",
-      "title": "About Geraldine",
+      "id": "introduction",
+      "title": "Introduction",
       "cards": [
-        { "html": "<p>Alice Geraldine Farrar (February 28, 1882 – March 11, 1967) was an American soprano opera singer and film actress, noted for her beauty, acting ability, and &quot;the intimate timbre of her voice.&quot; She had a large following among young women, who were nicknamed &quot;Gerry-flappers&quot;.</p>" },
-        { "html": "<p>Farrar was born in Melrose, Massachusetts, and at 5 she began studying music in Boston and by 14 was giving recitals. Later she studied voice with the American soprano Emma Thursby in New York City, in Paris, and finally with the Italian baritone Francesco Graziani in Berlin. Farrar created a sensation at the Berlin Hofoper with her debut as Marguerite in Charles Gounod&#39;s Faust in 1901 and remained with the company for three years, during which time she continued her studies with famed German soprano Lilli Lehmann. She appeared in the title roles of Ambroise Thomas&#39; Mignon and Jules Massenet&#39;s Manon, as well as Juliette in Gounod&#39;s Roméo et Juliette. Her admirers in Berlin included Crown Prince Wilhelm of Germany, with whom she is believed to have had a relationship beginning in 1903.</p>" },
-        { "html": "<p>After three years with the Monte Carlo Opera, she made her debut at the New York Metropolitan Opera in Romeo et Juliette on November 26, 1906. She appeared in the first Met performance of Giacomo Puccini&#39;s Madama Butterfly in 1907 and remained a member of the company until her retirement in 1922, singing 29 roles there in 672 performances. She developed a great popular following, especially among New York&#39;s young female opera-goers, who were known as &quot;Gerry-flappers&quot;.</p>" },
-        { "html": "<p>She recorded extensively for the Victor Talking Machine Company and she was one of the first performers to make a radio broadcast, in a 1907 publicity event singing over Lee De Forest&#39;s experimental AM radio transmitter in New York City. She appeared in silent movies, which were filmed between opera seasons. Farrar starred in more than a dozen films from 1915 to 1920, including Cecil B. De Mille&#39;s 1915 adaptation of Georges Bizet&#39;s opera Carmen, for which she was extensively praised.</p>" },
-        { "html": "<p>Farrar had a seven-year love affair with the Italian conductor Arturo Toscanini. Her ultimatum, that he leave his wife and children and marry her, resulted in Toscanini&#39;s abrupt resignation as principal conductor of the Metropolitan Opera in 1915. Farrar was close friends with the star tenor Enrico Caruso and there has been speculation that they too had a love affair, but no conclusive evidence of this has surfaced. Her marriage to cinema actor Lou Tellegen on February 8, 1916 was the source of considerable scandal. The marriage ended, as a result of her husband&#39;s numerous affairs, in a very public divorce in 1923. The circumstances of the divorce were brought again to public recollection by Tellegen&#39;s bizarre 1934 suicide in Hollywood. Farrar reportedly said &quot;Why should that interest me?&quot; when told of Tellegen&#39;s death.</p>" },
-        { "html": "<p>Farrar retired from opera in 1922 at the age of 40. Her final performance was as Leoncavallo&#39;s Zazà. By this stage, her voice was in premature decline due to overwork. Farrar quickly transitioned into concert recitals, and she continued to make recordings and give recitals throughout the 1920s and was briefly the intermission commentator for the Metropolitan Opera radio broadcasts during the 1934–35 season. Her unusual autobiography, Such Sweet Compulsion, published in 1938, was written in alternating chapters purporting to be her own words and those of her mother, with Mrs. Farrar rather floridly recounting her daughter&#39;s many accomplishments.</p>" },
-        { "html": "<p>Content sourced from https://en.wikipedia.org/wiki/Geraldine_Farrar.</p>" }
+		{"html":"<p>[Introduction - Jeremy Gregory] </p>"},
+		{"html":"<p>[Composer’s Notes - Elizabeth Kelly]</p>"}
       ],
       "showOnHome":true
     },
@@ -88,29 +83,44 @@
       "showOnHome":true
     },
     {
-      "id": "prePerformance",
-      "title": "Before the Show",
+      "id": "about.geraldine",
+      "title": "About Geraldine Farrar",
+      "cards": [
+        { "html": "<p>Alice Geraldine Farrar (February 28, 1882 – March 11, 1967) was an American soprano opera singer and film actress, noted for her beauty, acting ability, and &quot;the intimate timbre of her voice.&quot; She had a large following among young women, who were nicknamed &quot;Gerry-flappers&quot;.</p>" },
+        { "html": "<p>Farrar was born in Melrose, Massachusetts, and at 5 she began studying music in Boston and by 14 was giving recitals. Later she studied voice with the American soprano Emma Thursby in New York City, in Paris, and finally with the Italian baritone Francesco Graziani in Berlin. Farrar created a sensation at the Berlin Hofoper with her debut as Marguerite in Charles Gounod&#39;s Faust in 1901 and remained with the company for three years, during which time she continued her studies with famed German soprano Lilli Lehmann. She appeared in the title roles of Ambroise Thomas&#39; Mignon and Jules Massenet&#39;s Manon, as well as Juliette in Gounod&#39;s Roméo et Juliette. Her admirers in Berlin included Crown Prince Wilhelm of Germany, with whom she is believed to have had a relationship beginning in 1903.</p>" },
+        { "html": "<p>After three years with the Monte Carlo Opera, she made her debut at the New York Metropolitan Opera in Romeo et Juliette on November 26, 1906. She appeared in the first Met performance of Giacomo Puccini&#39;s Madama Butterfly in 1907 and remained a member of the company until her retirement in 1922, singing 29 roles there in 672 performances. She developed a great popular following, especially among New York&#39;s young female opera-goers, who were known as &quot;Gerry-flappers&quot;.</p>" },
+        { "html": "<p>She recorded extensively for the Victor Talking Machine Company and she was one of the first performers to make a radio broadcast, in a 1907 publicity event singing over Lee De Forest&#39;s experimental AM radio transmitter in New York City. She appeared in silent movies, which were filmed between opera seasons. Farrar starred in more than a dozen films from 1915 to 1920, including Cecil B. De Mille&#39;s 1915 adaptation of Georges Bizet&#39;s opera Carmen, for which she was extensively praised.</p>" },
+        { "html": "<p>Farrar had a seven-year love affair with the Italian conductor Arturo Toscanini. Her ultimatum, that he leave his wife and children and marry her, resulted in Toscanini&#39;s abrupt resignation as principal conductor of the Metropolitan Opera in 1915. Farrar was close friends with the star tenor Enrico Caruso and there has been speculation that they too had a love affair, but no conclusive evidence of this has surfaced. Her marriage to cinema actor Lou Tellegen on February 8, 1916 was the source of considerable scandal. The marriage ended, as a result of her husband&#39;s numerous affairs, in a very public divorce in 1923. The circumstances of the divorce were brought again to public recollection by Tellegen&#39;s bizarre 1934 suicide in Hollywood. Farrar reportedly said &quot;Why should that interest me?&quot; when told of Tellegen&#39;s death.</p>" },
+        { "html": "<p>Farrar retired from opera in 1922 at the age of 40. Her final performance was as Leoncavallo&#39;s Zazà. By this stage, her voice was in premature decline due to overwork. Farrar quickly transitioned into concert recitals, and she continued to make recordings and give recitals throughout the 1920s and was briefly the intermission commentator for the Metropolitan Opera radio broadcasts during the 1934–35 season. Her unusual autobiography, Such Sweet Compulsion, published in 1938, was written in alternating chapters purporting to be her own words and those of her mother, with Mrs. Farrar rather floridly recounting her daughter&#39;s many accomplishments.</p>" },
+        { "html": "<p>Content sourced from https://en.wikipedia.org/wiki/Geraldine_Farrar.</p>" }
+      ],
       "prePerformance": true,
+      "showOnHome":true
+    },
+    {
+      "id": "trivia",
+      "title": "Losing Her Voice Trivia",
       "cards": [
-          { "html": "<p>Interesting stuff to read before the show...</p>" }
+        { "html": "<p>...</p>" }
+      ],
+      "prePerformance": true,
+      "showOnHome":true
+    },
+    {
+      "id": "cast",
+      "title": "Cast",
+      "cards": [
+{"html":"<h1>Cast</h1><p>Susanna Fairbairn – Geraldine Farrar</p><p>Marie Vassiliou - Lilli Lehmann</p><p>Jeremy Huw Williams – Cecil B. Demille/Journalist</p><p>Andrew Henley – Crown Prince of Germany/Lou Tellegen/Journalist</p><h2>Chorus/Gerry-flappers:</h2><p>Jean Clara Cartwright </p><p>Jessica Clarke </p><p>Christopher Cooke </p><p>Adam Ewers </p><p>Laura Lowe</p><p>Arieanne Masters</p><p>Kate Price</p><p>Rebecca Sarginson</p><p>Daniel Sutheran</p><h2>Ensemble:</h2><p>Mervyn Cooke - piano</p><p>Matthew Walker – clarinet</p><p>Matthew Herber - percussion</p><p>James Dickensen – violin</p><p>Daniel Boucher – violin</p><p>Carmen Flores – viola</p><p>Kristen Horner - cello</p>"},
+{"html":"<h1>Creatives </h1><p>Elizabeth Kelly – Composer &amp; Librettist</p><p>Calum Fraser – Musical Director</p><p>Martin Berry – Artistic Director</p><p>Chris Greenhalgh – Digital Technology</p><p>Adrian Hazzard – Digital Technology</p><p>Barret Hodgson – Digital Artists</p><p>Francesca Lazell - Set Designer</p><p>Charlotte Dearman - Costume Designer</p><p>Christopher Flux – Lighting Design</p><p>Richard Statham – Production Manager</p><p>Mervyn Cooke, Anne Mcgregor, Rob Challinor – Repetiteurs</p><p>Helen Fownes-Davies – Mentor to production designers</p><p>TBC – Company Stage Manager</p>"},
+{"html":"<h1>Biographies</h1><h2>Susanna Fairbairn</h2><p>Geraldine Farrar</p><p>English soprano Susanna Fairbairn studied at Magdalen College, Oxford, Trinity College of Music, and the Wales International Academy of Voice. Having worked for companies such as the Royal Opera House, Covent Garden, Opera North, English Touring Opera, Longborough Festival Opera and Opera Theatre Company in Ireland, she looks forward to new commissions later this year with Buxton International Opera Festival and at Deutsche Oper, Berlin. For more about Susanna, please visit www.susannafairbairn.com.</p><h2>Maria Vassiliou</h2><p>Lilli Lehmann</p><p>As concert soloist, she has appeared at all the leading London venues under conductors including Martyn Brabbins, Andrew Davis and Edward Gardner and at festivals including Huddersfield Contemporary Music and the BBC Proms. Her operatic career has taken her across the globe, roles have included: Anne Trulove, Leila, Mimi, Nedda, Tatyana and Governess. She has given numerous world premieres of works written for her and is currently professor of voice at Guildhall School and Royal Academy of Music.</p><h2>Jeremy Huw Williams</h2><p>Cecil B. Demille/Journalist</p><p>Jeremy Huw Williams studied at St John's College, Cambridge, at the National Opera Studio, and with April Cantelo.  He made his debut with Welsh National Opera as Guglielmo (Così fan tutte) and has since appeared in seventy operatic roles.  He has given performances at major venues in North and South America, Australia, China, India and most European countries.  He has made many recordings for BBC Radio 3, and more than thirty commercial recordings, including ten solo discs of songs.</p><h2>Andrew Henley</h2><p>Crown Prince of Germany/Lou Tellegen/Journalist</p>"}
       ],
       "showOnHome":true
     },
     {
-      "id": "inPerformance",
-      "title": "Interval Update",
-      "inPerformance": true,
+      "id": "thanks",
+      "title": "Thanks and Credits",
       "cards": [
-          { "html": "<p>Interesting stuff to read during the interval...</p>" }
-      ],
-      "showOnHome":true
-    },
-    {
-      "id": "postPerformance",
-      "title": "What Happened Next?",
-      "postPerformance": true,
-      "cards": [
-          { "html": "<p>Interesting stuff to read after the show...</p>" }
+{"html":"<h2>With thanks to </h2><p>The development of Losing Her Voice received funding from OPERA America’s Opera Grants for Female Composers program, supported by the Virginia B. Toulmin Foundation. A British Academy/Leverhulme Small Research Grant supported research and workshops around development and collaborative research with the Mixed Reality Lab was supported by a University of Nottingham 'Creative and Digital' Research Priority Area Development grant. This project was developed in collaboration with Nottingham Lakeside Arts.</p>"}
       ],
       "showOnHome":true
     },
@@ -121,7 +131,7 @@
     },
     {
       "id": "help",
-      "title": "Help",
+      "title": "App Help",
       "prePerformance": true,
       "inPerformance": true,
       "cards": [
@@ -133,14 +143,6 @@
         { "html": "<p>In ‘take a selfie for the performance’ we would like to post a selfie photograph of yourself that might feature at some point in the performance, should you wish to. Be aware that if you do post a selfie, your photo might be displayed on stage for the audience, cast and crew to see. Furthermore, this performance is being filmed, so it may also be captured on that. In the ‘take a selfie for the performance’ page it will guide you through how to post a selfie and how to consent for us to use it in the performance. Should you wish, please take a selfie, and post it before the performance, or in the interval. Note: you will not be able to contribute a selfie after Act 2 has started.</p>" },
         { "html": "<p>The ‘about Geraldine’ page gives you some background on Geraldine Farrar, the main protagonist in ‘Losing Her Voice’</p>" },
         { "html": "<p>Select ‘Losing Her Voice Synopsis’ to read the synopsis of the opera. If you are experiencing any difficulties with this audience app or would like to talk to someone about, please ask a member of staff before the performance starts or during the interval.</p>" }
-      ],
-      "showOnHome":true
-    },
-    {
-      "id": "credits",
-      "title": "Credits",
-      "cards": [
-        { "html": "<div class=\"centerText\"><p><em>Creative team:</em></p> <p>Composer and Librettist – Elizabeth Kelly</p> <p>Director – Martin Berry</p> <p>Musical Director – Calum Fraser</p> <p>Digital Design - Barret Hodgson</p> <p>Interactive Performance Technologies – Chris Greenhalgh &amp; Adrian Hazzard</p> <p>Etc</p> <p><em>Principle Singers:</em></p> <p>Geraldine Farrar</p> <p>Lilli Lehmann</p> <p>Lou Tellegen</p> <p>etc</p> <p><em>Chorus:</em></p> <p><em>Instrumentalists:</em></p></div>" }
       ],
       "showOnHome":true
     },

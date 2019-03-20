@@ -91,7 +91,10 @@ p.coverText {
 	margin-right: 0.1em;
 	text-align: center;
 	vertical-align: middle;
-	font-size: 170%;
+	font-size: 140%;
+}
+@media screen and (max-height: 450px) {
+  .menuItem {font-size: 130%;}
 }
 div.button {
 	display: inline-block;
@@ -133,7 +136,7 @@ span.toggleFullscreen {
   background-repeat: repeat;
   overflow-x: hidden;
   transition: 0.2s;
-  padding-top: 0.2em;
+  padding-top: 1em;
   border-right: 2px solid #333;
   overflow-y: scroll;
 }
@@ -166,9 +169,6 @@ span.toggleFullscreen {
 	position: relative;
 }
 
-@media screen and (max-height: 450px) {
-  .menuItem {font-size: 130%;}
-}
 h1.title {
 	margin-top: 0.2em;
 	margin-bottom: 0.3em;

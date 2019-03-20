@@ -21,6 +21,13 @@ See [data/output.txt](data/output.txt) and [data/output.html](data/output.html)
 Note, can read output.txt into Glypheo - enter single newline as user-defined separator. 
 Character encoding (UTF-8) seems to be OK (e.g. elipsis, apostrophes).
 
+## App support
+
+Convert word doc with works to JSON HTML for use in audience app, e.g.
+```
+node dist/doc2app.js data/Audience-app-text.docx data/app-text.json
+```
+
 ## To do
 
 - [x] handle LHV libretto format
