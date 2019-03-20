@@ -133,7 +133,7 @@ span.toggleFullscreen {
   background-repeat: repeat;
   overflow-x: hidden;
   transition: 0.2s;
-  padding-top: 60px;
+  padding-top: 0.2em;
   border-right: 2px solid #333;
   overflow-y: scroll;
 }
@@ -167,10 +167,8 @@ span.toggleFullscreen {
 }
 
 @media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
+  .menuItem {font-size: 130%;}
 }
-
 h1.title {
 	margin-top: 0.2em;
 	margin-bottom: 0.3em;
@@ -178,153 +176,7 @@ h1.title {
 div.mediaSpacer {
 	height: 0.5em;
 }
-div.mediaTopBorder {
-	width: 100%;
-	margin: auto;
-	height: 1.2em;
-	overflow: visible;
-}
-div.mediaBottomBorder {
-	width: 100%;
-	margin: auto;
-	position: relative;
-	top: -1.2em;
-	overflow: visible;
-}
-div.mediaL {
-	width: 15%;
-	height: auto;
-	display: inline-block;
-}
-div.mediaL > img {
-	width: 100%;
-	height: auto;
-}
-div.mediaM {
-	width: 69%;
-	display: inline-block;
-}
-div.mediaR {
-	width: 15%;
-	height: auto;
-	display: inline-block;
-}
-div.mediaR > img {
-	width: 100%;
-	height: auto;
-}
-div.mediaHolder {
-	position: relative;
-	min-height: 200px;
-	width: 90%;
-	margin: auto;
-	z-index: 1;
-}
-/* item layout - just copied from local-ui to start off with */
-.item {
-	/*border: 1px solid white;*/
-	margin: 5px;
-	padding: 4px;
-}
-.item_repost_header {
-	margin-bottom: 3pt;
-}
-.item_header:after {
-	content: "";
-	display: table;
-	clear: both;
-}
-.item_title {
-	padding-left: 0.2em;
-	font-family: "CATChilds", Times, serif;
-}
-div.item_user_icon {
-	float:left;
-	display: block;
-	width: 32px;
-	height: 32px;
-}
-img.item_user_icon {
-	width: 32px;
-	height: 32px;
-}
-.item_header2 {
-	float:left;
-	/*width:420px;*/
-}
-.item_header {
-	
-}
-.item_date {
-	color: grey;
-}
-.item_content {
-	margin: 5px;
-}
-div.item_image {
-	margin: 5px;
-}
-img.item_image {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	width: 50%;
-	min-width: 32px;
-	min-height: 32px;
-}
-.quiz_question {
-	margin: 5px;
-}
-.quiz_option {
-	margin-left: 2em;
-	margin-top: 0.2em;
-	margin-bottom: 0.2em;
-}
-.quiz_option.quiz_correct > .quiz_option_content > div {
-	border: 1px solid white;
-}
-.quiz_option.quiz_incorrect > .quiz_option_content > div {
-	color: #555;
-}
-.quiz_option.quiz_selected > .quiz_option_content > div {
-	background: #555;
-}
-.quiz_option.quiz_incorrect.quiz_selected > .quiz_option_content > div {
-	color: black;
-}
-.quiz_option:after {
-	content: "";
-	clear: both;
-	display: table;
-}
-.quiz_option_content {
-	display: block;
-	float:left;
-	width: 80%;
-	text-align: left;
-}
-.quiz_option_content > div {
-	border: 1px solid #555;
-	border-radius: 0.2em;
 
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	padding-top: 0.1em;
-	padding-bottom: 0.1em;
-}
-.quiz_option_count {
-	display: block;
-	float:left;
-	width: 20%;
-/*	padding-left: 0.5em;
-	padding-right: 0.5em;
-	padding-top: 0.1em;
-	padding-bottom: 0.1em;
-*/	text-align: center;
-}
-.quiz_prompt {
-	margin: 5px;
-}
 div.row {
 }
 div.row:after {
@@ -334,28 +186,6 @@ div.half {
 	width:50%;
 	float:left;
 }
-/* like etc. */
-div.item_like {
-	display: block;
-	/*width: 100%;*/
-	border: 1px solid #555;
-	border-radius: 0.2em;
-	margin: 0.2em;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	padding-top: 0.1em;
-	padding-bottom: 0.1em;
-	text-align: center;
-}
-div.item_like.item_liked {
-	color: #888;
-	background: #333;
-}
-div.item_like.disabled {
-	color: #555;
-	border: 1px solid #333;
-}
-
 @keyframes fade {
   from {color: #fff;}
   to {color: #444;}
@@ -411,6 +241,64 @@ div.viewDivider > img {
 .flickerImg {
 	width:100%;
 	height:auto;
+}
+
+div.notifyPopup {
+  height: 60px;
+  width: 100%;
+  position: fixed;
+  z-index: 5;
+  left: 0;
+  bottom: -60px;
+  overflow-x: hidden;
+  transition: 0.2s;
+/*	bottom: 0px;
+	left: 0px;
+	right: 0px;
+*/
+	background: black;
+	border: 10px;
+	color: white;
+}
+div.notifyContent {
+	width: 96%;
+	margin: auto;
+}
+div.notifyPopup.showPopup {
+	bottom: 0;
+}
+div.notifyL {
+	width: 10%;
+	height: auto;
+	display: inline-block;
+}
+div.notifyL > img {
+	width: 100%;
+	height: auto;
+}
+div.notifyM {
+	width: 80%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+/*  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; */
+}
+span.user_name {
+	font-family: "CATChilds", Times, serif;
+}
+div.notifyR {
+	width: 10%;
+	height: auto;
+	display: inline-block;
+}
+div.notifyR > img {
+	width: 100%;
+	height: auto;
+}
+div.notifySpacer {
+	height: 0.5em;
 }
 
 /* content images, note workaround for https://github.com/angular/angular/issues/7845 */

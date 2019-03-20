@@ -104,6 +104,7 @@ let configuration:Configuration = {
     version: '0',
     fileVersion: CONFIGURATION_FILE_VERSION
   },
+  options: {},
   menuItems:[],
   views:[],
   nameParts:[],

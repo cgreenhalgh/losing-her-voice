@@ -1,0 +1,10 @@
+<div class="profile_name" (click)="onToggleEditProfile()">
+	{{profileName}}<mat-icon *ngIf="!profileName" >create</mat-icon>
+</div>
+<profile-view *ngIf="editProfile" (fullNameSet)="onToggleEditProfile()"></profile-view>
+<div class="mediaSpacer"></div>
+<div class="postsContainer">
+  <div class="postsContainerInner">
+    <posts ></posts>
+  </div>
+</div>

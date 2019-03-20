@@ -1,0 +1,18 @@
+div.mediaSpacer {
+	height: 0.5em;
+}
+.postsContainer {
+	width: 97%;
+	margin: auto;
+	background: black;
+	padding: 1.5%;
+	/*padding-top: 5%;*/
+	color: white;
+}
+.postsContainerInner {
+	position: relative;
+	top: 0.6em;	
+}
+.profile_name {
+	font-family: "CATChilds", Times, serif;
+}

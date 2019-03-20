@@ -13,6 +13,7 @@ See [../README.md](../README.md)
 Audience app configuration file, [data/audience-config.json](data/audience-config.json).
 Object with:
 - `metadata`, see below
+- `options`, see below
 - `menuItems`, array of Menu Items, see below
 - `views`, array of Views, see below
 - `nameParts`, array of NamePart, see below
@@ -24,6 +25,13 @@ Metadata, config file metadata; object with:
 - `author` (string, optional) - creator of configuration
 - `version` (string) - version identifier for configuration file (advisory only)
 
+Options, general UI options, object with:
+- `notifyVibrate` (boolean, default false) attempt to vibrate on new post
+- `notifyPopup` (boolean, default false) attempt to show pop-up on new post
+- `notifySound` (boolean, default false) attempt to play notification sound on new post
+- `noSoundInShow` (boolean, default false) disable notification sound in show (even if enabled in pre/post)
+- `notifyView` (boolean, default false) attempt to vibrate on new view
+ 
 Menu Item, i.e. entry in normal navigational menu such as "About Geraldine"; object with:
 - `id` (string) - unique internal ID, referred to from View `defaultMenuId`
 - `title` (string) - menu item text and page title
@@ -48,6 +56,7 @@ View, i.e. app state/view associated with a particular part (e.g. scene) of the 
 - `postSelfie` (boolean, default false) - show option to post/publish selfie
 - `dark` (boolean, default false) - dark/blank(ish) view
 - `flicker` (FlickerConfig, optional) - flickering image settings, see below
+- `notify` (boolean, default options.notifyView) attempt to vibrate on switch to view
 
 NamePart, object with:
 - `title` (string)

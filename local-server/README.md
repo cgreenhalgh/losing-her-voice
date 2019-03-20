@@ -220,16 +220,16 @@ Audience app:
 - [x] CSS/images/fonts for styling
 - [x] background images/scrapbook styling?!
 - [x] option for releasing new menu items in the interval
+- [x] post/quiz view in menu mode
+- [x] menu mode notification/popup for post/quiz
+- [x] notification/alert facility, e.g. from scene change
 
-- [ ] post/quiz view in menu mode
-- [ ] menu mode notification/popup for post/quiz
-- [ ] notification/alert facility, e.g. from scene change
 - [ ] option to fade images in scene info view
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] specific user guidance for in-browser vs PWA/home screen?
 - [ ] disable communication before and after event ?! (or otherwise limit traffic)
 - [ ] * log usage
-- [ ] * troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!)
+- [ ] * troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!) ...
 - [ ] research subject ID allocate and view?
 - [ ] add ServiceWorker support?!
 - [ ] app disconnect warning?

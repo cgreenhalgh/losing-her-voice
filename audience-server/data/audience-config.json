@@ -2,9 +2,16 @@
   "metadata": {
     "title": "losing her voice audience metadata",
     "description": "just initial testing placeholders",
-    "version": "0.8",
+    "version": "0.9",
     "author": "Chris Greenhalgh",
-    "fileVersion": "lhv/audience/v3"
+    "fileVersion": "lhv/audience/v4"
+  },
+  "options": {
+    "notifySound": true,
+    "notifyPopup": true,
+    "notifyVibrate": true,
+    "noSoundInShow": false,
+    "notifyView": true
   },
   "performances": [
     {
@@ -108,6 +115,11 @@
       "showOnHome":true
     },
     {
+      "id": "posts",
+      "title": "Social Media",
+      "showOnHome":true
+    },
+    {
       "id": "help",
       "title": "Help",
       "prePerformance": true,
@@ -157,7 +169,8 @@
       ],
       "audioFile": "phone-to-silent.mp3",
       "audioDelaySeconds": 1,
-      "audioVolume": 0.5
+      "audioVolume": 0.5,
+      "notify": false
     },
     {
       "id":"act1.scene1",

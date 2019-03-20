@@ -10,7 +10,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 10
+export const CURRENT_VERSION:number = 11
 
 export interface ClientTiming {
   clientSendTime:number
@@ -97,6 +97,7 @@ export interface View {
   postSelfie?:boolean // prompt
   dark?:boolean
   flicker?:FlickerConfig
+  notify?:boolean
 }
 
 export interface FlickerConfig {
@@ -117,7 +118,7 @@ export interface ConfigurationMetadata {
   fileVersion:string
 }
 
-export const CONFIGURATION_FILE_VERSION = "lhv/audience/v3"
+export const CONFIGURATION_FILE_VERSION = "lhv/audience/v4"
 
 export interface NamePart {
   title:string
@@ -135,8 +136,17 @@ export interface Performance {
   timezone?:string
 }
 
+export interface Options {
+  notifyVibrate?:boolean
+  notifySound?:boolean
+  notifyPopup?:boolean
+  noSoundInShow?:boolean
+  notifyView?:boolean
+}
+
 export interface Configuration {
   metadata:ConfigurationMetadata
+  options:Options
   performances:Performance[]
   menuItems:MenuItem[]
   views:View[]

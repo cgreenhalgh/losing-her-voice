@@ -49,52 +49,7 @@
 		<div class="item_like" [ngClass]="{item_liked: selfieSent, disabled: !selfieConfirmed || !profileName}" (click)="onShareSelfie()">Publish my Selfie</div>
 	</div>
   <div class="mediaSpacer"></div>
-  <div class="mediaTopBorder">
-    <div class="mediaL"><img src="assets/MediaTopLeft.png"></div>
-  	<div class="mediaM"></div>
-  	<div class="mediaR"><img src="assets/MediaTopRight.png"></div>
-  </div>
-  <div class="mediaHolder">
-
-  <div *ngIf="currentItem && !currentItemIsBlank" class="item">
-		<div *ngIf="currentRepostItem" class="item_repost_header"><em>{{currentRepostItem.user_name}}</em> shared</div>
-		<div class="item_header">
-			<div class="item_user_icon"><img class="item_user_icon" [src]="currentItem.user_icon"></div>
-			<div class="item_header2">
-				<div class="item_title">{{currentItem.user_name}}</div>
-				<div class="item_date">{{currentItem.date}}</div>
-			</div>
-		</div>
-		<div *ngIf="currentSimpleItem" class="item_content">{{currentSimpleItem.content}}</div>
-		<div *ngIf="currentSimpleItem && currentSimpleItem.image" class="item_image"><img class="item_image" [src]="currentSimpleItem.image"></div>
-		<div *ngIf="currentQuizItem" class="quiz_question">{{currentQuizItem.content}}</div>
-		<div *ngIf="currentQuizItem">
-			<div *ngFor="let option of currentQuizItem.options; index as optionIndex" class="quiz_option" 
-			[ngClass]="{quiz_selected: option.selected, quiz_correct: currentQuizItem.closed && option.correct, quiz_incorrect: currentQuizItem.closed && currentQuizItem.itemType=='quiz' && !option.correct}">
-				<div class="quiz_option_content" (click)="selectQuizOption(optionIndex)"><div>{{option.content}}</div></div>
-				<div *ngIf="currentQuizItem.closed" class="quiz_option_count"><div>{{option.count}}</div></div>
-			</div>
-			<div class="quiz_prompt" *ngIf="!currentQuizItem.closed">{{currentQuizItem.openPrompt}}</div>
-			<div class="quiz_prompt" *ngIf="currentQuizItem.closed">{{currentQuizItem.closedPrompt}}</div>
-		</div>
-  </div>
-  <div class="row">
-    <div class="half">
-      <div *ngIf="currentSimpleItem && currentSimpleItem.canLike" class="item_like" [ngClass]="{item_liked: currentItemLiked}" (click)="onLikeCurrentItem()">Like</div>
-    </div>
-    <div class="half">
-      <div *ngIf="currentSimpleItem && currentSimpleItem.canShare" class="item_like" [ngClass]="{item_liked: currentItemShared, disabled: !profileName}" (click)="onShareCurrentItem()">Share</div>
-    </div>
-    <div *ngIf="currentQuizItem && !currentQuizItem.closed" class="item_like" [ngClass]="{item_liked: currentItemSent, disabled: !currentItemSelected}" (click)="onSendCurrentItem()">Send</div>
-  </div>
-
-  </div><!-- mediaHolder -->
-  <div class="mediaBottomBorder">
-    <div class="mediaL"><img src="assets/MediaBottomLeft.png"></div>
-  	<div class="mediaM"></div>
-  	<div class="mediaR"><img src="assets/MediaBottomRight.png"></div>
-  </div>
-
+  <posts ></posts>
 </div>
 <audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
 <audio #audioNotification src="assets/pageflip.mp3"></audio>
@@ -118,5 +73,21 @@
 </div>
 
 <router-outlet *ngIf="!view"></router-outlet>
+
+<div [ngClass]="{showPopup: showNotifyPopup}" class="notifyPopup" (click)="onShowPosts()">
+  <div class="notifyContent">
+	  <div class="notifySpacer"></div>
+	  <div class="notifyTopBorder">
+	  <div class="notifyL"><img src="assets/MediaTopLeft.png"></div>
+	  <div class="notifyM">
+	  	New post <span *ngIf="currentItem">from
+	  	</span><span *ngIf="currentItem" class="user_name">{{currentItem.user_name}}</span>...
+	  </div>
+	  <div class="notifyR"><img src="assets/MediaTopRight.png"></div>
+	  <div class="notifySpacer"></div>
+  </div>
+</div>
+  
+</div>
 
 </div>

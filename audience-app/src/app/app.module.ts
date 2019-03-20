@@ -12,6 +12,8 @@ import { SelfieComponent } from './selfie.component';
 import { ResetComponent } from './reset.component';
 import { HomeComponent } from './home.component';
 import { ItemComponent } from './item.component';
+import { PostsComponent } from './posts.component';
+import { PostspageComponent } from './postspage.component';
 import { SyncService } from './sync.service';
 
 @NgModule({
@@ -21,6 +23,8 @@ import { SyncService } from './sync.service';
     SelfieComponent,
     ResetComponent,
     HomeComponent,
+    PostsComponent,
+    PostspageComponent,
     ItemComponent
   ],
   imports: [

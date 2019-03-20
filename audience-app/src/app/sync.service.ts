@@ -25,7 +25,7 @@ export class SyncService {
   profileName:BehaviorSubject<string>
   selfieConfirmed:BehaviorSubject<boolean>
   selfieSent:BehaviorSubject<boolean>
-  item:Subject<Item>
+  item:BehaviorSubject<Item>
   socket:any
   minClientTimeOffset:number = Number.MIN_SAFE_INTEGER
   maxClientTimeOffset:number = Number.MAX_SAFE_INTEGER
@@ -50,7 +50,7 @@ export class SyncService {
     this.profileName = new BehaviorSubject(this.getName())
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.selfieSent = new BehaviorSubject(this.getSelfieSent())
-    this.item = new Subject()
+    this.item = new BehaviorSubject(null)
     // base href?
     let baseHref = (document.getElementsByTagName('base')[0] || {}).href
     console.log(`base href = ${baseHref}`)

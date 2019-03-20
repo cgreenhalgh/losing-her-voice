@@ -5,12 +5,14 @@ import { SelfieComponent } from './selfie.component';
 import { ResetComponent } from './reset.component';
 import { HomeComponent } from './home.component';
 import { ItemComponent } from './item.component';
+import { PostspageComponent } from './postspage.component';
 
 const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'selfie', component: SelfieComponent },
   { path: 'reset', component: ResetComponent },
   { path: 'home', component: HomeComponent },
+  { path: 'posts', component: PostspageComponent },
   { path: '', component: HomeComponent },
   { path: ':id', component: ItemComponent },
 ];

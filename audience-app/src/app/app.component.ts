@@ -1,9 +1,9 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, Inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-
+import { Event as RouterEvent } from '@angular/router';
 import { SyncService } from './sync.service';
-import { CurrentState, Configuration, MenuItem, View } from './types';
+import { CurrentState, Configuration, MenuItem, View, Options } from './types';
 import { Item, SimpleItem, ItemType, QuizOrPollItem, RepostItem } from './socialtypes';
 
 const SMALL_DELAY:number = 0.01
@@ -29,30 +29,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   allMenuItems:MenuItem[]
   menuItems:MenuItem[] = []
   views:View[]
+  options:Options
   showMenu:boolean = false
   view:View
+  currentItem:Item
   audioDelaySeconds:number
   showPlay:boolean
   playWhenReady:boolean
   audioTimeout:any = null
   showLanding:boolean = true
   landingTouched:boolean = false
-  currentItem:Item
-  currentRepostItem:RepostItem
-  currentSimpleItem:SimpleItem
-  currentItemLiked:boolean
-  currentItemShared:boolean
-  currentQuizItem:QuizOrPollItem
-  currentItemSelected:boolean
-  currentQuizOption:number
-  currentItemSent:boolean
-  currentItemIsBlank:boolean
   profileName:string
   editProfile:boolean
   selfieConfirmed:boolean
   selfieSent:boolean
   flickerImage:string
   flickerTimer:any
+  showNotifyPopup:boolean
   
   constructor(
     private syncService:SyncService,
@@ -66,6 +59,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         return
       this.allMenuItems = configuration.menuItems
       this.views = configuration.views
+      this.options = configuration.options
       let pmi = this.allMenuItems.find((mi) => mi.id =='profile')
       if (pmi)
         pmi.highlight = !syncService.getName()
@@ -139,6 +133,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
              this.view.flicker.maxBlankSeconds = this.view.flicker.minBlankSeconds
             this.updateFlicker(true)
           }
+          let notify = this.view.notify === undefined ? (this.options && this.options.notifyView) : this.view.notify
+          if (notify)
+            this.vibrate()
         }
       } else {
         if (this.view) {
@@ -153,38 +150,50 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.updateAudio()
     })
     syncService.getItem().subscribe((item) => {
-      if (item.itemType == ItemType.REPOST) {
-        this.currentRepostItem = item as RepostItem
-        item = this.currentRepostItem.item
-      } else {
-        this.currentRepostItem = null
+      if (!item || !this.options || item.itemType==ItemType.BLANK || item.itemType==ItemType.RESET) {
+        this.showNotifyPopup = false
+        this.currentItem = null
+        return
       }
       this.currentItem = item
-      this.currentItemLiked = false
-      this.currentItemShared = false
-      if (item && ItemType.SIMPLE == item.itemType)
-        this.currentSimpleItem = item as SimpleItem
-      else
-        this.currentSimpleItem = null
-      this.currentItemSent = false
-      let wasItemSelected = this.currentItemSelected
-      this.currentItemSelected = false
-      if (item && (ItemType.QUIZ == item.itemType || ItemType.POLL == item.itemType)) {
-        let quiz = item as QuizOrPollItem
-        // update to previous quiz? preserve selected
-        if (this.currentQuizItem && this.currentQuizItem.id == quiz.id) {
-          if (wasItemSelected && this.currentQuizOption < quiz.options.length) {
-            console.log(`carry over selected option ${this.currentQuizOption} for ${quiz.id}`)
-            quiz.options[this.currentQuizOption].selected = true
-            this.currentItemSelected = true
-          }
-        }
-        this.currentQuizItem = quiz
+      // TODO is it really a new item, or the pre-existing item on join?
+      if (this.options.notifyVibrate && !this.showLanding) {
+        this.vibrate()
       }
-      else
-        this.currentQuizItem = null
-      this.currentItemIsBlank = (item.itemType == ItemType.BLANK || item.itemType == ItemType.RESET)
+      let url = this.router.url
+      if (this.options.notifyPopup && !this.view && 
+          (url.length<6 || url.substring(url.length-6) != '/posts')) {
+        console.log(`url = ${url}`)
+        this.showNotifyPopup = true
+      }
+      if (this.options.notifySound && (!this.options.noSoundInShow || !this.view) && !this.showLanding) {
+        this.playNotification()
+      }
     })
+    this.router.events.subscribe((event:RouterEvent) => {
+      //console.log(`router event`, event)
+      if (event instanceof NavigationEnd) {
+        let url = (event as NavigationEnd).url
+        if (url.length>=6 && url.substring(url.length-6) == '/posts') {
+          this.showNotifyPopup = false
+        }
+      }
+    })
+  }
+  vibrate():void {
+    try {
+      let success = this.window.navigator.vibrate(200)
+      if (success) {
+        console.log(`vibrate said success`)
+      } else {
+        console.log(`vibrate said failure`)
+      }
+    } catch (err) {
+      console.log(`vibrate exception: ${err.message}`)
+    }
+  }
+  onShowPosts():void {
+    this.router.navigate(['/posts'])
   }
   onShowMenuItem(menuItem:MenuItem):void {
     console.log(`show menu item`, menuItem)
@@ -336,42 +345,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       console.log(`cancel full screen`)
       if (cancelFullScreen)
         cancelFullScreen.call(doc);
-    }
-  }
-  onLikeCurrentItem() {
-    if (this.currentItemLiked)
-      return
-    this.currentItemLiked = true
-    if (this.currentItem) {
-      this.syncService.likeItem(this.currentItem)
-    }
-  }
-  onShareCurrentItem() {
-    if (this.currentItemShared)
-      return
-    if (!this.profileName) {
-      console.log(`cannot share item without profile name set`)
-      return
-    }
-    this.currentItemShared = true
-    if (this.currentItem) {
-      this.syncService.shareItem(this.currentItem)
-    }
-  }
-  selectQuizOption(optionIndex:number) {
-    if (this.currentQuizItem && this.currentQuizItem.options && !this.currentItemSent && !this.currentQuizItem.closed) {
-      this.currentQuizItem.options.forEach((option) => option.selected = false)
-      if (optionIndex>=0 && optionIndex<this.currentQuizItem.options.length) {
-        this.currentQuizItem.options[optionIndex].selected = true
-        this.currentItemSelected = true
-        this.currentQuizOption = optionIndex
-      }
-    }
-  }
-  onSendCurrentItem() {
-    if (this.currentQuizItem && this.currentItemSelected && !this.currentQuizItem.closed && !this.currentItemSent) {
-      this.currentItemSent = true
-      this.syncService.chooseOption(this.currentQuizItem, this.currentQuizOption)
     }
   }
   onShareSelfie() {
