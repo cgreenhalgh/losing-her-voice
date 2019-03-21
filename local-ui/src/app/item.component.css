@@ -1,8 +1,8 @@
 .item {
-	border: 1px solid white;
 	margin: 5px;
 	padding: 4px;
-	font-size: 140%;
+	font-size: 250%;
+	font-family: Lato, Ariel, Helvetica, sans-serif;
 }
 .item_repost_header {
 	margin-bottom: 3pt;
@@ -12,22 +12,25 @@
 	display: table;
 	clear: both;
 }
+.item_title {
+	padding-left: 0.2em;
+	font-family: "CATChilds", Times, serif;
+}
 div.item_user_icon {
 	float:left;
 	display: block;
-	width: 32px;
-	height: 32px;
+	width: 64px;
+	height: 64px;
 }
 img.item_user_icon {
-	width: 32px;
-	height: 32px;
+	width: 64px;
+	height: 64px;
 }
 .item_header2 {
 	float:left;
 /*	width:420px; */
 }
 .item_header {
-
 }
 .item_date {
 	color: grey;

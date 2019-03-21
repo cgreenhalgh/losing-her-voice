@@ -2,5 +2,13 @@
 body {
 	background: black;
 	color: white;
-	font-family: "Times New Roman", Times, serif;
+	font-family: Lato, Ariel, Helvetica, sans-serif;
+}
+@font-face {
+  font-family: CATChilds;
+  src: url("assets/CATChilds.ttf");
+}
+@font-face {
+  font-family: Lato;
+  src: url("assets/Lato-Regular.ttf");
 }

@@ -6,7 +6,11 @@
 	<div #feedChild class='feed'>
 		<div #itemsChild class='items' [style.top.px]="top">
 			<div class='feed_title' *ngIf="showTitle">Live component</div>
-			<item-view *ngFor="let item of items" [item]="item"></item-view>
+			
+			<div *ngFor="let item of items; index as i" >
+				<div *ngIf="i!=0" class="viewDivider"><div class="viewDividerContent"><img src="assets/ViewDivider.png"></div></div>
+				<item-view [item]="item"></item-view>
+			</div>
 		</div>
 	</div>
 </div>

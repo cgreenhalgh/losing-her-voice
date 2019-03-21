@@ -144,10 +144,10 @@ Social media support:
 - [x] blank item support
 - [x] avoid spurious warnings in spreadsheet processor
 - [x] scheduled item that will clear the posts from the main screen
+- [x] CSS/images/fonts for styling - sans (helvetica?) font, small post separator, no border
+- [x] size/scale for live view 768x768 (SR) / 728x1024 (SL) minus borders
 
 - [ ] scroll posts down not up
-- [ ] CSS/images/fonts for styling - sans (helvetica?) font, small post separator, no border
-- [ ] size/scale for live view 768x768 (SR) / 728x1024 (SL) minus borders
 
 Local server/control:
 

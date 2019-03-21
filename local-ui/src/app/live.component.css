@@ -2,10 +2,12 @@
 }
 .feed {
 	position: fixed;
-	right: 0px;
+	left: 0px;
 	top: 0px;
 	bottom: 0px;
-	width: 50%;
+	width: 100%;
+	max-width: 768px;
+	padding: 10px;
 }
 .feed_title {
 	font-size: 24px;
@@ -22,6 +24,7 @@
 	top: 0px;
 	bottom: 0px;
 	width: 50%;
+	display: none;
 }
 .videoSide > canvas {
 	width: 100%;
@@ -32,4 +35,16 @@
 }
 .hiddenVideo {
 	display: none;
+}
+div.viewDivider {
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+div.viewDividerContent {
+	width: 80%;
+	margin: auto;
+}
+div.viewDividerContent > img {
+	width: 100%;
+	height: auto;
 }
