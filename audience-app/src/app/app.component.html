@@ -6,6 +6,7 @@
   <a href="javascript:void(0)" class="closebtn" (click)="onShowMenu()">&times;</a>
   <div *ngFor="let menuItem of menuItems">
     <div class="menuItem" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
+    <div ><div class="smallDivider"><img src="assets/SmallDivider.png"></div></div>
   </div>
  </div>
 </div>

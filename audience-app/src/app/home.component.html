@@ -1,7 +1,9 @@
 <div *ngIf="menuItems">
   <div *ngFor="let menuItem of menuItems">
+    <div *ngIf="menuItem.showOnHome"><div class="smallDivider"><img src="assets/SmallDivider.png"></div></div>
     <div *ngIf="menuItem.showOnHome" class="menuItem" (click)="onShowMenuItem(menuItem)">{{menuItem.title}}<mat-icon *ngIf="menuItem.highlight">create</mat-icon></div>
   </div>
+  <div class="afterMenu"></div>
 </div>
 <div *ngIf="performance">
     <div><div class="divider"><img src="assets/Divider.png"></div></div>

@@ -136,6 +136,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           let notify = this.view.notify === undefined ? (this.options && this.options.notifyView) : this.view.notify
           if (notify)
             this.vibrate()
+          this.showNotifyPopup = false
         }
       } else {
         if (this.view) {
@@ -173,6 +174,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.router.events.subscribe((event:RouterEvent) => {
       //console.log(`router event`, event)
       if (event instanceof NavigationEnd) {
+        this.window.scrollTo(0,0)
         let url = (event as NavigationEnd).url
         if (url.length>=6 && url.substring(url.length-6) == '/posts') {
           this.showNotifyPopup = false
