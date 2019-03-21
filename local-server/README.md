@@ -146,8 +146,7 @@ Social media support:
 - [x] scheduled item that will clear the posts from the main screen
 - [x] CSS/images/fonts for styling - sans (helvetica?) font, small post separator, no border
 - [x] size/scale for live view 768x768 (SR) / 728x1024 (SL) minus borders
-
-- [ ] scroll posts down not up
+- [x] scroll posts down not up
 
 Local server/control:
 
@@ -223,13 +222,14 @@ Audience app:
 - [x] post/quiz view in menu mode
 - [x] menu mode notification/popup for post/quiz
 - [x] notification/alert facility, e.g. from scene change
+- [x] troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!) ...
 
+- [ ] background notification support, audio on iphone, vibrate on android?
 - [ ] option to fade images in scene info view
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
 - [ ] specific user guidance for in-browser vs PWA/home screen?
 - [ ] disable communication before and after event ?! (or otherwise limit traffic)
 - [ ] * log usage
-- [ ] * troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!) ...
 - [ ] research subject ID allocate and view?
 - [ ] add ServiceWorker support?!
 - [ ] app disconnect warning?

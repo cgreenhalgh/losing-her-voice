@@ -12,6 +12,18 @@
 .feed_title {
 	font-size: 24px;
 }
+.itemHolder {
+	transition: opacity 0.5s;
+	transition: all 2s;
+	/*transition: top 1s;*/
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+}
+.itemHolder.show {
+	max-height: 1024px;
+	opacity: 1;
+}
 .items {
 	width: 100%;
 	position: absolute;

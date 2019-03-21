@@ -88,6 +88,7 @@ export class StoreService {
               // fake performance change
               let p = this.performance.value
               this.performance.next(null)
+              this.items = new ReplaySubject()
               this.performance.next(p)
             } else {
               this.items.next(msg.item)

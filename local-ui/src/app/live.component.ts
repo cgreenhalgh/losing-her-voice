@@ -30,14 +30,21 @@ class ImageInfo {
 }
 const SELFIE_CANVAS_SIZE = 2048
 const EXTRA_SELFIE_SCALE = 0.9
-
+class ItemHolder {
+  show:boolean = false
+  constructor(
+      public item:Item
+  )
+  {    
+  }
+}
 @Component({
   selector: 'live-view',
   templateUrl: './live.component.html',
   styleUrls: ['./live.component.css']
 })
 export class LiveComponent implements AfterViewInit {
-    items: Item[] = []
+    items: ItemHolder[] = []
     @ViewChild('feedChild') feedChild: ElementRef; 
     @ViewChild('itemsChild') itemsChild: ElementRef; 
     @ViewChild('videoDiv') videoDiv: ElementRef; 
@@ -72,16 +79,16 @@ export class LiveComponent implements AfterViewInit {
                 this.showTitle = false
                 // update?
                 for (let ix = 0; ix < this.items.length; ix++) {
-                    let i = this.items[ix]
+                    let i = this.items[ix].item
                     if (i.id == item.id) {
-                        console.log(`update item ${item.id}`, item)
-                        this.items.splice(ix, 1, item)
+                        console.log(`update item ${item.id} [${ix}]`, item)
+                        this.items.splice(ix, 1, {item:item, show:true})
                         for (let ix2 = 0; ix2 < this.items.length; ix2++) {
-                            let i2 = this.items[ix2]
+                            let i2 = this.items[ix2].item
                             if (i2.itemType==ItemType.REPOST && (i2 as RepostItem).item.id == item.id) {
                                 (i2 as RepostItem).item = item;
                                 // nasty force change
-                                this.items.splice(ix2, 1, JSON.parse(JSON.stringify(i2)))
+                                this.items.splice(ix2, 1, {item:JSON.parse(JSON.stringify(i2)), show:true})
                                 //console.log(`- updates repost ${i2.id}`)
                             }
                         }
@@ -91,7 +98,10 @@ export class LiveComponent implements AfterViewInit {
                 if (item.itemType == ItemType.BLANK)
                     // ignore
                     return
-                this.items.push(item)
+                console.log(`add item ${item.id} (${this.items.length} items already)`)
+                let itemHolder = {item:item, show:false}
+                this.items.splice(0, 0, itemHolder)
+                setTimeout(() => { itemHolder.show = true; console.log(`show item ${item.id}`) }, 10)
                 if (this.feedChild && this.itemsChild)
                     this.update()
                 if (this.videoState && this.videoState.mode == VideoMode.SELFIES && item.itemType == ItemType.SELFIE) {
@@ -157,10 +167,10 @@ export class LiveComponent implements AfterViewInit {
         this.videoCanvas.nativeElement.height = height;
     }
     update() {
-        setTimeout(() => {
+        /*setTimeout(() => {
             this.top = this.feedChild.nativeElement.offsetHeight - this.itemsChild.nativeElement.offsetHeight;
             console.log(`feedChild ${this.feedChild.nativeElement.offsetHeight} & itemsChild ${this.itemsChild.nativeElement.offsetHeight} -> ${this.top}`, this.feedChild, this.itemsChild)
-        }, 0);
+        }, 0);*/
     }
     redraw() {
         requestAnimationFrame(() => {
