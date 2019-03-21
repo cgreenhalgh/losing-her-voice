@@ -28,6 +28,22 @@ Convert word doc with works to JSON HTML for use in audience app, e.g.
 node dist/doc2app.js data/Audience-app-text.docx data/app-text.json
 ```
 
+This little program reads a Word document and outputs JSON-encoded lines
+of HTML suitable for pasting into the audience-config.json file.
+It:
+- Converts Heading1 to (HTML) h1 (will show in the CATChild font)
+- Converts Heading2 to h2 (ditto)
+- Converts Normal para to p
+- Should support bold & italic (but not different font sizes or styles)
+- On empty paragraph, starts a new output section (which on a page will insert a divider)
+- Should support centred Normal paragraphs
+- Should pass any line starting '<' straight through as HTML (e.g. images)
+
+So preferred usage is:
+- Put empty paragraphs before and after and every Page X: … titles (so they don’t get included in the page text)
+- Feel free to use Heading 1 and Heading 2 within page content
+- Check that (apart from around the page headings) you have empty lines where you’d like dividers to appear
+
 ## To do
 
 - [x] handle LHV libretto format
