@@ -37,7 +37,7 @@ It:
 - Should support bold & italic (but not different font sizes or styles)
 - On empty paragraph, starts a new output section (which on a page will insert a divider)
 - Should support centred Normal paragraphs
-- Should pass any line starting '<' straight through as HTML (e.g. images)
+- Convert '[[' -> '<' and ']]' -> '>' to allow HTML element insertion (e.g. images '[[img src="..." class="view_medium"]]')
 
 So preferred usage is:
 - Put empty paragraphs before and after and every Page X: … titles (so they don’t get included in the page text)

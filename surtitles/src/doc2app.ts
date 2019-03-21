@@ -12,12 +12,21 @@ let outfile = process.argv[3]
 
 console.log(`reading content file ${path}`)
 
+//convert centred lines to "Heading3" style => h3 elements (why not :-)
+function transformParagraph(element) {
+    if (element.alignment === "center") {
+        //console.log(`centered para style ${element.styleId} -> center`)
+        return {...element, styleId: "Heading3"};
+    } else {
+        return element;
+    }
+}
 // mammoth outputs each line as <p> ... </p>
 // Bold as <strong> ... </strong> -> <b> ... </b>
 // italic as <em> ... </em> -> <i> ... </i>
 // Currently no paragraph formatting? 
 var options = {
-    //transformDocument: mammoth.transforms.paragraph(transformParagraph),
+    transformDocument: mammoth.transforms.paragraph(transformParagraph),
     ignoreEmptyParagraphs:false,
     styleMap: [
         "b => b",
@@ -36,6 +45,10 @@ mammoth.convertToHtml({path: path}, options)
             console.log(`convertion message:`,message)
         }
         //console.log('result:', html)
+        // h3 (was centered) -> p centerText
+        html = html.replace(/<h3>/g,'<p class="centerText">').replace(/<\/h3>/g, '</p>')
+        // "[...]" -> <...>, i.e. html literals
+        html = html.replace(/\[\[/g,'<').replace(/]]/g, '>')
         let lines = html.split('<p></p>')
         console.log(`read ${lines.length} blocks`)
         let output = ''
