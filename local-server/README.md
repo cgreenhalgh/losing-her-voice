@@ -167,7 +167,10 @@ read ECONNRESET
     at TCP.onread (net.js:622:25) errno: 'ECONNRESET', code: 'ECONNRESET', syscall: 'read' }
 error getting feedback from lhva:feedback:v5: Redis connection lost and command aborted. It might have been processed.
 ```
+- [ ] log all actions
 - [ ] applescipt to open and resize CEF?!
+
+probably not:
 - [ ] persist items & performance across server restart?!
 - [ ] send OSC?
 - [ ] prune items in live view? (performance)
@@ -224,21 +227,26 @@ Audience app:
 - [x] notification/alert facility, e.g. from scene change
 - [x] troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!) ...
 
-- [ ] background notification support, audio on iphone, vibrate on android?
-- [ ] option to fade images in scene info view
+- [ ] try indexeddb (localForage??) for client persistence (and test on ios vs home)
 - [ ] submit selfie image over http rather than socket.io (for use well in advance)
-- [ ] specific user guidance for in-browser vs PWA/home screen?
 - [ ] disable communication before and after event ?! (or otherwise limit traffic)
-- [ ] * log usage
+- [ ] log usage
+- [ ] server logs
+- [ ] save app logs to server
 - [ ] research subject ID allocate and view?
-- [ ] add ServiceWorker support?!
-- [ ] app disconnect warning?
-- [ ] app smoother reconnect support?
-- [ ] reduce title font size on iphone se and smaller ?! (spacing between characters is greater on iphone!) may font-kerning: normal; letter-spacing: normal; text-rendering: optimizeLegibility; font-feature-settings: "kern"; -webkit-font-feature-settings: "kern"; -moz-font-feature-settings: "kern"; -moz-font-feature-settings: "kern=1";?
-- [ ] trouble-shoot failure to persist performance id on iphone
-- [ ] cover page sizing problem? (often slightly too wide?)
+- [ ] check app disconnect warning?
+- [ ] define nginx redirects for performances
+- [ ] increase file des limit to 2048 in nginx
 
 probably not...
+- [ ] ? app smoother reconnect support
+- [ ] ? add ServiceWorker support
+- [ ] ? specific user guidance for in-browser vs PWA/home screen
+- [ ] ? reduce title font size on iphone se and smaller ?! (spacing between characters is greater on iphone!) may font-kerning: normal; letter-spacing: normal; text-rendering: optimizeLegibility; font-feature-settings: "kern"; -webkit-font-feature-settings: "kern"; -moz-font-feature-settings: "kern"; -moz-font-feature-settings: "kern=1";?
+- [ ] ? trouble-shoot failure to persist performance id on iphone
+- [ ] ? cover page sizing problem? (often slightly too wide?)
+- [ ] ? background notification support, audio on iphone, vibrate on android?
+- [ ] ? option to fade images in scene info view
 - [ ] ? selfie post with hash not image?
 - [ ] ? show selfie on phone support?
 - [ ] ? card navigation within view/page
@@ -260,6 +268,7 @@ Content
 
 - [ ] menu items and associated content
 - [ ] views and associated cards/content - for every scene
+- [ ] deploy audience app content
 - [ ] posts (text and images)
 - [ ] quizes
 - [ ] polls
@@ -267,6 +276,13 @@ Content
 - [ ] reposter names
 - [ ] libretto formatted for subtitles
 - [ ] questionnaire
+
+Networking
+
+- [ ] SSID w PSK if possible 
+- [ ] instructions / flyer
+- [ ] MAC addresses & datapoint ID -> IS
+
 
 To don't:
 - [x] don't add Geraldine to selfie
