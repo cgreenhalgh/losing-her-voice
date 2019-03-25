@@ -27,7 +27,7 @@
       "isPublic":false
     },
     {
-      "id":"20190406-premiere",
+      "id":"show1",
       "title":"Premiere public performance",
       "startDatetime":"2019-04-06T13:30:00Z",
       "isPublic":true,
@@ -35,7 +35,7 @@
       "timezone":"+01:00"
     },
     {
-      "id":"20190407-second",
+      "id":"show2",
       "title":"Second public performance",
       "startDatetime":"2019-04-07T18:00:00Z",
       "isPublic":true,
