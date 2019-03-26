@@ -1,0 +1,9 @@
+{
+	"performance": {
+      "id":"test2",
+      "title":"selfie collection",
+      "startDatetime":"2019-12-19T14:43:00Z",
+      "isPublic":false
+    },
+    "finished": false
+}

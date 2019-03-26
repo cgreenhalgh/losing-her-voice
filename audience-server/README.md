@@ -10,7 +10,7 @@ See [../README.md](../README.md)
 
 ## File format
 
-Audience app configuration file, [data/audience-config.json](data/audience-config.json).
+Audience app configuration file, [../audience-app/src/assets/audience-config.json](../audience-app/src/assets/audience-config.json).
 Object with:
 - `metadata`, see below
 - `options`, see below
@@ -71,6 +71,18 @@ FlickerConfig, object with:
 - `maxShowSeconds` (number, default 1) max visible time (seconds)
 - `minBlankSeconds` (number, default 0) min blank time (seconds)
 - `maxBlankSeconds` (number, default 1) max blank time (seconds)
+
+Performance, object with:
+- `id` (string
+- `title` (string
+- `startDatetime` (string) RFC3339 GMT
+- `durationSeconds` (number)
+
+Also a performance file per performance in ../audience-app/src/assets/nocache/PERFID.json
+
+Performance file, object with
+- `performance` - Performance info (above)
+- `finished` (boolean, default false)
 
 ### HTML Markup
 

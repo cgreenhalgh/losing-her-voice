@@ -1,10 +1,10 @@
 {
   "metadata": {
     "title": "losing her voice audience metadata",
-    "description": "just initial testing placeholders",
-    "version": "0.10",
+    "description": "draft content 20th march 2019",
+    "version": "0.11",
     "author": "Chris Greenhalgh",
-    "fileVersion": "lhv/audience/v4"
+    "fileVersion": "lhv/audience/v5"
   },
   "options": {
     "notifySound": true,
@@ -13,36 +13,6 @@
     "noSoundInShow": false,
     "notifyView": true
   },
-  "performances": [
-    {
-      "id":"test1",
-      "title":"test performance no.1",
-      "startDatetime":"2018-12-19T14:43:00Z",
-      "isPublic":false
-    },
-    {
-      "id":"test2",
-      "title":"test performance no.2",
-      "startDatetime":"2018-12-19T14:43:00Z",
-      "isPublic":false
-    },
-    {
-      "id":"show1",
-      "title":"Premiere public performance",
-      "startDatetime":"2019-04-06T13:30:00Z",
-      "isPublic":true,
-      "durationSeconds":10800,
-      "timezone":"+01:00"
-    },
-    {
-      "id":"show2",
-      "title":"Second public performance",
-      "startDatetime":"2019-04-07T18:00:00Z",
-      "isPublic":true,
-      "durationSeconds":10800,
-      "timezone":"+01:00"
-    }
-  ],
   "menuItems":[
     {
       "id": "home",

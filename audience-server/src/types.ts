@@ -2,7 +2,6 @@ import { Item, Feedback } from './socialtypes'
 
 // protocol message IDs
 export const MSG_CLIENT_HELLO = 'lhva.client.hello'
-export const MSG_CONFIGURATION = 'lhva.server.configuration'
 export const MSG_CURRENT_STATE = 'lhva.server.state'
 export const MSG_OUT_OF_DATE = 'lhva.server.outofdate'
 export const MSG_CLIENT_PING = 'lhva.client.ping'
@@ -10,7 +9,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 11
+export const CURRENT_VERSION:number = 13
 
 export interface ClientTiming {
   clientSendTime:number
@@ -118,7 +117,7 @@ export interface ConfigurationMetadata {
   fileVersion:string
 }
 
-export const CONFIGURATION_FILE_VERSION = "lhv/audience/v4"
+export const CONFIGURATION_FILE_VERSION = "lhv/audience/v5"
 
 export interface NamePart {
   title:string
@@ -135,6 +134,10 @@ export interface Performance {
   durationSeconds?:number
   timezone?:string
 }
+export interface PerformanceFile {
+    performance:Performance
+    finished?:boolean
+}
 
 export interface Options {
   notifyVibrate?:boolean
@@ -147,14 +150,9 @@ export interface Options {
 export interface Configuration {
   metadata:ConfigurationMetadata
   options:Options
-  performances:Performance[]
   menuItems:MenuItem[]
   views:View[]
   nameParts:NamePart[]
-}
-export interface ConfigurationMsg {
-  configuration:Configuration
-  timing:ServerTiming
 }
 
 export interface AnnounceItem {
@@ -165,4 +163,9 @@ export interface AnnounceItem {
 export interface FeedbackMsg {
   feedback:Feedback
   timing:ClientTiming
+}
+
+export interface FeedbackPost {
+  feedback:Feedback
+  clientVersion:number
 }

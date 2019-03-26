@@ -190,8 +190,8 @@ Local server/control:
 - [x] control UI cleaner (table) view
 - [x] control UI schedule simple control (default/next)
 - [x] schedule remote control? (OSC?)
-
-- [ ] fix redis subscription failure handling for feedback, e.g. (feedback not subsequently received; unclear if other direction still working but no corresponding error - subscription?)
+- [x] log all actions
+- [?] ? (seems to recover ok?) fix redis subscription failure handling for feedback, e.g. (feedback not subsequently received; unclear if other direction still working but no corresponding error - subscription?)
 ```
 ERROR redis error Error: Redis connection to music-mrl.nott.ac.uk:6379 failed -
 read ECONNRESET { Error: Redis connection to music-mrl.nott.ac.uk:6379 failed -
@@ -199,7 +199,7 @@ read ECONNRESET
     at TCP.onread (net.js:622:25) errno: 'ECONNRESET', code: 'ECONNRESET', syscall: 'read' }
 error getting feedback from lhva:feedback:v5: Redis connection lost and command aborted. It might have been processed.
 ```
-- [ ] log all actions
+
 - [ ] applescipt to open and resize CEF?!
 
 probably not:
@@ -258,16 +258,16 @@ Audience app:
 - [x] menu mode notification/popup for post/quiz
 - [x] notification/alert facility, e.g. from scene change
 - [x] troubleshoot/fix audio playback (problems on some devices...) (not just click vs touch!) ...
+- [x] submit selfie image over http rather than socket.io (for use well in advance)
+- [x] disable communication before and after event ?! (or otherwise limit traffic)
+- [x] define nginx redirects for performances
 
 - [ ] try indexeddb (localForage??) for client persistence (and test on ios vs home)
-- [ ] submit selfie image over http rather than socket.io (for use well in advance)
-- [ ] disable communication before and after event ?! (or otherwise limit traffic)
 - [ ] log usage
 - [ ] server logs
 - [ ] save app logs to server
 - [ ] research subject ID allocate and view?
 - [ ] check app disconnect warning?
-- [ ] define nginx redirects for performances
 - [ ] increase file des limit to 2048 in nginx
 
 probably not...

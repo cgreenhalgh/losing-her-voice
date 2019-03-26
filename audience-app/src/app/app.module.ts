@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { MatIconModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +30,7 @@ import { SyncService } from './sync.service';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     MatIconModule,
     StorageServiceModule,

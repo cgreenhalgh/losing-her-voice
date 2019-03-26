@@ -30,21 +30,17 @@ export class HomeComponent {
     this.syncService.getConfiguration().subscribe((configuration) => {
       if (!configuration)
         return
-      if (configuration.performances) {
-        //console.log(`configuration changed`)
-        this.performance = configuration.performances.find((p) => p.id == this.performanceid)
-        if (!this.performance) {
-            console.log(`could not find performance ${this.performanceid}`)
-        }
-        else {
-            this.startDatetime = new Date(this.performance.startDatetime).toLocaleString('en-GB', {"timeZoneName": "short"})
-        }
-      }
       if (configuration.menuItems) {
           this.allMenuItems = configuration.menuItems
           this.menuItem = configuration.menuItems.find((mi) => mi.id == 'home')
       }
       this.updateMenuItems()
+    })
+    this.syncService.getPerformance().subscribe((performance) => {
+        this.performance = performance
+        if (this.performance) {
+            this.startDatetime = new Date(this.performance.startDatetime).toLocaleString('en-GB', {"timeZoneName": "short"})
+        }
     })
     this.syncService.getCurrentState().subscribe((newState) => {
       this.currentState = newState

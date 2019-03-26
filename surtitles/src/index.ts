@@ -275,7 +275,7 @@ mammoth.convertToHtml({path: path}, options)
         let text = ''
         for (let item of items) {
             if (item.itemType == ItemType.SURTITLE) {
-                text = text + item.text+'\n'
+                text = text + item.text+'\n\n'
             }
         }
         let textout = outroot+'.txt'

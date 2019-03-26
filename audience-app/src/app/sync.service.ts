@@ -1,13 +1,15 @@
 import { Injectable, Inject, OnInit } from '@angular/core';
+import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Observable } from "rxjs";
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
-  MSG_OUT_OF_DATE, OutOfDate, MSG_CONFIGURATION, Configuration, 
-  ConfigurationMsg, MSG_CLIENT_PING, ClientPing, MSG_ANNOUNCE_ITEM, 
-  AnnounceItem, FeedbackMsg, MSG_FEEDBACK, NamePart } from './types';
+  MSG_OUT_OF_DATE, OutOfDate, Configuration, 
+  MSG_CLIENT_PING, ClientPing, MSG_ANNOUNCE_ITEM, 
+  AnnounceItem, FeedbackMsg, MSG_FEEDBACK, NamePart, PerformanceFile,
+  Performance , FeedbackPost } from './types';
 import { Item } from './socialtypes'
 import * as io from 'socket.io-client';
 
@@ -15,13 +17,27 @@ const SOCKET_IO_TEST_SERVER:string = 'http://localhost:8081'
 const NAME_KEY_PREFIX = 'namePart:'
 const IMAGE_KEY = 'selfie.image'
 const SELFIE_CONFIRMED_KEY = 'selfie.confirmed'
+const SELFIE_IMAGE_POSTED_KEY = 'selfie.posted'
 const SELFIE_SENT_KEY = 'selfie.sent'
 const PERFORMANCE_ID_KEY = 'performance.id'
+
+enum CommsMode {
+    UNKNOWN, PRE, LIVE, POST
+}
+enum StartupState {
+    NEW,
+    WAIT_CONFIG,
+    WAIT_PERFORMANCE,
+    STARTED,
+}
+
+const PRE_SHOW_LIVE_TIME_S = 60*60 // 1 hour
 
 @Injectable()
 export class SyncService {
   currentState:BehaviorSubject<CurrentState>
   configuration:BehaviorSubject<Configuration>
+  performance:BehaviorSubject<Performance>
   profileName:BehaviorSubject<string>
   selfieConfirmed:BehaviorSubject<boolean>
   selfieSent:BehaviorSubject<boolean>
@@ -38,21 +54,135 @@ export class SyncService {
   pingCount:number = 0
   performanceid:string
   shouldSendHello:boolean
+  startupState:StartupState = StartupState.NEW
+  commsMode:CommsMode = CommsMode.UNKNOWN
+  socketioServer:string
+  socketioPath:string
+  baseHrefPath:string
     
   constructor(
     @Inject(DOCUMENT) private document: any,
     @Inject(LOCAL_STORAGE) private storage: StorageService,
     @Inject('Window') private window: Window,
+    private http: HttpClient,
   ) {
     // loading state...
     this.currentState = new BehaviorSubject(null)
     this.configuration = new BehaviorSubject(null)
+    this.performance = new BehaviorSubject(null)
     this.profileName = new BehaviorSubject(this.getName())
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.selfieSent = new BehaviorSubject(this.getSelfieSent())
     this.item = new BehaviorSubject(null)
+    this.initPerformanceid()
+    this.checkServer()
+    this.startupState = StartupState.WAIT_CONFIG;
+    this.http.get<Configuration>('assets/audience-config.json')
+      .subscribe(
+          (configuration:Configuration) => {
+              this.handleConfig(configuration)
+          },
+          (error) => {
+              console.log(`error getting configuration`, error)
+              alert(`Sorry, the application is unable to start at the moment`)
+          }
+       )
+  }
+  handleConfig(configuration:Configuration) {
+    console.log(`got configuration`);
+    if (configuration.nameParts) {
+      for (let np of configuration.nameParts) {
+        np.value = this.storage.get(NAME_KEY_PREFIX+np.title)
+      }
+    }
+    this.configuration.next(configuration)
+    this.startupState = StartupState.WAIT_PERFORMANCE
+    if (!this.performanceid) {
+        return;
+    }
+    if (this.storage.get(SELFIE_CONFIRMED_KEY) && !this.storage.get(SELFIE_IMAGE_POSTED_KEY)) {
+        console.log(`re-post selfie image - confirmed by not posted`)
+        this.postSelfieImage()
+    }
+    this.checkPerformance()
+  }
+  checkPerformance() {
+    let performanceFile = `assets/nocache/${this.performanceid}.json`
+    this.http.get<PerformanceFile>(performanceFile, { observe: 'response' })
+      .subscribe(
+          (resp:HttpResponse<PerformanceFile>) => {
+              let pfile:PerformanceFile = { ... resp.body }
+              let date = resp.headers.get('date')
+              console.log(`got performance, date ${date}`)
+              this.performance.next(pfile.performance)
+              this.startupState = StartupState.STARTED
+              // fall back to client time?!
+              let now = date ? (new Date(date)).getTime() : (new Date()).getTime()
+              let start = new Date(this.performance.value.startDatetime).getTime()
+              let elapsed = (now - start)/1000
+              console.log(`since performance start: ${elapsed}`)
+              if (pfile.finished || (pfile.performance.durationSeconds && elapsed > pfile.performance.durationSeconds)) {
+                  console.log(`performance ${this.performanceid} is officially finished (server time ${now}, start ${start}, elapsed ${elapsed}, finished ${pfile.finished}`)
+                  this.commsMode = CommsMode.POST
+                  if (this.socket) {
+                      console.log(`post performance, stop socket io`)
+                      this.socket.close()
+                      this.socket = null
+                  }
+                  this.currentState.next({
+                      allowMenu:true,
+                      postPerformance:false,
+                      prePerformance:false,
+                      inPerformance:true,
+                      //error
+                      serverSendTime:0,
+                      serverStartTime:0,
+                  })
+                  return
+              }
+              if (elapsed < -PRE_SHOW_LIVE_TIME_S) {
+                  // timer to go live
+                  let delay = (-elapsed) - PRE_SHOW_LIVE_TIME_S
+                  console.log(`pre-show, check in ${delay} seconds`)
+                  setTimeout(() => { this.checkPerformance() }, delay*1000)
+                  this.currentState.next({
+                      allowMenu:true,
+                      postPerformance:false,
+                      prePerformance:true,
+                      inPerformance:false,
+                      //error
+                      serverSendTime:0,
+                      serverStartTime:0,
+                  })
+                  this.commsMode = CommsMode.PRE
+                  return
+              }
+              this.commsMode = CommsMode.LIVE
+              if (!this.socket)
+                  this.startSocketio()
+              //check again...
+              let delay = (-elapsed) - PRE_SHOW_LIVE_TIME_S
+              console.log(`in-show, check for end in in ${delay} seconds`)
+              setTimeout(() => { this.checkPerformance() }, delay*1000)
+          },
+          (error) => {
+              console.log(`error getting performance`, error)
+              this.currentState.next({
+                  allowMenu:false,
+                  postPerformance:false,
+                  prePerformance:false,
+                  inPerformance:false,
+                  //error
+                  serverSendTime:0,
+                  serverStartTime:0,
+              })
+              alert(`Sorry, the application is unable to start at the moment`)
+          }
+       )
+  }
+  checkServer() {
     // base href?
-    let baseHref = (document.getElementsByTagName('base')[0] || {}).href
+    let baseHref = ((this.document.getElementsByTagName('base')[0] || {})).href
     console.log(`base href = ${baseHref}`)
     let socketioPath = null
     let socketioServer = null
@@ -68,16 +198,20 @@ export class SyncService {
       let baseHrefPath = baseHref.substring(pix)
       //console.log(`base href path = ${baseHref} (pix=${pix} & hix=${hix})`)
       if ('/' != baseHrefPath) {
+        this.baseHrefPath = baseHrefPath
         socketioPath = baseHrefPath+'socket.io'
         socketioServer = baseHref.substring(0,pix)
       }
     }
-    this.initPerformanceid()
     if (!socketioPath) {
       socketioServer = SOCKET_IO_TEST_SERVER
-    } 
-    console.log(`say hello to socket.io on server ${socketioServer} path ${socketioPath}`)
-    this.socket = io(socketioServer, { path: socketioPath })
+    }
+    this.socketioServer =socketioServer
+    this.socketioPath = socketioPath
+  }
+  startSocketio() {
+    console.log(`say hello to socket.io on server ${this.socketioServer} path ${this.socketioPath}`)
+    this.socket = io(this.socketioServer, { path: this.socketioPath })
     this.socket.on('connect', () => {
       console.log(`socket.io connected`)
       // reset
@@ -89,9 +223,14 @@ export class SyncService {
       console.log(`socket.io error: ${error.message}`, error)
     })
     this.socket.on('disconnect', (reason) => {
+      if (this.commsMode != CommsMode.LIVE) {
+        console.log(`ignore socketio disconnect in comms mode ${this.commsMode}`)
+        return
+      }
       this.shouldSendHello = false
       if (reason === 'io server disconnect') {
         // the disconnection was initiated by the server, you need to reconnect manually
+        // TODO go to post mode??
         this.socket.connect();
       }
       // else the socket will automatically try to reconnect
@@ -108,17 +247,6 @@ export class SyncService {
           serverStartTime:0,
         })
       }
-    })
-    this.socket.on(MSG_CONFIGURATION, (data) => {
-      let msg = data as ConfigurationMsg
-      console.log('got configuration from server', msg)
-      this.updateTiming(msg.timing)
-      if (msg.configuration.nameParts) {
-        for (let np of msg.configuration.nameParts) {
-          np.value = this.storage.get(NAME_KEY_PREFIX+np.title)
-        }
-      }
-      this.configuration.next(msg.configuration)
     })
     this.socket.on(MSG_CURRENT_STATE, (data) => {
       let msg = data as CurrentStateMsg
@@ -165,7 +293,6 @@ export class SyncService {
             this.performanceid = params['p'];
             this.storage.set(PERFORMANCE_ID_KEY, this.performanceid)
             console.log(`setting performanceid: ${this.performanceid}`)
-            this.trySendHello()
           }
         } else if (!this.performanceid) {
             this.performanceid = this.storage.get(PERFORMANCE_ID_KEY)
@@ -176,6 +303,9 @@ export class SyncService {
                 console.log(`using saved performanceid ${this.performanceid}`)
             }
         }
+  }
+  getPerformance(): Observable<Performance> {
+      return this.performance;
   }
   getPerformanceid(): string {
       return this.performanceid
@@ -198,7 +328,10 @@ export class SyncService {
         configurationVersion:this.configuration.value && this.configuration.value.metadata ? this.configuration.value.metadata.version : null,
         performanceid:this.performanceid,
       }
-      this.socket.emit(MSG_CLIENT_HELLO, msg)
+      if (this.socket)
+        this.socket.emit(MSG_CLIENT_HELLO, msg)
+      else
+        console.log(`error: trying to emit hello with no socket.io`)
   }
   maybePing():void {
     if (this.pingCount>0 || !this.clientTiming)
@@ -208,7 +341,10 @@ export class SyncService {
     let msg:ClientPing = {
       timing:this.clientTiming,
     }
-    this.socket.emit(MSG_CLIENT_PING, msg)
+    if (this.socket)
+      this.socket.emit(MSG_CLIENT_PING, msg)
+    else
+      console.log(`error: trying to emit ping with no socket.io`)
     this.pingCount++
   }
   updateTiming(timing:ServerTiming): void {
@@ -274,7 +410,10 @@ export class SyncService {
       },
       timing:this.clientTiming,
     }
-    this.socket.emit(MSG_FEEDBACK, msg)
+    if (this.socket)
+      this.socket.emit(MSG_FEEDBACK, msg)
+    else
+      console.log(`error: trying to emit like with no socket.io`)
   }
   shareItem(item:Item): void {
     let name = this.getName()
@@ -295,8 +434,11 @@ export class SyncService {
       },
       timing:this.clientTiming,
     }
-    this.socket.emit(MSG_FEEDBACK, msg)
-  }
+    if (this.socket)
+      this.socket.emit(MSG_FEEDBACK, msg)
+    else
+      console.log(`error: trying to emit share with no socket.io`)
+ }
   chooseOption(item:Item, option:number): void {
     console.log(`choose item ${item.id} option ${option}`)
     let now = (new Date()).getTime()
@@ -311,7 +453,10 @@ export class SyncService {
       },
       timing:this.clientTiming,
     }
-    this.socket.emit(MSG_FEEDBACK, msg)
+    if (this.socket)
+      this.socket.emit(MSG_FEEDBACK, msg)
+    else
+      console.log(`error: trying to emit choice with no socket.io`)
   }
   saveName(nameParts:NamePart[]) {
     let name = ''
@@ -352,20 +497,35 @@ export class SyncService {
   setSelfieConfirmed(): void {
     this.storage.set(SELFIE_CONFIRMED_KEY, 'true')
     this.selfieConfirmed.next(true)
+    this.postSelfieImage()
+  }
+  postSelfieImage(): void {
     let dataurl:string = this.getSelfieImage()
-    console.log(`submit selfie image`)
-    let now = (new Date()).getTime()
-    this.clientTiming.clientSendTime = now
-    let msg:FeedbackMsg = {
+    let post:FeedbackPost = {
+      clientVersion: CURRENT_VERSION,
       feedback: {
-        performanceid:this.performanceid,
+        performanceid: this.performanceid,
         selfieImage: {
           image: dataurl
         }
       },
-      timing:this.clientTiming,
     }
-    this.socket.emit(MSG_FEEDBACK, msg)
+    let url = this.socketioServer+(this.baseHrefPath ? this.baseHrefPath : '/')+'api/feedback'
+    console.log(`submit selfie image to ${url}`)
+    this.http.post<boolean>(url, post, {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+        })
+      })
+      .subscribe(
+          (ok:boolean) => {
+              console.log(`post selfie OK`)
+              this.storage.set(SELFIE_IMAGE_POSTED_KEY, 'true')
+          },
+          (error) => {
+              console.log(`error posting selfie image`, error)
+          }
+       )
   }
   sendSelfie(): void {
     this.storage.set(SELFIE_SENT_KEY, 'true')
@@ -385,7 +545,10 @@ export class SyncService {
       },
       timing:this.clientTiming,
     }
-    this.socket.emit(MSG_FEEDBACK, msg)
+    if (this.socket)
+      this.socket.emit(MSG_FEEDBACK, msg)
+    else
+      console.log(`error: trying to emit selfie with no socket.io`)
   }
   getSelfieImage(): string {
     return this.storage.get(IMAGE_KEY)
@@ -398,6 +561,7 @@ export class SyncService {
   resetApp():void {
     console.log(`reset app state`)
     this.storage.remove(SELFIE_CONFIRMED_KEY)
+    this.storage.remove(SELFIE_IMAGE_POSTED_KEY)
     this.storage.remove(SELFIE_SENT_KEY)
     this.storage.remove(IMAGE_KEY)
     this.storage.remove(NAME_KEY_PREFIX)

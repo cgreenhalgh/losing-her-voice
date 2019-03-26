@@ -5,29 +5,66 @@ import * as express from 'express'
 import * as path from 'path'
 import * as http from 'http'
 import * as socketio from 'socket.io'
-//import * as bodyParser from 'body-parser'
+import * as bodyParser from 'body-parser'
 import * as redis from 'redis'
 import * as fs from 'fs'
 
 import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello, 
   MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, 
   MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, 
-  MSG_CONFIGURATION, Configuration, ConfigurationMsg, 
   ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
-  AnnounceItem, MSG_FEEDBACK, FeedbackMsg, 
-  CONFIGURATION_FILE_VERSION } from './types'
+  AnnounceItem, MSG_FEEDBACK, FeedbackMsg, FeedbackPost } from './types'
 import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce,
-  REDIS_LIST_FEEDBACK, ItemType } from './socialtypes'
+  REDIS_LIST_FEEDBACK, ItemType, Feedback } from './socialtypes'
 import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
 
 const app = express()
 
 // Parsers for POST data
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({ extended: false }));
 
 // Point static path to dist
 app.use(express.static(path.join(__dirname, '..', 'static')));
+
+// CORS - only really for debug, though
+app.use(function(req, res, next) {
+  if (req.path == '/api/feedback') {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    //intercepts OPTIONS method
+    if ('OPTIONS' == req.method) {
+      //respond with 200
+      res.sendStatus(200);
+    }
+    else {
+    //move on
+      next();
+    }
+  } else {
+    //console.log(`use ${req.path}`)
+    next();
+  }
+});
+app.post('/api/feedback', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  let fb = req.body as FeedbackPost
+  if (CURRENT_VERSION != fb.clientVersion) {
+    console.log(`error: post feedback, client version ${fb.clientVersion} vs server version ${CURRENT_VERSION}`)
+    res.status(400).send(`Client version ${fb.clientVersion} vs server version ${CURRENT_VERSION}`)
+    return
+  }
+  if (!fb.feedback) {
+    console.log(`error: post feedback missing feedback`, fb)
+    res.status(400).send(`feedback missing from request`)
+    return
+  }
+  console.log(`post feedback`)
+  relayFeedback(fb.feedback)
+  res.status(200).send("true");
+})
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -97,55 +134,6 @@ function getCurrentItem(performanceid:string): Item {
 let configFile = path.join(__dirname, '..', 'data', 'audience-config.json');
 
 
-// external but watched - empty default
-let configuration:Configuration = {
-  metadata: {
-    title:'empty (builtin)',
-    version: '0',
-    fileVersion: CONFIGURATION_FILE_VERSION
-  },
-  options: {},
-  menuItems:[],
-  views:[],
-  nameParts:[],
-  performances:[]
-}
-
-function readConfig() {
-  fs.readFile(configFile, 'utf8', (err,data) => {
-    if (err) {
-      console.log(`ERROR reading config file ${configFile}: ${err.message}`, err)
-      return
-    }
-    try {
-      let json:any = JSON.parse(data)
-      if (json.menuItems && json.views && json.metadata && json.nameParts && json.metadata.fileVersion == CONFIGURATION_FILE_VERSION) {
-        configuration = json as Configuration
-        console.log(`read config ${configFile}: "${configuration.metadata.title}" version ${configuration.metadata.version}`)
-        return
-      } else {
-        console.log(`ERROR reading config file ${configFile}: does not appear to have correct type (${CONFIGURATION_FILE_VERSION})`)
-      }
-    }
-    catch (err2) {
-      console.log(`ERROR parsing config file ${configFile}: ${err2.message}`, err)
-    }
-  })
-}
-readConfig()
-
-// will watch work? - didn't seem to work either (after first time)
-fs.watch(configFile, {persistent:true}, () => {
-  readConfig()
-})
-
-// fallback?! - didn't seem to work using docker cp (after first time) or with mount from vagrant/windows (at all)
-/*
-fs.watchFile(configFile, {persistent:true}, (curr, prev) => {
-  if (curr.mtime > prev.mtime)
-    readConfig()
-})
-*/
 var sockets = {}
 
 interface ClientInfo {
@@ -210,13 +198,6 @@ io.on('connection', function (socket) {
       performanceid:msg.performanceid,
     }
     socket.myClientInfo = clientInfo
-    if (!msg.configurationVersion || !configuration.metadata || msg.configurationVersion != configuration.metadata.version) {
-      console.log(`sending configuration ${configuration.metadata.version} to client with ${msg.configurationVersion}`)
-      socket.emit(MSG_CONFIGURATION, {
-        configuration:configuration,
-        timing: timing,
-      })
-    }
     currentState.serverSendTime = now
     socket.emit(MSG_CURRENT_STATE, {
       currentState: currentState,
@@ -247,16 +228,7 @@ io.on('connection', function (socket) {
       }
       if (fb.feedback) {
         fb.feedback.performanceid = clientInfo.performanceid
-        let msg = JSON.stringify(fb.feedback)
-        console.log(`relay feedback ${msg.substring(0,50)}...`)
-        redisPub.rpush(REDIS_LIST_FEEDBACK, msg, (err, reply) => {
-          if (err) {
-            console.log(`ERROR saving feedback ${msg.substring(0,50)}...: ${err.message}`)
-            // give up?!
-            return
-          }
-          redisPub.publish(REDIS_CHANNEL_FEEDBACK, '')
-        })
+        relayFeedback(fb.feedback)
       }
     })
     sockets[socket.id] = socket
@@ -269,6 +241,18 @@ io.on('connection', function (socket) {
     console.log(`Warning: socket.io client ${socket.id} error ${err.message}`, err)
   })
 });
+function relayFeedback(feedback:Feedback) {
+  let msg = JSON.stringify(feedback)
+  console.log(`relay feedback ${msg.substring(0,50)}...`)
+  redisPub.rpush(REDIS_LIST_FEEDBACK, msg, (err, reply) => {
+    if (err) {
+      console.log(`ERROR saving feedback ${msg.substring(0,50)}...: ${err.message}`)
+      // give up?!
+      return
+    }
+    redisPub.publish(REDIS_CHANNEL_FEEDBACK, '')
+  })
+}
 
 const STATE_POST = "POST"
 const STATE_INTERVAL = "INTERVAL"
@@ -317,10 +301,6 @@ redisSub.on("message", function (channel, message) {
         currentState.postPerformance = true
         currentState.prePerformance = false
         currentState.inPerformance = false
-      } else if (SERVER_RELOAD == state) {
-        console.log('NOTE: reload configuration!')
-        readConfig()
-        return
       } else  {
         console.log(`${vs.performanceid}: force state ${state}`)
         currentState.forceView = state as string

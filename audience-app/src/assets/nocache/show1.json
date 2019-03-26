@@ -1,0 +1,11 @@
+{
+	"performance": {
+      "id":"show1",
+      "title":"Premiere public performance",
+      "startDatetime":"2019-04-06T13:30:00Z",
+      "isPublic":true,
+      "durationSeconds":10800,
+      "timezone":"+01:00"
+    },
+    "finished": false
+}
