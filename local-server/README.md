@@ -120,7 +120,39 @@ Need to post each repost once (only). `lhva:share:v1:PERFORMANCEID:PADNPOSTS:DAT
 
 Note: note very useful without persistent items (above)
 
-### To do
+## Logs
+
+Writes logs to logs/YYYYMMDDTHHMMSSZ.log
+
+Set environment variable DEBUG to 1/true to write debug to file.
+Error is also written to console.
+
+Using [bunyan](https://www.npmjs.com/package/bunyan).
+
+This adds standard log fields to JSON log object: 
+- v (log version),
+- level (0=trace, 10=debug, warn, info, error, fatal)
+- name
+- hostname, pid
+- time (ISO)
+- msg
+
+Pretty print w bunyan command (./node_modules/.bin/bunyan).
+
+We log various user-readable messages, plus more structured key events:
+- log.start - application/log start
+- control.startperformance - {performance}
+- control.additem - new item posted (minus images)
+- control.updateitem - item changed, e.g. poll closed (minus images)
+- feedback.selfieimage - {feedback}
+- feedback.shareselfie - {feedback}
+- feedback.like - {feedback} 
+- feedback.share - {feedback}
+- feedback.chooseoption - {feedback} 
+- osc.recv - for commands to server, {address,args}
+- osc.setstate - set app state {performanceid,state}
+
+## To do
 
 Social media support:
 

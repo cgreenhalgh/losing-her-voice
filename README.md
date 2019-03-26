@@ -83,13 +83,16 @@ Note: redis in the following should probably be the remote server
 
 ```
 sudo docker build -t local-server --network=internal local-server
+mkdir -p logs/local-server
 sudo docker run -d --restart=always --name=local-server --network=internal \
   -p :8080:8080 -p 9123:9123/udp \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
   -v `pwd`/selfies:/root/work/selfies/ \
+  -v `pwd`/logs/local-server:/root/work/logs/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
+  -e DEBUG=1 \
   local-server
 ```
 Note, replace REDIS_HOST and REDIS_PASSWORD if connecting to remote audience server.
@@ -109,10 +112,17 @@ sudo docker run -it --rm --name=local-server --network=internal \
   -v `pwd`/local-server/static:/root/work/static/ \
   -v `pwd`/local-server/data:/root/work/data/ \
   -v `pwd`/selfies:/root/work/selfies/ \
+  -v `pwd`/logs/local-server:/root/work/logs/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
   -e STORE_HOST=store -e STORE_PASSWORD=`cat redis.password` \
+  -e DEBUG=1 \
   local-server /bin/bash
 node dist/index.js
+```
+
+Prettify logs:
+```
+cat logs/local-server/XXX.log | sudo docker exec -i local-server ./node_modules/.bin/bunyan | more
 ```
 
 Regenerate local config:

@@ -1,4 +1,5 @@
 // ugc, i.e. reposts and selfies (not images)
+import { log } from './logging'
 import * as redis from 'redis'
 
 import { ShareItem, ShareSelfie } from './socialtypes'
@@ -22,14 +23,14 @@ export class UgcStore {
       redis_config.auth_pass = process.env.STORE_PASSWORD;
     }
     
-    console.log('ugc using local store config ' + JSON.stringify(redis_config));
+    log.debug({redisConfig:redis_config}, 'ugc local store config');
     this.store = redis.createClient(redis_config);
     this.store.on('error', function (err) {
-      console.log(`ERROR: image store: ${err.message}`, err)
+      log.error({err:err}, `image store: ${err.message}`)
     })
   }
   clearPerformance(performanceid:string) {
-    console.log(`Note: clear UGC for performance ${performanceid}`)
+    log.info({}, `Note: clear UGC for performance ${performanceid}`)
     this.deletePrefix(`${SHARE_ITEMS_PREFIX}${performanceid}:`)
     this.deletePrefix(`${REPOSTS_PREFIX}${performanceid}:`)
     this.deletePrefix(`${SHARE_SELFIES_PREFIX}${performanceid}:`)
@@ -48,14 +49,14 @@ export class UgcStore {
     let si_key_prefix = `${SHARE_ITEMS_PREFIX}${performanceid}:`
     this.store.keys(si_key_prefix+'*', (err, reply) => {
       if(err) {
-        console.log(`ERROR getting keys for ShareItems: ${err.message}`, err)
+        log.error({err:err}, `getting keys for ShareItems: ${err.message}`)
         return
       }
-      console.log(`found ${reply.length} ShareItems`)
+      log.info({}, `found ${reply.length} ShareItems`)
       for (let key of reply) {
         this.store.get(key, (err, reply) => {
           if(err) {
-            console.log(`ERROR getting for ShareItem ${key}: ${err.message}`, err)
+            log.error({err:err}, `getting for ShareItem ${key}: ${err.message}`)
             return
           }
           if(cb && reply)
@@ -69,7 +70,7 @@ export class UgcStore {
     let reposts_key = `${REPOSTS_PREFIX}${performanceid}:${si.user_name}`
     this.store.incr(reposts_key, (err, reposts) => {
         if (err) {
-            console.log(`error doing incr on ${reposts_key}: ${err.message}`)
+            log.error({}, `doing incr on ${reposts_key}: ${err.message}`)
             return
         }
         let padno = ("0000"+reposts).slice(-4)
@@ -79,10 +80,10 @@ export class UgcStore {
         let json = JSON.stringify(si)
         this.store.set(si_key, json, (err) => {
             if (err) {
-                console.log(`error storing ShareItem ${json.substring(0, 50)}... as ${si_key}: ${err.message}`)
+                log.error({}, `storing ShareItem ${json.substring(0, 50)}... as ${si_key}: ${err.message}`)
                 return
             }
-            console.log(`stored ShareItem ${json.substring(0, 50)}... as ${si_key}`)
+            log.info({}, `stored ShareItem ${json.substring(0, 50)}... as ${si_key}`)
             if (cb)
                 cb(si)
         })
@@ -90,12 +91,12 @@ export class UgcStore {
   }
   deleteShareItem(si:ShareItem) {
     if (!si.key) {
-      console.log(`error: cannot remove ShareItem with unspecified key`)
+      log.error({shareItem:si}, `cannot remove ShareItem with unspecified key`)
       return
     }
     this.store.del(si.key, (err) => {
       if (err) {
-        console.log(`error deleting ShareItem ${si.key}`)
+        log.error({}, `deleting ShareItem ${si.key}`)
         return
       }
     })
@@ -104,14 +105,14 @@ export class UgcStore {
     let si_key_prefix = `${SHARE_SELFIES_PREFIX}${performanceid}:`
     this.store.keys(si_key_prefix+'*', (err, reply) => {
       if(err) {
-        console.log(`ERROR getting keys for ShareSelfies: ${err.message}`, err)
+        log.error({err:err}, `ERROR getting keys for ShareSelfies: ${err.message}`)
         return
       }
-      console.log(`found ${reply.length} ShareSelfies`)
+      log.info({}, `found ${reply.length} ShareSelfies`)
       for (let key of reply) {
         this.store.get(key, (err, reply) => {
           if(err) {
-            console.log(`ERROR getting for ShareSelfie ${key}: ${err.message}`, err)
+            log.error({err:err}, `ERROR getting for ShareSelfie ${key}: ${err.message}`)
             return
           }
           if(cb && reply)
@@ -127,22 +128,22 @@ export class UgcStore {
     let json = JSON.stringify(ss)
     this.store.set(ss_key, json, (err) => {
       if (err) {
-        console.log(`error storing ShareSelfie ${json.substring(0, 50)}... as ${ss_key}: ${err.message}`)
+        log.error({}, `error storing ShareSelfie ${json.substring(0, 50)}... as ${ss_key}: ${err.message}`)
         return
       }
-      console.log(`stored ShareSelfie ${json.substring(0, 50)}... as ${ss_key}`)
+      log.info({}, `stored ShareSelfie ${json.substring(0, 50)}... as ${ss_key}`)
       if (cb)
         cb(ss)
     })
   }
   deleteShareSelfie(ss:ShareSelfie) {
     if (!ss.key) {
-      console.log(`error: cannot remove ShareSelfie with unspecified key`)
+      log.error({shareSelfie:ss}, `cannot remove ShareSelfie with unspecified key`)
       return
     }
     this.store.del(ss.key, (err) => {
       if (err) {
-        console.log(`error deleting ShareSelfie ${ss.key}`)
+        log.error({}, `error deleting ShareSelfie ${ss.key}`)
         return
       }
     })

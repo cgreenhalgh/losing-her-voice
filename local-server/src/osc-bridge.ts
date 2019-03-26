@@ -1,3 +1,4 @@
+import { log } from './logging'
 import * as OSC from 'osc-js'
 import * as redis from 'redis'
 import * as dgram from 'dgram'
@@ -25,23 +26,22 @@ export class OSCBridge {
   osc:OSC
   
   constructor() {
-      console.log('using redis config ' + JSON.stringify(redis_config));
+      log.debug({redisConfig:redis_config}, 'redis config');
     
       let redisPub = redis.createClient(redis_config);
       redisPub.on("error", function (err) {
-        console.log(`ERROR redis error ${err}`, err);
+        log.error({err:err}, `osc bridge redis error ${err.message}`);
       });
     
       // debugging - OK now (was docker & vagrant config issues)
       /*
       const socket = dgram.createSocket('udp4')
-      socket.bind(PORT, '0.0.0.0', ()=> { console.log(`bound`) })
+      socket.bind(PORT, '0.0.0.0', ()=> { log.info({}, `bound`) })
       socket.on('message', function(msg, rinfo) {
-        console.log('Received %d bytes from %s:%d\n',
-                    msg.length, rinfo.address, rinfo.port);
+        log.debug(`Received ${msg.length} bytes from ${rinfo.address}:${rinfo.port}');
       });
       socket.on('error', function(err) {
-        console.log(`socket error`, err)
+        log.error({err:err}, `socket error`)
       });
       */
       this.osc = new OSC({ 
@@ -53,33 +53,34 @@ export class OSCBridge {
         }) 
       })
       this.osc.on('open', () => {
-        console.log(`osc open`)
+        log.info({}, `osc open`)
       })
       this.osc.on(OSC_LHVA_STATE, (message) => {
-        console.log(`osc /lhva/state message`, message.args)
         if (message.args.length!=1) {
-          console.log(`ERROR: osc /lhva/state message with ${message.args.length} arguments`, message.args)
+          log.error({args:message.args}, ` osc /lhva/state message with ${message.args.length} arguments`)
           return
         }
         if (!this.performanceid) {
-            console.log(`WARNING: discarding osc /lhva/state message because performanceid is not set`)
+            log.warn({}, `discarding osc /lhva/state message because performanceid is not set`)
             return
         }
         let msg:ViewState = {
             performanceid:this.performanceid,
             state:message.args[0],
         }
+        log.info(msg, `osc.setstate`)
         redisPub.publish(REDIS_CHANNEL_VIEW_STATE, JSON.stringify(msg))
       })
       //osc.on('*', (message) => {
-      //  console.log(`Warning: osc message`, message)
+      //  log.debug({}, `Warning: osc message`, message)
       //})
-      console.log(`bridge OSC from port ${PORT} to redis ${REDIS_CHANNEL_VIEW_STATE}; expecting ${OSC_LHVA_STATE} "..."`)
+      log.info({}, `bridge OSC from port ${PORT} to redis ${REDIS_CHANNEL_VIEW_STATE}; expecting ${OSC_LHVA_STATE} "..."`)
       this.osc.open()
     }
     addCommand(command:string, cb:OscCommandCallback): void {
       this.commands[command] = cb
       this.osc.on(command, (message) => {
+        log.info({address: message.address, args: message.args}, 'osc.recv')
         cb(message.address, message.args)
       })
     }

@@ -1,5 +1,7 @@
 // server...
-console.log(`hello`)
+import { log, logInit } from './logging'
+logInit('local-server')
+//log.info({}, 'hello')
 
 import * as express from 'express'
 import * as path from 'path'
@@ -45,21 +47,27 @@ function startRedisPubSub() {
     redis_config.auth_pass = process.env.REDIS_PASSWORD;
   }
 
-  console.log('using redis config ' + JSON.stringify(redis_config));
-  console.log(`publish announcements on ${REDIS_CHANNEL_ANNOUNCE}`)
+  log.debug({info:redis_config}, 'redis config');
+  log.info({}, `publish announcements on ${REDIS_CHANNEL_ANNOUNCE}`)
   let redisPub = redis.createClient(redis_config);
   redisPub.on("error", function (err) {
-    console.log(`ERROR redis error ${err}`, err);
+    log.error({err:err}, `redis publisher error ${err.message}`);
+  });
+  redisPub.on("connect", function() {
+    log.debug({}, "redis published connected")
   });
     
-  console.log(`subscribe to feedback on ${REDIS_CHANNEL_FEEDBACK}`)
+  log.info({}, `subscribe to feedback on ${REDIS_CHANNEL_FEEDBACK}`)
   let redisSub = redis.createClient(redis_config);
   redisSub.on("error", function (err) {
-    console.log(`ERROR redis sub error ${err}`, err);
+    log.error({err:err}, `redis subscriber error ${err.message}`);
+  });
+  redisSub.on("connect", function() {
+    log.debug({}, "redis subscriber connected")
   });
   redisSub.subscribe(REDIS_CHANNEL_FEEDBACK)
   redisSub.on("subscribe", function (channel, count) {
-    console.log(`subscribed to redis ${channel} (count ${count})`)
+    log.info({}, `subscribed to redis ${channel} (count ${count})`)
   });
  
   return [redisPub, redisSub]
@@ -70,7 +78,7 @@ let performance:Performance = null
 
 function announceItem(item:Item) {
   if (!performance) {
-    console.log(`cannot announce item for audience: performance not set`)
+    log.warn({}, `cannot announce item for audience: performance not set`)
     return
   }
   let announce:Announce = {
@@ -93,7 +101,7 @@ app.use(express.static(path.join(__dirname, '..', 'static')));
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
-  //console.log(`get`)
+  //log.debug({}, `get`)
   res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
 })
 
@@ -110,7 +118,11 @@ const server = http.createServer(app)
 /**
  * add socket.io
  */
-let io = socketio(server)
+let io = socketio(server, {
+  pingInterval: 20000,
+  // increase timeout because of throttled client thread timers
+  pingTimeout: 20000
+})
 
 let configFile = path.join(__dirname, '..', 'data', 'local-config.json');
 const SCHEDULE_ID_PREFIX = '_schedule_'
@@ -138,7 +150,7 @@ function replaceImageUrl(obj:any, property:string) : string {
   let imageFile = path.join(__dirname, '..', 'static', 'images', url)
   fs.readFile(imageFile, {encoding:'binary'}, (err,data) => {
     if (err) {
-      console.log(`Error: reading image file ${url} from ${imageFile}: ${err.message}`)
+      log.warn({}, `reading image file ${url} from ${imageFile}: ${err.message}`)
       return
     }
     let ix = url.lastIndexOf('.')
@@ -170,14 +182,14 @@ function replaceImageUrls(configuration:Configuration) {
 function readConfig() {
   fs.readFile(configFile, 'utf8', (err,data) => {
     if (err) {
-      console.log(`ERROR reading config file ${configFile}: ${err.message}`, err)
+      log.fatal({err:err}, `reading config file ${configFile}: ${err.message}`)
       return
     }
     try {
       let json:any = JSON.parse(data)
       if (json.metadata && json.metadata.fileVersion == CONFIGURATION_FILE_VERSION) {
         configuration = json as Configuration
-        console.log(`read config ${configFile}: "${configuration.metadata.title}" version ${configuration.metadata.version}`)
+        log.info({}, `read config ${configFile}: "${configuration.metadata.title}" version ${configuration.metadata.version}`)
         for (let si of configuration.scheduleItems) {
           if (!si.id)
             si.id = SCHEDULE_ID_PREFIX + (nextScheduleItemId++)
@@ -185,11 +197,11 @@ function readConfig() {
         replaceImageUrls(configuration)
         return
       } else {
-        console.log(`ERROR reading config file ${configFile}: does not appear to have correct type (${json.metadata ? json.metadata.fileVersion : "undefined fileVersion"})`)
+        log.fatal({}, `config file ${configFile}: does not appear to have correct type (${json.metadata ? json.metadata.fileVersion : "undefined fileVersion"})`)
       }
     }
     catch (err2) {
-      console.log(`ERROR parsing config file ${configFile}: ${err2.message}`, err)
+      log.fatal({err:err2}, `parsing config file ${configFile}: ${err2.message}`)
     }
   })
 }
@@ -214,20 +226,20 @@ let ugcStore = new UgcStore()
 
 redisSub.on("message", function (channel, message) {
   if (!performance) {
-    console.log(`Note: delaying feedback while performance not set`)
+    log.info({}, `Note: delaying feedback while performance not set`)
     return
   }
-  console.log(`feedback ping - checking`)
+  log.debug({}, `feedback ping - checking`)
   checkForFeedback()
 })
 function checkForFeedback() {
   redisPub.lpop(REDIS_LIST_FEEDBACK, (err, message) => {
     if (err) {
-      console.log(`error getting feedback from ${REDIS_LIST_FEEDBACK}: ${err.message}`)
+      log.error({}, `getting feedback from ${REDIS_LIST_FEEDBACK}: ${err.message}`)
       return
     }
     if (!message) {
-      console.log(`no (more) feedback in list ${REDIS_LIST_FEEDBACK}`)
+      log.debug({}, `no (more) feedback in list ${REDIS_LIST_FEEDBACK}`)
       return
     }
     handleFeedback(message)
@@ -236,23 +248,37 @@ function checkForFeedback() {
   })
 }
 function handleFeedback(message:string) {
-  console.log(`feedback: ${message.substring(0,50)}...`)
+  log.debug({}, `feedback: ${message.substring(0,50)}...`)
   try {
     let feedback = JSON.parse(message) as Feedback
     if (!feedback.performanceid) {
-      console.log(`Error: discarding feedback with no performanceid: ${message.substring(0,50)}...`)
+      log.warn({}, `discarding feedback with no performanceid: ${message.substring(0,50)}...`)
       return
     }
     // selfie handled any time!
     if (feedback.selfieImage) {
       if (!feedback.selfieImage.image) {
-        console.log(`ignore selfieImage with no image`)
+        log.warn({}, `ignore selfieImage with no image: ${message.substring(0,50)}...`)
         return
       }
       feedback.selfieImage.performanceid = feedback.performanceid
-      //console.log(`got new selfieItem for performance ${feedback.performanceid}...`)
+      //log.info({}`got new selfieItem for performance ${feedback.performanceid}...`)
       selfieStore.addImage(feedback.selfieImage, (newsi, isNew) => {
-        console.log(`got ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
+        // no image
+        let logfeedback = {
+            performanceid: feedback.performanceid,
+            selfieImage: {
+                // image
+                performanceid: newsi.performanceid,
+                hash: newsi.hash,
+                rejected: newsi.rejected,
+                approved: newsi.approved,
+                moderator: newsi.moderator,
+                submitted: newsi.submitted, // date
+                isNew: isNew,
+            },
+        }
+        log.info({feedback:logfeedback}, `feedback.selfieimage`)
         if (isNew) {
           io.to(ITEM_ROOM).emit(MSG_SELFIE_IMAGE, newsi)
         }
@@ -260,11 +286,11 @@ function handleFeedback(message:string) {
       return
     }
     if (!performance) {
-      console.log(`Warning: ignoring feedback when performance not set: ${message.substring(0,50)}...`)
+      log.warn({}, `ignoring feedback when performance not set: ${message.substring(0,50)}...`)
       return
     }
     if (performance.id != feedback.performanceid) {
-      console.log(`Warning: ignoring feedback for another performance (${feedback.performanceid} vs ${performance.id}): ${message.substring(0,50)}...`)
+      log.warn({},`ignoring feedback for another performance (${feedback.performanceid} vs ${performance.id}): ${message.substring(0,50)}...`)
       return
     }
     if (feedback.likeItem) {
@@ -278,15 +304,16 @@ function handleFeedback(message:string) {
           simple.likes = feedback.likeItem.likes
         else
           simple.likes += feedback.likeItem.likes
-        console.log(`likes for ${item.id} now ${simple.likes}`)
+        log.info({feedback:feedback}, 'feedback.like')
         let msgui:UpdateItem = {
           item:simple
         }
+        log.info({item:getLogItem(simple)}, 'control.updateitem')
         io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
         items.filter((item) => item.itemType==ItemType.REPOST && (item as RepostItem).item.id == feedback.likeItem.id).forEach((item) => 
           (item as RepostItem).item = simple)
       } else {
-        console.log(`warning: could not find liked item ${feedback.likeItem.id}`)
+        log.warn({}, `could not find liked item ${feedback.likeItem.id}`)
       }
     } else if (feedback.chooseOption) {
       // choose quiz/poll option
@@ -301,64 +328,79 @@ function handleFeedback(message:string) {
           quiz.totalCount += feedback.chooseOption.count
         let option = quiz.options[feedback.chooseOption.option]
         if (!option) {
-          console.log(`warning: could not find option ${feedback.chooseOption.option} in quiz ${quiz.id} (with ${quiz.options.length} options)`)
+          log.warn({}, `could not find option ${feedback.chooseOption.option} in quiz ${quiz.id} (with ${quiz.options.length} options)`)
         } else {
           if (!option.count)
             option.count = feedback.chooseOption.count
           else
             option.count += feedback.chooseOption.count
           
-          console.log(`choose option for ${item.itemType} ${item.id} option ${feedback.chooseOption.option} now ${option.count}/${quiz.totalCount}`)
+          log.info({feedback:feedback}, 'feedback.chooseoption')
           if (quiz.updateLive) {
             let msgui:UpdateItem = {
               item:quiz
             }
+            log.info({item:getLogItem(quiz)}, 'control.updateitem')
             io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
           }
         }
       } else {
-        console.log(`warning: could not find quiz item ${feedback.chooseOption.itemId}`)
+        log.warn({}, `could not find quiz item ${feedback.chooseOption.itemId}`)
       }
     } else if (feedback.shareItem) {
-      console.log(`shareItem ${feedback.shareItem.id} by ${feedback.shareItem.user_name}`)
+      log.info({feedback:feedback}, 'feedback.share')
       ugcStore.addShareItem(feedback.shareItem, performance.id, onNewShareItem)
     } else if (feedback.shareSelfie) {
       // check if already moderated
-      console.log(`shareSelfie from ${feedback.shareSelfie.user_name} ${feedback.shareSelfie.image.substring(0,50)}...`)
+      log.debug({}, `shareSelfie from ${feedback.shareSelfie.user_name} ${feedback.shareSelfie.image.substring(0,50)}...`)
       // TODO delay check until used??
       let si:SelfieImage = {
         image: feedback.shareSelfie.image,
         performanceid: performance.id,
       }
       selfieStore.addImage(si, (newsi, isNew) => {
-        console.log(`shared ${isNew ? 'new' : 'old'} selfie ${newsi.hash}`)
+        // no image
+        let logfeedback = {
+            performanceid: feedback.performanceid,
+            shareSelfie: {
+                user_name: feedback.shareSelfie.user_name,
+                // image
+                hash: newsi.hash,
+                rejected: newsi.rejected,
+                approved: newsi.approved,
+                moderator: newsi.moderator,
+                submitted: newsi.submitted, // date
+                isNew: isNew,
+            },
+        }
+        log.info({feedback:logfeedback}, `feedback.shareselfie`)
         if (isNew) {
           io.to(ITEM_ROOM).emit(MSG_SELFIE_IMAGE, newsi)
         }
         if (newsi.approved) {
-          console.log(`shareSelfie ${newsi.hash} from ${feedback.shareSelfie.user_name}`)
+          log.debug({}, `shareSelfie ${newsi.hash} from ${feedback.shareSelfie.user_name}`)
           ugcStore.addShareSelfie(feedback.shareSelfie, performance.id, onNewShareSelfie)
         } else if (newsi.rejected) {
-          console.log(`ignore rejected selfie from ${feedback.shareSelfie.user_name}`)
+          log.debug({}, `ignore rejected selfie from ${feedback.shareSelfie.user_name}`)
         } else {
-          console.log(`Warning: ignoring unmoderated selfie from ${feedback.shareSelfie.user_name}`)
+          log.warn({}, `ignoring unmoderated selfie from ${feedback.shareSelfie.user_name}`)
         }
       })
     } else {
-      console.log(`warning: unhandled feedback ${message.substring(0,50)}...`)
+      log.warn({}, `warning: unhandled feedback ${message.substring(0,50)}...`)
     }
   } catch (err) {
-    console.log(`error parsing feedback: ${err.message}`)
+    log.warn({}, `error parsing feedback: ${err.message}`)
   }
 }
 
 function onNewShareItem(si:ShareItem) {
   if (!si.key) {
-      console.log(`Error: ignore ShareItem with no key`)
+      log.warn({shareItem:si}, `ignore ShareItem with no key`)
       return
   }
   shareItems.push(si)
-  console.log(`new ShareItem: got ${shareItems.length} ShareItems`)
+  log.info({}, `new ShareItem: got ${shareItems.length} ShareItems`)
   let msg:AnnounceShareItem = {
     shareItem:si
   }
@@ -367,18 +409,31 @@ function onNewShareItem(si:ShareItem) {
 }
 function onNewShareSelfie(ss:ShareSelfie) {
   if (!ss.key) {
-      console.log(`Error: ignore ShareSelfie with no key`)
+      log.warn({shareSelfie:ss}, `ignore ShareSelfie with no key`)
       return
   }
   shareSelfies.push(ss)
-  console.log(`new ShareSelfie: got ${shareSelfies.length} ShareSelfies`)
+  log.info({}, `new ShareSelfie: got ${shareSelfies.length} ShareSelfies`)
   let msg:AnnounceShareSelfie = {
     shareSelfie:ss
   }
   io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_SHARE_SELFIE, msg)
   shareSelfies.sort((a,b) => a.key.localeCompare(b.key))
 }
+function getLogItem(item:Item) :any {
+  let rawitem = item as any
+  let logitem = {}
+  for (let param in rawitem) {
+      if ('user_icon' != param && 'image' != param)
+        logitem[param] = rawitem[param]
+  }
+  return logitem
+}
+
 function addItem(item:Item) {
+  // no user_icon or image(s)?
+  log.info({item: getLogItem(item)}, 'control.additem')
+
   items.push(item);
   let msgai:AnnounceItem = { item: item }
   io.to(ITEM_ROOM).emit(MSG_ANNOUNCE_ITEM, msgai)
@@ -386,19 +441,19 @@ function addItem(item:Item) {
     announceItem(item)
   }
   if (item.itemType == ItemType.RESET) {
-    console.log("RESET items")
+    log.info({}, "RESET items")
     items = []
   }
 }
 
 io.on('connection', function (socket) {
-    console.log('new socket io connection...')
+    log.debug({}, 'new socket io connection...')
     //socket.emit('news', { hello: 'world' });
     socket.on(MSG_CLIENT_HELLO, (data) => {
         let msg = data as ClientHello
-        console.log('new client hello', msg);
+        log.debug({msg:msg}, 'new client hello');
         if (LOCAL_PROTOCOL_VERSION != msg.version) { 
-          console.log(`reject client - wrong protocol ${msg.version} vs ${LOCAL_PROTOCOL_VERSION}`)
+          log.error({}, `reject client - wrong protocol ${msg.version} vs ${LOCAL_PROTOCOL_VERSION}`)
           let ood:OutOfDate = {
             serverVersion:LOCAL_PROTOCOL_VERSION,
             clientVersion:msg.version
@@ -423,10 +478,10 @@ io.on('connection', function (socket) {
     socket.on(MSG_START_PERFORMANCE, (data) => {
         let msg = data as StartPerformance
         if (!msg.performance) {
-            console.log('Error: start performance with no performance', msg)
+            log.error({msg:msg}, 'start performance with no performance')
             return
         }
-        console.log(`start performance ${msg.performance.id}: ${msg.performance.title}`)
+        log.info({performance:msg.performance}, `control.startperformance`)
         performance = msg.performance
         oscBridge.setPerformanceid(performance.id)
         let msgp :AnnouncePerformance = { performance: msg.performance }
@@ -448,50 +503,50 @@ io.on('connection', function (socket) {
     socket.on(MSG_POST_ITEM, (data) => {
         let msg = data as PostItem
         if (!msg.item) {
-            console.log('Error: post item with no controlItem', msg)
+            log.error({msg:msg}, 'Error: post item with no controlItem')
             return
         }
         if (!msg.item.id) {
             msg.item.id = ITEM_ID_PREFIX + (nextItemId++)
-            console.log(`Warning: post item without id -> ${msg.item.id}`)
+            log.debug({}, `post item without id -> ${msg.item.id}`)
         }
         if (msg.scheduleId) {
           let si = configuration.scheduleItems.find((si) => msg.scheduleId == si.id)
           if (!si) {
-            console.log(`Warning: could not find posted schedule item ${msg.scheduleId}`)
+            log.warn({}, `Warning: could not find posted schedule item ${msg.scheduleId}`)
           } else if (!si.postCount){
             si.postCount = 1;
           } else {
             si.postCount = 1+si.postCount;
           }
         }
-        console.log(`post item ${msg.item.id}`)
+        log.debug({}, `post item ${msg.item.id}`)
         addItem(msg.item)
     })
     socket.on(MSG_MAKE_ITEM, (data) => {
         let msg = data as MakeItem
         if (!msg.itemType) {
-            console.log('Error: make item with no itemType', msg)
+            log.error({msg:msg}, 'make item with no itemType')
             return
         }
         if (msg.scheduleId) {
           let si = configuration.scheduleItems.find((si) => msg.scheduleId == si.id)
           if (!si) {
-            console.log(`Warning: could not find posted schedule item ${msg.scheduleId}`)
+            log.warn({}, `could not find posted schedule item ${msg.scheduleId}`)
           } else if (!si.postCount){
             si.postCount = 1;
           } else {
             si.postCount = 1+si.postCount;
           }
         }
-        console.log(`make item ${msg.itemType}`)
+        log.debug({}, `make item ${msg.itemType}`)
         if (ItemType.REPOST == msg.itemType) {
           while (shareItems.length>0) {
             let shareItem = shareItems.splice(0, 1)[0]
             ugcStore.deleteShareItem(shareItem)
             let originalItem = items.find((i) => i.id == shareItem.id)
             if (!originalItem) {
-                console.log(`Error: cannot find original item ${shareItem.id} to share`)
+                log.error({}, `cannot find original item ${shareItem.id} to share`)
                 continue
             }
             let item:RepostItem = {
@@ -502,7 +557,7 @@ io.on('connection', function (socket) {
               item:originalItem,
               toAudience:originalItem.toAudience,
             }
-            console.log(`posted repost from ${shareItem.user_name} (${shareItem.key})`)
+            log.debug({}, `posted repost from ${shareItem.user_name} (${shareItem.key})`)
             addItem(item)
             return
           }
@@ -523,13 +578,13 @@ io.on('connection', function (socket) {
                 toAudience: post.toAudience,
                 item: post
               }
-              console.log(`created new repost from reposter ${reposter.user_name}`)
+              log.debug({}, `created new repost from reposter ${reposter.user_name}`)
               addItem(repost)
             } else {
-              console.log(`warning: no posted items to repost`)
+              log.warn({}, `warning: no posted items to repost`)
             } 
           } else {
-            console.log(`warning: no reposters defined`)
+            log.warn({}, `no reposters defined`)
           }
         } else if (ItemType.SELFIE == msg.itemType) {
           while (shareSelfies.length>0) {
@@ -544,7 +599,7 @@ io.on('connection', function (socket) {
               image:shareSelfie.image,
               toAudience:false,
             }
-            console.log(`posted selfie from ${shareSelfie.user_name} (${shareSelfie.key})`)
+            log.debug({}, `posted selfie from ${shareSelfie.user_name} (${shareSelfie.key})`)
             addItem(item)
             return
           }
@@ -561,16 +616,16 @@ io.on('connection', function (socket) {
             }
             addItem(item)
           } else {
-            console.log(`warning: no selfies available`)
+            log.warn({}, `no selfies available`)
           }
         } else {
-          console.log(`warning: ignoring make item request for type ${msg.itemType}`)
+          log.warn({}, `ignoring make item request for type ${msg.itemType}`)
         }
     })
     socket.on(MSG_CLOSE_POLLS, (data) => {
         let openPolls:QuizOrPollItem[] = items.filter((i) => (i.itemType==ItemType.POLL || i.itemType==ItemType.QUIZ) && !(i as QuizOrPollItem).closed) as QuizOrPollItem[]
         for (let openPoll of openPolls) {
-            console.log(`close ${openPoll.itemType} ${openPoll.id}`)
+            log.info({}, `close ${openPoll.itemType} ${openPoll.id}`)
             openPoll.closed = true
             if (openPoll.itemType==ItemType.POLL) {
                 // most popular => 'correct'
@@ -580,6 +635,7 @@ io.on('connection', function (socket) {
             let msgui:UpdateItem = {
               item:openPoll
             }
+            log.info({item:getLogItem(openPoll)}, 'control.updateitem')
             io.to(ITEM_ROOM).emit(MSG_UPDATE_ITEM, msgui)
             if (msgui.item.toAudience) {
               announceItem(msgui.item)
@@ -589,35 +645,35 @@ io.on('connection', function (socket) {
     socket.on(MSG_VIDEO_STATE, (data) => {
         let msg = data as VideoState
         if (!msg.mode) {
-            console.log('Error: video state with no mode', msg)
+            log.error({msg:msg}, 'video state with no mode')
             return
         }
         videoState = msg
-        console.log(`video state updated to ${videoState.mode} mode`)
+        log.info({}, `video state updated to ${videoState.mode} mode`)
         io.to(ITEM_ROOM).emit(MSG_VIDEO_STATE, videoState)
     })
     socket.on(MSG_SELFIE_IMAGE, (data) => {
         let msg = data as SelfieImage
         if (!msg.hash) {
-            console.log('Error: selfie image with no hash', msg)
+            log.error({msg:msg}, 'selfie image with no hash')
             return
         }
         selfieStore.update(msg)
-        console.log(`selfie ${msg.hash} updated, approved=${msg.approved}, rejected=${msg.rejected}, moderator=${msg.moderator}`)
+        log.info({}, `selfie ${msg.hash} updated, approved=${msg.approved}, rejected=${msg.rejected}, moderator=${msg.moderator}`)
     })
     socket.on(MSG_EXPORT_SELFIE_IMAGES, (data) => {
         let msg = data as ExportSelfieImages
         if (!msg.performance || !msg.performance.id) {
-            console.log('Error: export selfie images with no performance id', msg)
+            log.error({msg:msg}, 'export selfie images with no performance id')
             return
         }
-        console.log(`export selfies for performance ${msg.performance.id} to ${selfieExportDir}...`)
+        log.info({}, `export selfies for performance ${msg.performance.id} to ${selfieExportDir}...`)
         selfieStore.exportImages(msg.performance.id, selfieExportDir)
     })
 });
 
 function relayOsc(command:string, args:any[]) {
-  console.log(`relay OSC command to UI: ${command}`)
+  log.debug({}, `relay OSC command to UI: ${command}`)
   io.to(ITEM_ROOM).emit(MSG_OSC_COMMAND, { command: command })
 }
 oscBridge.addCommand(OSC_GO, relayOsc)
@@ -628,4 +684,4 @@ oscBridge.addCommand(OSC_PLAYHEAD_STAR, relayOsc)
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port, () => console.log(`API running on localhost:${port}`))
+server.listen(port, () => log.info({}, `API running on localhost:${port}`))

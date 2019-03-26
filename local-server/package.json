@@ -23,6 +23,9 @@
 	"homepage": "https://github.com/cgreenhalgh/losing-her-voice/#readme",
 	"dependencies": {
 		"@types/node": "^10.11.7",
+		"bunyan": "^1.8.12",
+		"bunyan-debug-stream": "^2.0.0",
+		"dateformat": "^3.0.3",
 		"express": "^4.16.4",
 		"osc-js": "^2.0.2",
 		"redis": "^2.8.0",
