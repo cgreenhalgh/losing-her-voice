@@ -39,7 +39,11 @@ export class ItemComponent {
           return
       }
       this.menuItem = this.configuration.menuItems.find((mi) => mi.id == this.itemId)
-      console.log(`show menu item ${this.itemId}: ${this.menuItem.title}`)
+      if (!this.menuItem) {
+          console.log(`cannot find menu item ${this.itemId}`)
+      } else {
+          console.log(`show menu item ${this.itemId}: ${this.menuItem.title}`)
+      }
   }
   openUrl() {
       this.window.open(this.menuItem.url, "_blank");

@@ -6,5 +6,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 ADD conf.d/*.conf /etc/nginx/conf.d/
 VOLUME /usr/share/nginx/html
 VOLUME /var/log/nginx/log
-#VOLUME /etc/nginx/conf.d
+VOLUME /etc/nginx/conf.d
 #EXPOSE 443

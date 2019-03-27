@@ -199,11 +199,13 @@ one-time...
 sudo docker build -t frontend nginx
 mkdir -p logs/nginx
 ```
-Note: will fail on start-up if audience-server is not running.
+Note: may fail on start-up if audience-server is not running.
 ```
 sudo docker run --name frontend -d --restart=always --network=internal \
   -p :80:80 -p :443:443 -v `pwd`/html:/usr/share/nginx/html \
-  -v `pwd`/logs/nginx:/var/log/nginx/log frontend 
+  -v `pwd`/logs/nginx:/var/log/nginx/log \
+  -v `pwd`/nginx/conf.d:/etc/nginx/conf.d \
+  frontend 
 ```
 
 open (if in vagrant) [http://localhost:8000](http://localhost:8000)

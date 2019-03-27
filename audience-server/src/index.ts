@@ -49,7 +49,6 @@ app.use(function(req, res, next) {
   }
 });
 app.post('/api/feedback', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   let fb = req.body as FeedbackPost
   if (CURRENT_VERSION != fb.clientVersion) {
     console.log(`error: post feedback, client version ${fb.clientVersion} vs server version ${CURRENT_VERSION}`)

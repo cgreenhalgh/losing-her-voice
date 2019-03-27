@@ -32,6 +32,7 @@ enum StartupState {
 }
 
 const PRE_SHOW_LIVE_TIME_S = 60*60 // 1 hour
+const COMMS_WAKE_DELAY_S = 1 //60 1 minute
 
 @Injectable()
 export class SyncService {
@@ -113,15 +114,16 @@ export class SyncService {
           (resp:HttpResponse<PerformanceFile>) => {
               let pfile:PerformanceFile = { ... resp.body }
               let date = resp.headers.get('date')
-              console.log(`got performance, date ${date}`)
+              console.log(`got performance, date ${date}, start ${pfile.performance.startDatetime}, duration ${pfile.performance.durationSeconds}`)
               this.performance.next(pfile.performance)
               this.startupState = StartupState.STARTED
               // fall back to client time?!
               let now = date ? (new Date(date)).getTime() : (new Date()).getTime()
               let start = new Date(this.performance.value.startDatetime).getTime()
-              let elapsed = (now - start)/1000
-              console.log(`since performance start: ${elapsed}`)
-              if (pfile.finished || (pfile.performance.durationSeconds && elapsed > pfile.performance.durationSeconds)) {
+              let elapsed = (now - (start - PRE_SHOW_LIVE_TIME_S*1000))/1000
+              console.log(`since performance start: ${elapsed} -  now ${now}, start ${start}, pre-show ${PRE_SHOW_LIVE_TIME_S}`)
+              if (pfile.finished || (pfile.performance.durationSeconds && 
+                  elapsed > pfile.performance.durationSeconds + PRE_SHOW_LIVE_TIME_S)) {
                   console.log(`performance ${this.performanceid} is officially finished (server time ${now}, start ${start}, elapsed ${elapsed}, finished ${pfile.finished}`)
                   this.commsMode = CommsMode.POST
                   if (this.socket) {
@@ -131,19 +133,19 @@ export class SyncService {
                   }
                   this.currentState.next({
                       allowMenu:true,
-                      postPerformance:false,
+                      postPerformance:true,
                       prePerformance:false,
-                      inPerformance:true,
+                      inPerformance:false,
                       //error
                       serverSendTime:0,
                       serverStartTime:0,
                   })
                   return
               }
-              if (elapsed < -PRE_SHOW_LIVE_TIME_S) {
+              if (elapsed < 0) {
                   // timer to go live
-                  let delay = (-elapsed) - PRE_SHOW_LIVE_TIME_S
-                  console.log(`pre-show, check in ${delay} seconds`)
+                  let delay = -elapsed + Math.random()*COMMS_WAKE_DELAY_S
+                  console.log(`pre-show, check in ${delay} seconds (elapsed ${elapsed})`)
                   setTimeout(() => { this.checkPerformance() }, delay*1000)
                   this.currentState.next({
                       allowMenu:true,
@@ -161,9 +163,11 @@ export class SyncService {
               if (!this.socket)
                   this.startSocketio()
               //check again...
-              let delay = (-elapsed) - PRE_SHOW_LIVE_TIME_S
-              console.log(`in-show, check for end in in ${delay} seconds`)
-              setTimeout(() => { this.checkPerformance() }, delay*1000)
+              if (pfile.performance.durationSeconds) {
+                  let delay = pfile.performance.durationSeconds + PRE_SHOW_LIVE_TIME_S - elapsed + Math.random()*COMMS_WAKE_DELAY_S
+                  console.log(`in-show, check for end in in ${delay} seconds`)
+                  setTimeout(() => { this.checkPerformance() }, delay*1000)
+              }
           },
           (error) => {
               console.log(`error getting performance`, error)
@@ -172,7 +176,7 @@ export class SyncService {
                   postPerformance:false,
                   prePerformance:false,
                   inPerformance:false,
-                  //error
+                  error:'Sorry, trying to connect...',
                   serverSendTime:0,
                   serverStartTime:0,
               })
@@ -242,7 +246,7 @@ export class SyncService {
           postPerformance:false,
           prePerformance:false,
           inPerformance:false,
-          error:`trying to re-connect...`,
+          error:`Sorry, trying to re-connect...`,
           serverSendTime:0,
           serverStartTime:0,
         })
@@ -521,9 +525,11 @@ export class SyncService {
           (ok:boolean) => {
               console.log(`post selfie OK`)
               this.storage.set(SELFIE_IMAGE_POSTED_KEY, 'true')
+              alert(`Thank you - your selfie has been sent`)
           },
           (error) => {
               console.log(`error posting selfie image`, error)
+              alert(`Sorry, I couldn't send your selfie just then; reload the app to try sending it again.`)
           }
        )
   }
