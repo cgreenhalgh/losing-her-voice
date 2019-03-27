@@ -269,6 +269,7 @@ Audience app:
 - [ ] research subject ID allocate and view?
 - [ ] check app disconnect warning?
 - [ ] increase file des limit to 2048 in nginx
+- [ ] privacy notice link?!
 
 probably not...
 - [ ] ? app smoother reconnect support
@@ -297,16 +298,20 @@ Content
 - [x] initial profile names
 - [x] initial menu items
 - [x] name options for profile
+- [x] libretto formatted for subtitles
+- [x] habanera replace recordings
+- [x] views and associated cards/content - for every scene
+- [x] menu items and associated content
 
-- [ ] menu items and associated content
-- [ ] views and associated cards/content - for every scene
+- [ ] libretto detailed formatting
 - [ ] deploy audience app content
-- [ ] posts (text and images)
-- [ ] quizes
-- [ ] polls
+
+Adrian...
+- [x] posts (text and images)
+- [x] quizes
+- [x] polls
 - [ ] selfie images
-- [ ] reposter names
-- [ ] libretto formatted for subtitles
+
 - [ ] questionnaire
 
 Networking
@@ -317,5 +322,6 @@ Networking
 
 
 To don't:
+- [x] reposter names
 - [x] don't add Geraldine to selfie
 - [x] no need to sync libretto changes to cues

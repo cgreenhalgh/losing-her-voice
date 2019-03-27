@@ -10,7 +10,7 @@
     "notifySound": true,
     "notifyPopup": true,
     "notifyVibrate": true,
-    "noSoundInShow": false,
+    "noSoundInShow": true,
     "notifyView": true
   },
   "menuItems":[
@@ -150,12 +150,11 @@
       "id":"act1.prelude",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1</h1><p>Act 1 is about to begin. Please ensure your phone is set to silent.</p><img src=\"assets/sassy-geraldine.jpg\" class=\"view_large\">" }
+        { "html": "<h1>Act 1</h1><p>Act 1 is about to begin. Please ensure your phone is set to silent.</p>" }
       ],
       "audioFile": "phone-to-silent.mp3",
       "audioDelaySeconds": 1,
-      "audioVolume": 0.5,
-      "notify": false
+      "audioVolume": 0.5
     },
     {
       "id":"act1.scene1",
