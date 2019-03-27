@@ -14,7 +14,7 @@ COPY src/ /root/work/src/
 RUN tsc
 
 COPY static/ /root/work/static/
-COPY data/ /root/work/data/
+#COPY data/ /root/work/data/
 
 EXPOSE 8081
 
