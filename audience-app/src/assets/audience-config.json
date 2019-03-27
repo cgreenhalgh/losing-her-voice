@@ -124,8 +124,8 @@
 {"html":"<h1>Audience App Help</h1><p>The Losing Her Voice Audience App allows you to engage with some performance content via your mobile device, before the show, during the interval and during the performance itself.</p>"},
 {"html":"<p>It is not necessary to use the app to enjoy the performance, in which case turn off your device or set it to silent and put it somewhere safe during the performance.</p>"},
 {"html":"<p>If you would like to, then please keep your device with you and active throughout the performance. You will be prompted, but could you please make sure your device is set to silent for the start of Act 1 and Act 2. </p>"},
-{"html":"<p>In ‘pick a profile for the performance’ you can choose an anonymous name that might feature at some point in performance. Please pick one before the performance starts, or in the interval. </p>"},
-{"html":"<p>In ‘take a selfie for the performance’ we would like to post a selfie photograph of yourself that might feature at some point in the performance, should you wish to. Be aware that if you do post a selfie, your photo might be displayed on stage for the audience, cast and crew to see. Furthermore, this performance is being filmed, which may also capture your image. In the ‘take a selfie for the performance’ page it will explain how to post a selfie and how to consent for us to use it in the performance. Should you wish, please take a selfie, and post it before the performance, or in the interval. Note: you will not be able to contribute a selfie after Act 2 has started.</p><p> </p><p>If you are experiencing any difficulties with this audience app or would like to talk to someone about, please ask a member of staff before the performance starts or during the interval.</p>"}
+{"html":"<p>In ‘make a profile’ you can choose an anonymous name that might feature at some point in performance. Please pick one before the performance starts, or in the interval. </p>"},
+{"html":"<p>In ‘take a selfie’ we would like to post a selfie photograph of yourself that might feature at some point in the performance, should you wish to. Be aware that if you do post a selfie, your photo might be displayed on stage for the audience, cast and crew to see. Furthermore, this performance is being filmed, which may also capture your image. In the ‘take a selfie for the performance’ page it will explain how to post a selfie and how to consent for us to use it in the performance. Should you wish, please take a selfie, and post it before the performance, or in the interval. Note: you will not be able to contribute a selfie after Act 2 has started.</p><p> </p><p>If you are experiencing any difficulties with this audience app or would like to talk to someone about, please ask a member of staff before the performance starts or during the interval.</p>"}
       ],
       "showOnHome":true
     },
@@ -137,7 +137,7 @@
         { "html": "<p>We would be grateful if you could complete this anonymous online questionnaire about your experience of Losing Her Voice.</p>" }
       ],
       "urlTitle":"Open questionnaire in browser",
-      "url": "https://nottingham.onlinesurveys.ac.uk/losing-her-voice-audience-survey-v1",
+      "url": "https://nottingham.onlinesurveys.ac.uk/losing-her-voice-audience-survey-v3",
       "showOnHome":true
     },
     {
@@ -161,51 +161,49 @@
       "id":"act1.scene1",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 1</h1><h2><em>Carmen</em>, The Opera</h2><p>A series of intertitles sets the scene as the curtain opens. Lilli makes a dramatic entrance from behind the screen as ‘Carmen’. The two Journalists sing their reviews of her performance in counterpoint from amidst the chorus who sit in the wings as ‘audience’. (Their reviews are adapted from actual reviews of Lehmann’s Metropolitan Opera ‘Carmen’ performance in New York newspapers.) Geraldine jumps up to applaud Lilli from the audience at the end of the scene.</p>" }
+{"html":"<p class=\"centerText\">New York 1880</p><p><img src=\"assets/Act1S1.jpg\" class=\"view_large\"></p>"}
       ]
     },
     {
       "id":"act1.scene2",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 2</h1><h2>The Lesson</h2><p>Lilli moves to the piano on stage left and invites Geraldine to join her for a lesson. Lilli teaches Geraldine how to sing ‘Carmen’ and more fundamentally the ‘great scale’, promising that if Geraldine is disciplined and practices every day, she will sing forever. (This ‘lesson’ incorporates language from Lilli’s actual vocal treatise and dialogue from their letters.) Geraldine bristles against Lilli’s instruction, insisting that she must sing as she feels, but she pledges to devote herself to practice in front of the mirror, as Lilli suggests.</p>" }
+{"html":"<p class=\"centerText\">Berlin 1903</p><p class=\"centerText\">Lilli gives the 19-year-old Geraldine a singing lesson in her Berlin home.</p><p><img src=\"assets/Act1S2.jpg\" class=\"view_medium\"></p>"}
       ]
     },
     {
       "id":"act1.scene3",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 3</h1><h2>Practice Soliloquy</h2><p>Geraldine practices the ‘great scale’ in front of mirror. She is surrounded by the female chorus who practice the ‘great scale’ in front of their own mirrors, which are bathed in light. Geraldine commits herself to practice and her career. At the end of the scene, the Crown Prince spots Geraldine and applauds as she finishes her practice.</p>" }
+{"html":"<p class=\"centerText\">Geraldine practices the ‘Great Scale’ in front of the mirror.</p><p><img src=\"assets/Act1S3.jpg\" class=\"view_large \"></p>"}
       ]
     },
     {
       "id":"act1.scene4",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 4</h1><h2>Gossip Chorus</h2><p>This scene begins with the ‘Gerryflapper’ female fan chorus in front of their mirrors observing the pantomime between Geraldine and the Crown Prince. He approaches her, takes her hand and kisses it as the scene unfolds.</p><p>The Gerryflappers sing gossip about the Crown Prince & Geraldine’s relationship (taken from actual newspaper accounts) and discuss the contract that he gave her at the Berlin Opera to jumpstart her career. Eventually the male chorus enter as the press singing headlines. They take pictures with cameras. The percussionist is on stage, part of the press, with a typewriter, which comprises the instrumental accompaniment for this scene. The ‘headlines’ are projected on the screen.</p>" }
+{"html":"<p class=\"centerText\">After the Crown Prince of Germany spots Geraldine, rumours about the two abound.</p><p><img src=\"assets/Act1S4.jpg\" class=\"view_large \"></p>"}
       ]
     },
     {
       "id":"act1.scene5",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 5</h1><h2>Royal Love Duet</h2><p>At the end of the previous scene, there is a spotlight on the Crown Prince and Geraldine at centre stage. They sing a highly operatic duet with full instrumental accompaniment. Through the course of the duet, the Crown Prince offers Geraldine a contract at the Berlin Opera and then later proposes. She rejects his proposal because she has been offered a contract at the Metropolitan Opera in New York. The Crown Prince graciously tears up the contract and wishes her well.</p>" }
+{"html":"<p class=\"centerText\">Geraldine finds success at the Berlin Opera. She then receives a tantalising offer to return to the United States and sing at the Metropolitan Opera.</p><p><img src=\"assets/Act1S5.jpg\" class=\"view_medium\"></p>"}
       ]
     },
     {
       "id":"act1.scene6",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 6</h1><h2>Press Confrontation: Did you ever love the Crown Prince?</h2><p>As Geraldine gets off the ship in New York to begin her career at the Metropolitan, the male chorus (as press) accuse Geraldine of using the Crown Prince and other key male figures in her life (Toscanini, Caruso) to advance her career. Geraldine defends herself and asserts her autonomy with support from the Female Chorus.</p>" }
+{"html":"<p class=\"centerText\">Journalists confront her with rumours about her alleged affairs with the Crown Prince, and co-stars to boost her career.</p><p><img src=\"assets/Act1S6.jpg\" class=\"view_medium\"></p>"}
       ]
     },
     {
       "id":"act1.scene7",
       "act":1,
       "cards":[
-        { "html": "<h1>Act 1, Scene 7</h1><h2>Losing Her Voice</h2><p>Geraldine pushes through the throng from the previous scene to confront the audience stating that despite appearances, she controlled her own story. She sings of her rise to international fame and the emergence of her ‘Gerryflapper’ female fans who prompted her to become a recording artist so that they could take her voice home.</p>" },
-        { "html": "<p>As the scene progresses, Geraldine sings vocalises from Carmen ‘Habanera’ into a microphone, in front of a mirror, and the Gerryflappers walk out around the audience where there are phonographs. They play the same ‘habanera’ from Carmen on their machines. Geraldine literally sings herself hoarse as the male press sing headlines about how she has lost her voice.</p>" },
-        { "html": "<p>As the recorded sound supplants Geraldine’s voice, a telephone is heard ringing. Cecil B. Demille calls from offstage to offer her a role in his silent film. Lilli cautions her against taking a role in this crass new genre, but ultimately Geraldine accepts. </p>" }
+{"html":"<p class=\"centerText\">Geraldine responds to the press with support from her ‘Gerryflapper’ fans. Geraldine loses her voice due to overwork.</p><p><img src=\"assets/Act1S7.jpg\" class=\"view_medium\"></p>"}
       ],
       "defaultMenuId":"selfie"
     },
@@ -223,35 +221,34 @@
       "id":"act2.scene1",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 1</h1><h2><em>Carmen</em>, The Silent Film</h2><p>We are in 1915 Hollywood. After a jazzy instrumental opener, scenes from Cecil B.  Demille’s ‘Carmen’ with melodramatic musical accompaniment. Demille directs in speaking voice and, in singing voice, describes Geraldine’s massive celebrity. The chorus sits in the audience. Geradine archive Carmen footage appears on projection screen, at intervals, the ‘real’ Geraldine appears to stage to fix make up, get direction, then moves back into projected on-screen footage.</p>" }
+{"html":"<p class=\"centerText\">Hollywood 1915:</p><p class=\"centerText\">Geraldine films Carmen with Cecil B. Demille.</p><p><img src=\"assets/Act2S1.jpg\" class=\"view_large \"></p>"}
       ]
     },
     {
       "id":"act2.scene2",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 2</h1><h2>You Were My Ideal Love </h2><p>Lou looks at Geraldine on screen. (Geraldine is still behind screen, but gradually emerges as scene unfolds.) He sings about how they met and how she is his ideal love, musing that his love for her was more intoxicating than his other addictions and her affections were more thrilling than the adoration of his fans. As he speaks, Geraldine wildly sings on-stage. Her vocal gestures begin to impact her projected image. His song is in the style of a 1910s waltz popular song like ‘Let Me Call You Sweetheart’.</p><p>After Lou sings, the chorus rises from the audience to sing about how Geraldine & Lou were their ideal love. As they sing, (real) newspaper & magazines appear portraying their ideal love. Perhaps Lou signs autographs or has picture taken? Geraldine’s gestures continue to distort images. </p><p>For the first time this act, Geraldine sings. The screen projects newspaper images of her actual marriage to Tellegen with scenes from ‘Carmen’. The images shift in response to Geraldine’s voice as she sings ‘Is this How You See Me’ and chronicles the rise and fall of her relationship with Tellegen and her silent film career. She fights with Lou about the true course of their relationship and eventually pushes him behind the screen, where he is trapped. </p><p>There will be some improvisatory aspects to this aria and interaction between soprano/image. </p><p>At the end, Cecil B. Demille tells her that her movies are failing financially, and she tears up her contract. She receives a call from the Met telling her that her salary will be cut. Image freezes and the screen then goes dark as she slams down phone.</p>" }
+{"html":"<p class=\"centerText\">The tumultuous rise and fall of Geraldine and Lou Telogen's relationship.</p><p><img src=\"assets/Act2S2.jpg\" class=\"view_medium\"></p>"}
       ]
     },
     {
       "id":"act2.scene3",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 3</h1><h2>The Lesson: Post-war Edition</h2><p>Geraldine walks over to mirror and wipes off her cinema makeup. There is a spotlight on her centre stage. Lilli again appears on stage left with a spotlight by the piano. She is a ghostly pale version of herself. Geraldine sees Lilli’s reflection in the mirror. </p><p>Lilli sings to Geraldine about the dire situation in post-war Germany saying that the Crown Prince has been deposed and his son now works at a Ford factory. She suggests that Geraldine can get through all her problems by continuing with her ‘great scale’ practice, which will allow her to sing forever. The female chorus re-appears around the audience near phonographs with mirrors. They sing a distorted version of the ‘great scale’.</p>" }
+{"html":"<p class=\"centerText\">Berlin 1922</p><p class=\"centerText\">Geraldine retreats from the public eye to consider her future.</p><p><img src=\"assets/Act2S3.jpg\" class=\"view_large \"></p>"}
       ]
     },
     {
       "id":"act2.scene4a",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2><p>Geraldine addresses the audience and chorus. She sings that she never wanted to sing forever, only in the beauty and bloom of youth and fresh voice. She bids farewell to the Metropolitan and her Gerryflappers. She exits the stage in a huge tumult of press and fan adulation.</p>" }
+{"html":"<p class=\"centerText\">New York 1922</p><p class=\"centerText\">Geraldine Farrar retires from the Metropolitan, bidding farewell to her throngs of ‘Gerryflappers’.</p><p><img src=\"assets/Act2S4.jpg\" class=\"view_medium\"></p>"}
       ]
     },
     {
       "id":"act2.scene4b",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2>" }
       ],
       "showItems": true
     },
@@ -259,77 +256,39 @@
       "id":"act2.scene4c",
       "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2>" }
-      ],
-      "showItems": true,
-      "postSelfie": true
-    },
-    {
-      "id":"act2.scene4d",
-      "act":2,
-      "cards":[
-        { "html": "<h1>Act 2, Scene 4</h1><h2>Goodbye!</h2>" }
       ],
       "dark": true
     },
     {
       "id":"act2.scene5a",
-      "act":1,
+      "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone!</p>" }
-      ],
-      "flicker": {
-        "images":[
-          "sassy-geraldine.jpg"
-        ],
-        "minFraction": 1,
-        "maxFraction": 1,
-        "minShowSeconds": 0.5,
-        "maxShowSeconds": 0.5,
-        "minBlankSeconds": 1.5,
-        "maxBlankSeconds": 1.5
-      }
+{"html":"<p class=\"centerText\">At the end of her life, Geraldine ponders her artistic legacy, captured in celluloid and vinyl.</p><p><img src=\"assets/Act2S5.jpg\" class=\"view_medium\"></p>"}
+      ]
     },
     {
       "id":"act2.scene5b",
-      "act":1,
+      "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone!</p>" }
+        { "html": "<p>Please turn up the media volume on your phone!</p>" }
       ],
-      "audioFile": "phone-ringing.mp3",
-      "audioDelaySeconds": 0.1
+      "audioFile": "habanera-short.mp3",
+      "audioDelaySeconds": 1
     },
     {
       "id":"act2.scene5c",
-      "act":1,
+      "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone!</p>" }
+        { "html": "<p>Please turn up the media volume on your phone!</p>" }
       ]
     },
     {
       "id":"act2.scene5d",
-      "act":1,
+      "act":2,
       "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please turn up the media volume on your phone!</p>" }
+        { "html": "<p>Please turn up the media volume on your phone!</p>" }
       ],
-      "audioFile": "habanera-sample-20.mp3",
-      "audioDelaySeconds": 0.1,
-      "audioJitterSeconds": 1
-    },
-    {
-      "id":"act2.scene5e",
-      "act":1,
-      "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent!</p>" }
-      ]
-    },
-    {
-      "id":"act2.scene5f",
-      "act":1,
-      "cards":[
-        { "html": "<h1>Act 2, Scene 5</h1><h2>Goodbye!</h2><p>Please switch your phone off silent!</p>" }
-      ],
-      "audioFile": "habanera-sample-20.mp3",
+      "audioFile": "habanera-long.mp3",
       "audioDelaySeconds": 0.1,
       "audioJitterSeconds": 5,
       "dark":true,
