@@ -5,7 +5,8 @@ RUN npm install -g typescript
 WORKDIR /root/work
 COPY package.json /root/work/
 COPY package-lock.json /root/work
-RUN npm install --no-bin-links
+RUN npm install
+# --no-bin-links
 
 VOLUME /root/work/data/
 VOLUME /root/work/static/
@@ -15,6 +16,7 @@ RUN tsc
 
 COPY static/ /root/work/static/
 #COPY data/ /root/work/data/
+VOLUME /root/work/logs
 
 EXPOSE 8081
 

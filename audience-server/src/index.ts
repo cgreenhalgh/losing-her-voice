@@ -1,5 +1,7 @@
 // server...
-console.log(`audience-server starting`)
+import { log, logInit } from './logging'
+logInit('audience-server')
+//log.info({}, 'hello')
 
 import * as express from 'express'
 import * as path from 'path'
@@ -44,30 +46,30 @@ app.use(function(req, res, next) {
       next();
     }
   } else {
-    //console.log(`use ${req.path}`)
+    //log.debug({},`use ${req.path}`)
     next();
   }
 });
 app.post('/api/feedback', (req, res) => {
   let fb = req.body as FeedbackPost
   if (CURRENT_VERSION != fb.clientVersion) {
-    console.log(`error: post feedback, client version ${fb.clientVersion} vs server version ${CURRENT_VERSION}`)
+    log.error({}, `post feedback, client version ${fb.clientVersion} vs server version ${CURRENT_VERSION}`)
     res.status(400).send(`Client version ${fb.clientVersion} vs server version ${CURRENT_VERSION}`)
     return
   }
   if (!fb.feedback) {
-    console.log(`error: post feedback missing feedback`, fb)
+    log.error({fb:fb}, `error: post feedback missing feedback`)
     res.status(400).send(`feedback missing from request`)
     return
   }
-  console.log(`post feedback`)
-  relayFeedback(fb.feedback)
+  log.debug({}, `post feedback`)
+  relayFeedback(fb.feedback, 'http')
   res.status(200).send("true");
 })
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
-  //console.log(`get`)
+  //log.debug({}, `get`)
   res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
 })
 
@@ -149,15 +151,15 @@ let redis_config = { host: redis_host, port: 6379, auth_pass:null };
 if (process.env.REDIS_PASSWORD) {
   redis_config.auth_pass = process.env.REDIS_PASSWORD;
 }
-console.log('using redis config ' + JSON.stringify(redis_config));
+log.debug({redisConfig: redis_config}, 'redis config');
 
 let redisPub = redis.createClient(redis_config);
 redisPub.on("error", function (err) {
-    console.log(`ERROR redisPub error ${err}`, err);
+    log.error({err:err}, `redisPub error: ${err.message}`);
 });
 
 io.on('connection', function (socket) {
-  console.log(`new socket io connection ${socket.id}...`)
+  log.debug({}, `new socket io connection ${socket.id}...`)
   //socket.emit('news', { hello: 'world' });
   socket.on(MSG_CLIENT_HELLO, (data) => {
     let msg = data as ClientHello
@@ -166,7 +168,7 @@ io.on('connection', function (socket) {
         serverVersion:CURRENT_VERSION,
         clientVersion:msg.version,
       }
-      console.log(`reject client with wrong version ${msg.version} should be ${CURRENT_VERSION}`,msg)
+      log.warn({msg:msg}, `reject client with wrong version ${msg.version} should be ${CURRENT_VERSION}`)
       socket.emit(MSG_OUT_OF_DATE, err)
       return
     }
@@ -175,11 +177,12 @@ io.on('connection', function (socket) {
         serverVersion:CURRENT_VERSION,
         clientVersion:msg.version,
       }
-      console.log(`reject client without performanceid`,msg)
+      log.warn({msg:msg}, `reject client without performanceid`)
       socket.emit(MSG_OUT_OF_DATE, err)
       return
     }
-    console.log(`Add new client type ${msg.clientType} id ${msg.clientId} performance ${msg.performanceid} (version ${msg.version})`)
+    log.info({clientHello: msg},`client.hello`)
+    //log.debug({}, `Add new client type ${msg.clientType} id ${msg.clientId} performance ${msg.performanceid} (version ${msg.version})`)
     let currentState = getCurrentState(msg.performanceid)
     // update client state / timing
     let now = (new Date()).getTime()
@@ -227,25 +230,48 @@ io.on('connection', function (socket) {
       }
       if (fb.feedback) {
         fb.feedback.performanceid = clientInfo.performanceid
-        relayFeedback(fb.feedback)
+        relayFeedback(fb.feedback,'socket.io')
       }
     })
     sockets[socket.id] = socket
   });
   socket.on('disconnecting', (reason) => {
-    console.log(`socket.io client ${socket.id} disconnecting`)
+    if (socket.myClientInfo)
+      log.info({clientInfo: socket.myClientInfo}, `client.disconnect`)
+    else
+      log.debug({}, `socket.io client ${socket.id} disconnecting`)
     delete sockets[socket.id]
   })
   socket.on('error', (err) => {
-    console.log(`Warning: socket.io client ${socket.id} error ${err.message}`, err)
+    log.warn({err:err}, `Warning: socket.io client ${socket.id} error ${err.message}`)
   })
 });
-function relayFeedback(feedback:Feedback) {
+function getLogItem(item:Item) :any {
+  let rawitem = item as any
+  let logitem = {}
+  for (let param in rawitem) {
+      if ('user_icon' != param && 'image' != param)
+        logitem[param] = rawitem[param]
+  }
+  return logitem
+}
+function relayFeedback(feedback:Feedback, method:string) {
+  let logFeedback = {
+    // TODO clientId ?!
+    performanceid: feedback.performanceid,
+    likeItem: feedback.likeItem,
+    shareItem:feedback.shareItem,
+    chooseOption:feedback.chooseOption,
+    // hash probably isn't set; no images in logs!
+    selfieImage: feedback.selfieImage ? { performanceid: feedback.selfieImage.performanceid, hash: feedback.selfieImage.hash } : undefined,
+    // hash probably isn't set; no image in logs!
+    shareSelfie: feedback.shareSelfie ? { user_name: feedback.shareSelfie.user_name, hash: feedback.shareSelfie.hash } : undefined,
+  }
+  log.info({feedback:logFeedback, method:method}, `feedback.relay`)
   let msg = JSON.stringify(feedback)
-  console.log(`relay feedback ${msg.substring(0,50)}...`)
   redisPub.rpush(REDIS_LIST_FEEDBACK, msg, (err, reply) => {
     if (err) {
-      console.log(`ERROR saving feedback ${msg.substring(0,50)}...: ${err.message}`)
+      log.error({}, `ERROR saving feedback ${msg.substring(0,50)}...: ${err.message}`)
       // give up?!
       return
     }
@@ -260,48 +286,48 @@ const SERVER_RELOAD = "RELOAD"
 
 let redisSub = redis.createClient(redis_config);
 redisSub.on("error", function (err) {
-    console.log(`ERROR redis error ${err}`, err);
+    log.error({err:err}, `ERROR redis error ${err.message}`);
 });
 redisSub.on("subscribe", function (channel, count) {
-  console.log(`subscribed to redis ${channel} (count ${count})`)
+  log.debug({}, `subscribed to redis ${channel} (count ${count})`)
 });
  
 redisSub.on("message", function (channel, message) {
-  console.log("sub channel " + channel + ": " + message);
+  log.trace({}, "sub channel " + channel + ": " + message);
   if (!message) 
     return;
   try {
       let vs = JSON.parse(message) as ViewState
       if (!vs.performanceid) {
-          console.log(`Error: ignore redis message withouth performanceid: ${message}`)
+          log.warn({}, `ignore redis message without performanceid: ${message}`)
           return
       }
       let currentState = getCurrentState(vs.performanceid)
       let state = vs.state
       let now = (new Date()).getTime()
       if (STATE_RESET == state) {
-        console.log(`${vs.performanceid}: reset state`)
+        log.debug({}, `${vs.performanceid}: reset state`)
         currentState.forceView = null
         currentState.allowMenu = true
         currentState.postPerformance = false
         currentState.prePerformance = true
         currentState.inPerformance = false
       } else if (STATE_INTERVAL == state) {
-        console.log(`${vs.performanceid}: interval state`)
+        log.debug({}, `${vs.performanceid}: interval state`)
         currentState.forceView = null
         currentState.allowMenu = true
         currentState.postPerformance = false
         currentState.prePerformance = false
         currentState.inPerformance = true
       } else if (STATE_POST == state) {
-        console.log(`${vs.performanceid}: post state`)
+        log.debug({}, `${vs.performanceid}: post state`)
         currentState.forceView = null
         currentState.allowMenu = true
         currentState.postPerformance = true
         currentState.prePerformance = false
         currentState.inPerformance = false
       } else  {
-        console.log(`${vs.performanceid}: force state ${state}`)
+        log.debug({}, `${vs.performanceid}: force state ${state}`)
         currentState.forceView = state as string
         currentState.allowMenu = false
         currentState.postPerformance = false
@@ -310,6 +336,7 @@ redisSub.on("message", function (channel, message) {
       }
       currentState.serverStartTime = now
       currentState.serverSendTime = now
+      log.info({performanceid: vs.performanceid, state: state, currentState: currentState}, 'announce.state')
       for (let socketId in sockets) {
         let socket = sockets[socketId]
         let clientInfo:ClientInfo = socket.myClientInfo
@@ -323,7 +350,7 @@ redisSub.on("message", function (channel, message) {
         socket.emit(MSG_CURRENT_STATE, msg)
       }
    } catch (err) {
-      console.log(`Error parsing/handling state event ${message}`, err)
+      log.error({err:err}, `Error parsing/handling state event ${err.message}`)
    }
 });
  
@@ -331,11 +358,11 @@ redisSub.subscribe(REDIS_CHANNEL_VIEW_STATE);
 
 // social media
 let redisSub2 = redis.createClient(redis_config);
-redisSub.on("error", function (err) {
-    console.log(`ERROR redis2 error ${err}`, err);
+redisSub2.on("error", function (err) {
+    log.error({err:err}, `redis2 error ${err.message}`);
 });
 redisSub2.on("subscribe", function (channel, count) {
-  console.log(`subscribed to redis2 ${channel} (count ${count})`)
+  log.debug({}, `subscribed to redis2 ${channel} (count ${count})`)
 });
  
 redisSub2.on("message", function (channel, message) {
@@ -345,10 +372,10 @@ redisSub2.on("message", function (channel, message) {
   try {
     let announce = JSON.parse(message) as Announce
     if (!announce.performanceid || !announce.item) {
-        console.log(`Warning: ignore ill-formed announce ${message.substring(0, 50)}...`)
+        log.warn({}, `ignore ill-formed announce ${message.substring(0, 50)}...`)
         return
     }
-    console.log(`announce item ${announce.item.id} (${announce.item.itemType})`);
+    log.info({performanceid:announce.performanceid, item: getLogItem(announce.item)}, `announce.item`);
     currentItems[announce.performanceid] = announce.item
     for (let socketId in sockets) {
       let socket = sockets[socketId]
@@ -363,7 +390,7 @@ redisSub2.on("message", function (channel, message) {
       socket.emit(MSG_ANNOUNCE_ITEM, msg)
     }
   } catch (err) {
-    console.log(`error parsing incoming item: ${err.message}`)
+    log.error({}, `parsing incoming item: ${err.message}`)
   }
 });
  
@@ -372,4 +399,4 @@ redisSub2.subscribe(REDIS_CHANNEL_ANNOUNCE);
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port, () => console.log(`API running on localhost:${port}`))
+server.listen(port, () => log.warn({}, `API running on localhost:${port}`))

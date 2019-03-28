@@ -684,4 +684,4 @@ oscBridge.addCommand(OSC_PLAYHEAD_STAR, relayOsc)
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port, () => log.info({}, `API running on localhost:${port}`))
+server.listen(port, () => log.warn({}, `API running on localhost:${port}`))

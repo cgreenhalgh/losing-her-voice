@@ -169,10 +169,13 @@ If serving from here, default is http://localhost:4200
 
 ```
 sudo docker build -t audience-server --network=internal audience-server
+mkdir -p logs/audience-server
 sudo docker run -it --rm --name=audience-server \
   --network=internal -p :8081:8081 \
   -v `pwd`/audience-server/data:/root/work/data/ \
+  -v `pwd`/logs/audience-server:/root/work/logs/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  -e DEBUG=1 \
   audience-server
 ```
 
@@ -181,7 +184,9 @@ Dev
 sudo docker run -it --rm --name=audience-server \
   --network=internal -p :8081:8081 \
   -v `pwd`/audience-server/data:/root/work/data/ \
+  -v `pwd`/logs/audience-server:/root/work/logs/ \
   -e REDIS_HOST=store -e REDIS_PASSWORD=`cat redis.password` \
+  -e DEBUG=1 \
   audience-server /bin/bash
 node dist/index.js
 ```

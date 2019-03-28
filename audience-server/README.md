@@ -95,6 +95,33 @@ Style "centerText" should center-align text.
 For an image on its own typically this will be a relative path "assets/...".
 Style with CSS class "view_large" (100% width), "view_medium" (66% width) or "view_small" (33% width).
 
+## Logs
+
+Writes logs to logs/YYYYMMDDTHHMMSSZ.log
+
+Set environment variable DEBUG to 1/true to write debug to file.
+Error is also written to console.
+
+Using [bunyan](https://www.npmjs.com/package/bunyan).
+
+This adds standard log fields to JSON log object: 
+- v (log version),
+- level (0=trace, 10=debug, warn, info, error, fatal)
+- name
+- hostname, pid
+- time (ISO)
+- msg
+
+Pretty print w bunyan command (./node_modules/.bin/bunyan).
+
+We log various user-readable messages, plus more structured key events:
+- log.start - application/log start
+- announce.item - {performanceid,item}
+- announce.state - {performanceid, state, currentState}
+- client.hello - {clientHello}
+- client.disconnect - {clientInfo}
+- feedback.relay - {feedback,method}
+
 ## To do
 
 See local-server [README](../local-server/README.md)
