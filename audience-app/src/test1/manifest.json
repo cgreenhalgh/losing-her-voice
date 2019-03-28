@@ -1,0 +1,14 @@
+{
+  "short_name": "test1 LHV",
+  "name": "Losing Her Voice (LHV) Audience Application, performance test1",
+  "icons": [
+    {
+      "src": "../launcher-icon-4x.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "home",
+  "display": "fullscreen",
+  "orientation": "portrait"
+}

@@ -58,6 +58,8 @@ export class HomeComponent {
   }
   onShowMenuItem(menuItem:MenuItem):void {
     console.log(`home show menu item`, menuItem)
-    this.router.navigate([`/${menuItem.id}`])
+    let performanceid = this.syncService.getPerformanceid()
+    let encperformanceid = performanceid ? encodeURIComponent(performanceid) : 'undefined'
+    this.router.navigate([`/${encperformanceid}//${menuItem.id}`])
   }
 }

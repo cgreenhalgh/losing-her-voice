@@ -15,6 +15,7 @@ import { HomeComponent } from './home.component';
 import { ItemComponent } from './item.component';
 import { PostsComponent } from './posts.component';
 import { PostspageComponent } from './postspage.component';
+import { PageNotFoundComponent } from './pagenotfound.component';
 import { SyncService } from './sync.service';
 
 @NgModule({
@@ -26,6 +27,7 @@ import { SyncService } from './sync.service';
     HomeComponent,
     PostsComponent,
     PostspageComponent,
+    PageNotFoundComponent,
     ItemComponent
   ],
   imports: [

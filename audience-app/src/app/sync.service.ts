@@ -75,8 +75,8 @@ export class SyncService {
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.selfieSent = new BehaviorSubject(this.getSelfieSent())
     this.item = new BehaviorSubject(null)
+    this.checkServerUrl()
     this.initPerformanceid()
-    this.checkServer()
     this.startupState = StartupState.WAIT_CONFIG;
     this.http.get<Configuration>('assets/audience-config.json')
       .subscribe(
@@ -184,7 +184,7 @@ export class SyncService {
           }
        )
   }
-  checkServer() {
+  checkServerUrl() {
     // base href?
     let baseHref = ((this.document.getElementsByTagName('base')[0] || {})).href
     console.log(`base href = ${baseHref}`)
@@ -281,32 +281,54 @@ export class SyncService {
       this.outOfDate = true
     })
   }
+  getParams(): any {
+    var pl     = /\+/g;  
+    // Regex for replacing addition symbol with a space
+    var search = /([^&=]+)=?([^&]*)/g;
+    var decode = function(s) { return decodeURIComponent(s.replace(pl, " ")); }
+    var query  = this.window.location.search.substring(1);
+    let params = {};
+    var match
+    while (match = search.exec(query))
+      params[decode(match[1])] = decode(match[2]);
+    return params
+  }
   initPerformanceid(): void {
-        var pl     = /\+/g;  
-        // Regex for replacing addition symbol with a space
-        var search = /([^&=]+)=?([^&]*)/g;
-        var decode = function(s) { return decodeURIComponent(s.replace(pl, " ")); }
-        var query  = this.window.location.search.substring(1);
-        let params = {};
-        var match
-        while (match = search.exec(query))
-          params[decode(match[1])] = decode(match[2]);
-
-        if (params['p']!==undefined) {
-          if (!this.performanceid) {
-            this.performanceid = params['p'];
-            this.storage.set(PERFORMANCE_ID_KEY, this.performanceid)
-            console.log(`setting performanceid: ${this.performanceid}`)
-          }
-        } else if (!this.performanceid) {
-            this.performanceid = this.storage.get(PERFORMANCE_ID_KEY)
-            if (!this.performanceid) {
-                alert(`Sorry, the URL seems to be wrong (there is no performance specified)`)
-                console.log(`Error: no performanceid (p) in url`, params)
-            } else {
-                console.log(`using saved performanceid ${this.performanceid}`)
-            }
-        }
+    if (this.performanceid)
+      return
+    // old style
+    let params = this.getParams()
+    if (params['p']!==undefined) {
+      this.performanceid = params['p'];
+      console.log(`set performanceid from parameter p ${params['p']}`)
+    }
+    // new style - path, basehrefpath should have trailing /
+    let path = this.window.location.pathname
+    if (this.baseHrefPath) {
+      if (path.substring(0, this.baseHrefPath.length) == this.baseHrefPath) 
+        path = path.substring(this.baseHrefPath.length)
+      else 
+        console.log(`warning: pathname ${path} doesn't start with basehref ${this.baseHrefPath}`)
+    }
+    if (path.substring(0,1) == '/')
+      path = path.substring(1)
+    let pathels = path.split('/')
+    if (pathels.length > 1) {
+      this.performanceid = pathels[0]
+      console.log(`set performanceid from path ${path} (${pathels[0]})`)
+    }
+    if (this.performanceid) {
+      this.storage.set(PERFORMANCE_ID_KEY, this.performanceid)
+      console.log(`persisting performanceid: ${this.performanceid}`)
+    } else if (!this.performanceid) {
+      this.performanceid = this.storage.get(PERFORMANCE_ID_KEY)
+      if (!this.performanceid) {
+        alert(`Sorry, the URL seems to be wrong (there is no performance specified)`)
+        console.log(`Error: no performanceid (p) in url`, params)
+      } else {
+        console.log(`using saved performanceid ${this.performanceid}`)
+      }
+    }
   }
   getPerformance(): Observable<Performance> {
       return this.performance;

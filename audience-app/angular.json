@@ -21,8 +21,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.json",
-              "src/launcher-icon-4x.png"
+              "src/launcher-icon-4x.png",
+              { "glob": "**/*", "input": "./src/default/", "output": "./default/" },
+              { "glob": "**/*", "input": "./src/test1/", "output": "./test1/" },
+              { "glob": "**/*", "input": "./src/show1/", "output": "./show1/" },
+              { "glob": "**/*", "input": "./src/show2/", "output": "./show2/" }
             ],
             "styles": [
               "src/styles.css"

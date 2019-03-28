@@ -142,7 +142,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         if (this.view) {
           // stop forcing any view
           if (this.view.defaultMenuId) {
-            this.router.navigate([`/${this.view.defaultMenuId}`])
+            this.navigate(this.view.defaultMenuId)
             this.showMenu = false
           } 
           this.view = null
@@ -182,6 +182,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
     })
   }
+  navigate(page:string) {
+    let performanceid = this.syncService.getPerformanceid()
+    let encperformanceid = performanceid ? encodeURIComponent(performanceid) : 'undefined'
+    this.router.navigate([`/${encperformanceid}/${encodeURIComponent(page)}`])
+  }
   vibrate():void {
     try {
       let success = this.window.navigator.vibrate(200)
@@ -195,12 +200,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
   onShowPosts():void {
-    this.router.navigate(['/posts'])
+    this.navigate('posts')
   }
   onShowMenuItem(menuItem:MenuItem):void {
     console.log(`show menu item`, menuItem)
     this.showMenu = false
-    this.router.navigate([`/${menuItem.id}`])
+    this.navigate(menuItem.id)
   }
   onShowMenu():void {
     this.showMenu = !this.showMenu

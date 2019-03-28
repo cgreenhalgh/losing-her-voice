@@ -235,7 +235,6 @@ Audience app:
 - [x] better selfie-taking instructions
 - [x] blank(ish) view (e.g. fading out) (act2.scene4d)
 - [x] flickering images (act2.scene5f)
-- [x] iphone troubleshoot/fix audio non-playing (https??)
 - [x] support for image(s) in view pages
 - [x] disable HTTP access and/or replace with redirect
 - [x] check/fix like/share button can be pressed multiple times
@@ -262,6 +261,7 @@ Audience app:
 - [x] disable communication before and after event ?! (or otherwise limit traffic)
 - [x] define nginx redirects for performances
 
+- [ ] iphone troubleshoot/fix audio non-playing (https??)
 - [ ] try indexeddb (localForage??) for client persistence (and test on ios vs home)
 - [ ] log usage
 - [ ] server logs
