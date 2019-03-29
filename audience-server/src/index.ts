@@ -15,7 +15,8 @@ import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello,
   MSG_CLIENT_PING, ClientPing, MSG_OUT_OF_DATE, OutOfDate, 
   MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, 
   ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
-  AnnounceItem, MSG_FEEDBACK, FeedbackMsg, FeedbackPost } from './types'
+  AnnounceItem, MSG_FEEDBACK, FeedbackMsg, FeedbackPost, LogPost,
+} from './types'
 import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce,
   REDIS_LIST_FEEDBACK, ItemType, Feedback } from './socialtypes'
 import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, '..', 'static')));
 
 // CORS - only really for debug, though
 app.use(function(req, res, next) {
-  if (req.path == '/api/feedback') {
+  if (req.path == '/api/feedback'|| req.path=='/api/log') {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
@@ -64,6 +65,25 @@ app.post('/api/feedback', (req, res) => {
   }
   log.debug({}, `post feedback`)
   relayFeedback(fb.feedback, 'http')
+  res.status(200).send("true");
+})
+app.post('/api/log', (req, res) => {
+  let lp = req.body as LogPost
+  if (CURRENT_VERSION != lp.clientVersion) {
+    log.error({}, `post log, client version ${lp.clientVersion} vs server version ${CURRENT_VERSION}`)
+    res.status(400).send(`Client version ${lp.clientVersion} vs server version ${CURRENT_VERSION}`)
+    return
+  }
+  if (!lp.events) {
+    log.error({lp:lp}, `error: post log missing events`)
+    res.status(400).send(`events missing from log request`)
+    return
+  }
+  if (!lp.clientId) {
+    log.error({lp:lp}, `error: post log missing clientId`)
+  }
+  log.debug({}, `post log`)
+  log.info(lp, 'client.log')
   res.status(200).send("true");
 })
 
@@ -141,6 +161,7 @@ interface ClientInfo {
   version:number
   clientType:string // e.g. web/pwa, ios, android ??
   clientId:string
+  runId:string
   timing:ServerTiming
   performanceid:string
 }
@@ -196,6 +217,7 @@ io.on('connection', function (socket) {
       version:msg.version,
       clientType:msg.clientType,
       clientId:msg.clientId,
+      runId:msg.runId,
       timing:timing,
       performanceid:msg.performanceid,
     }

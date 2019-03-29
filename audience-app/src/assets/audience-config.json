@@ -35,7 +35,7 @@
       "showOnHome":true
     },
     {
-      "id": "Programme Note",
+      "id": "introduction",
       "title": "Introduction",
       "cards": [
 {"html":"<h2>Composers Programme Note</h2><p>I first encountered Geraldine Farrar’s silent film ‘Carmen’ while preparing my ‘Composing for Words, Theatre &amp; Moving Image’ module in 2017. I became fascinated by how ‘losing her voice’ impacted Farrar’s captivating performance, as she brought the European ‘Carmen’ to the American silver screen. As a former Angeleno, I found it intriguing to think back to the early twentieth-century when pioneering directors like Cecil B. Demille looked to opera for plotlines – and stars —as they sought to establish the fledgling medium. Farrar’s devoted fan base of female ‘Gerryflappers’ also drew my attention, especially as she was active during the pivotal period around women’s suffrage in the United States. I was keen to explore Farrar’s experiences as one of the first bestselling recording artists and an early screen actress, and to consider how media might have amplified Farrar’s celebrity.  </p>"},
@@ -229,6 +229,13 @@
       "cards":[
 {"html":"<p class=\"centerText\">The tumultuous rise and fall of Geraldine and Lou Telogen's relationship.</p><p><img src=\"assets/Act2S2.jpg\" class=\"view_medium\"></p>"}
       ]
+    },
+    {
+      "id":"act2.scene2b",
+      "act":2,
+      "cards":[
+      ],
+      "showItems": true
     },
     {
       "id":"act2.scene3",

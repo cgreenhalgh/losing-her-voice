@@ -121,6 +121,42 @@ We log various user-readable messages, plus more structured key events:
 - client.hello - {clientHello}
 - client.disconnect - {clientInfo}
 - feedback.relay - {feedback,method}
+- client.log - {clientId, runId, performanceId, events} - event, see below
+
+client log events, all with
+- time (ISO),
+- msg, 
+- info, optionally - fields listed after individual event msg
+
+Events (msg) {info fields}:
+- path {path} - app path change
+- item {id,itemType} - item change
+- view {id,showItems} - forced view change (or null)
+- name {user_name} - name change
+
+todo:
+- visible - web page
+- hidden - web page
+- takeselfie - choose file
+- consent1 - selfie
+- consent2 - selfie
+- link {url} - clicked on
+- like {id}
+- share {id,user_name}
+- choose.select {id,option} - touch
+- choose {id,option} - send
+- shareselfie
+- clearuserdata
+- showmenu
+- hidemenu
+- taptostart
+- tapplay
+- play {src,currentTime}
+- pause
+- vibrate
+- popup - notification
+- playnotification - sound
+- playfailed
 
 ## To do
 

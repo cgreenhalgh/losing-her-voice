@@ -113,6 +113,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           console.log(`unknown view forced: ${this.currentState.forceView}`)
           this.currentState.error = `there seems to be something wrong (I don't know how to show ${this.currentState.forceView}`
         } else {
+          this.syncService.log('view',{id:this.view.id, showItems:this.view.showItems})
           if (this.view.audioDelaySeconds)
             this.audioDelaySeconds = this.view.audioDelaySeconds
           if (this.view.audioJitterSeconds)
@@ -140,6 +141,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         }
       } else {
         if (this.view) {
+          this.syncService.log('view',{})
           // stop forcing any view
           if (this.view.defaultMenuId) {
             this.navigate(this.view.defaultMenuId)
@@ -151,6 +153,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.updateAudio()
     })
     syncService.getItem().subscribe((item) => {
+      if (item)
+        this.syncService.log('item',{id:item.id, itemType: item.itemType})
       if (!item || !this.options || item.itemType==ItemType.BLANK || item.itemType==ItemType.RESET) {
         this.showNotifyPopup = false
         this.currentItem = null
@@ -179,6 +183,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         if (url.length>=6 && url.substring(url.length-6) == '/posts') {
           this.showNotifyPopup = false
         }
+        this.syncService.log('path', {path: url})
       }
     })
   }

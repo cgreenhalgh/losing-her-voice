@@ -3,13 +3,15 @@ import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, Subject, Observable } from "rxjs";
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { Logger } from './logger';
+import * as uuidv4 from 'uuid/v4';
 
 import { MSG_CLIENT_HELLO, ClientHello, CURRENT_VERSION, MSG_CURRENT_STATE, 
   CurrentState, CurrentStateMsg, ServerTiming, ClientTiming, 
   MSG_OUT_OF_DATE, OutOfDate, Configuration, 
   MSG_CLIENT_PING, ClientPing, MSG_ANNOUNCE_ITEM, 
   AnnounceItem, FeedbackMsg, MSG_FEEDBACK, NamePart, PerformanceFile,
-  Performance , FeedbackPost } from './types';
+  Performance , FeedbackPost, LogPost, Event, EventInfo } from './types';
 import { Item } from './socialtypes'
 import * as io from 'socket.io-client';
 
@@ -20,6 +22,7 @@ const SELFIE_CONFIRMED_KEY = 'selfie.confirmed'
 const SELFIE_IMAGE_POSTED_KEY = 'selfie.posted'
 const SELFIE_SENT_KEY = 'selfie.sent'
 const PERFORMANCE_ID_KEY = 'performance.id'
+const CLIENT_ID_KEY = 'client.id'
 
 enum CommsMode {
     UNKNOWN, PRE, LIVE, POST
@@ -34,8 +37,11 @@ enum StartupState {
 const PRE_SHOW_LIVE_TIME_S = 60*60 // 1 hour
 const COMMS_WAKE_DELAY_S = 1 //60 1 minute
 
+
 @Injectable()
 export class SyncService {
+  clientId:string
+  runId:string 
   currentState:BehaviorSubject<CurrentState>
   configuration:BehaviorSubject<Configuration>
   performance:BehaviorSubject<Performance>
@@ -60,6 +66,7 @@ export class SyncService {
   socketioServer:string
   socketioPath:string
   baseHrefPath:string
+  logger:Logger
     
   constructor(
     @Inject(DOCUMENT) private document: any,
@@ -75,9 +82,11 @@ export class SyncService {
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.selfieSent = new BehaviorSubject(this.getSelfieSent())
     this.item = new BehaviorSubject(null)
+    this.initClientId()
     this.checkServerUrl()
     this.initPerformanceid()
     this.startupState = StartupState.WAIT_CONFIG;
+    this.logger = new Logger(this.clientId, this.runId, this.performanceid, this.http, this.socketioServer, this.baseHrefPath, )
     this.http.get<Configuration>('assets/audience-config.json')
       .subscribe(
           (configuration:Configuration) => {
@@ -88,6 +97,16 @@ export class SyncService {
               alert(`Sorry, the application is unable to start at the moment`)
           }
        )
+  }
+  initClientId() {
+    this.runId = uuidv4()
+    this.clientId = this.storage.get(CLIENT_ID_KEY)
+    if (!this.clientId) {
+      this.clientId = uuidv4()
+      console.log(`generating new clientId ${this.clientId}`)
+      this.storage.set(CLIENT_ID_KEY, this.clientId)
+    }
+    console.log(`clientId ${this.clientId}, runId ${this.runId}`)
   }
   handleConfig(configuration:Configuration) {
     console.log(`got configuration`);
@@ -348,7 +367,8 @@ export class SyncService {
       let msg:ClientHello = {
         version:CURRENT_VERSION,
         clientType:'default', // TODO: fix clientType
-        clientId:'?', // TODO: fix clientId - persistent??
+        clientId:this.clientId,
+        runId:this.runId,
         clientSendTime: now,
         timing:this.clientTiming,
         configurationVersion:this.configuration.value && this.configuration.value.metadata ? this.configuration.value.metadata.version : null,
@@ -496,6 +516,7 @@ export class SyncService {
     }
     name = name.trim()
     console.log(`name = ${name}`)
+    this.log('name',{user_name:name})
     this.storage.set(NAME_KEY_PREFIX, name)
     this.profileName.next(name)
   }
@@ -601,5 +622,13 @@ export class SyncService {
     this.profileName.next(null)
     this.selfieConfirmed.next(false)
     this.selfieSent.next(false)
+  }
+  log(msg:string, info:EventInfo) {
+    let event:Event = {
+        time: (new Date()).toISOString(),
+        msg:msg,
+        info:info
+    }
+    this.logger.log(event)
   }
 }
