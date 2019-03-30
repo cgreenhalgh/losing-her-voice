@@ -86,7 +86,7 @@ export class SyncService {
     this.checkServerUrl()
     this.initPerformanceid()
     this.startupState = StartupState.WAIT_CONFIG;
-    this.logger = new Logger(this.clientId, this.runId, this.performanceid, this.http, this.socketioServer, this.baseHrefPath, )
+    this.logger = new Logger(this.clientId, this.runId, this.performanceid, this.http, this.socketioServer, this.baseHrefPath, this.document, this.window)
     this.http.get<Configuration>('assets/audience-config.json')
       .subscribe(
           (configuration:Configuration) => {

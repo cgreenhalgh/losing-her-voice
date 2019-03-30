@@ -43,11 +43,13 @@ export class SelfieComponent implements AfterViewInit {
     this.selfieDeclined = true
   }
   onAccept() {
+    this.syncService.log('consent1', undefined)
     this.selfieConfirmed = false
     this.selfieAccepted = true
     this.selfieDeclined = false
   }
   onConfirm() {
+    this.syncService.log('consent2', undefined)
     this.selfieConfirmed = true
     this.selfieAccepted = true
     this.selfieDeclined = false
@@ -55,6 +57,7 @@ export class SelfieComponent implements AfterViewInit {
     this.syncService.setSelfieConfirmed()
   }
   onChangeFile($event) {
+    this.syncService.log('takeselfie', undefined)
     console.log(`change image file`)
     let file = null;
     for (let i = 0; i < $event.target.files.length; i++) {

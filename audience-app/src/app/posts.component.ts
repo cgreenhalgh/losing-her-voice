@@ -66,6 +66,7 @@ export class PostsComponent {
   onLikeCurrentItem() {
     if (this.currentItemLiked)
       return
+    this.syncService.log('like', {id: this.currentItem ? this.currentItem.id : undefined})
     this.currentItemLiked = true
     if (this.currentItem) {
       this.syncService.likeItem(this.currentItem)
@@ -78,6 +79,7 @@ export class PostsComponent {
       console.log(`cannot share item without profile name set`)
       return
     }
+    this.syncService.log('share', {id: this.currentItem ? this.currentItem.id : undefined, user_name: this.profileName})
     this.currentItemShared = true
     if (this.currentItem) {
       this.syncService.shareItem(this.currentItem)
@@ -90,12 +92,14 @@ export class PostsComponent {
         this.currentQuizItem.options[optionIndex].selected = true
         this.currentItemSelected = true
         this.currentQuizOption = optionIndex
+        this.syncService.log('choose.select', {id: this.currentQuizItem.id, option: optionIndex})
       }
     }
   }
   onSendCurrentItem() {
     if (this.currentQuizItem && this.currentItemSelected && !this.currentQuizItem.closed && !this.currentItemSent) {
       this.currentItemSent = true
+      this.syncService.log('choose', {id: this.currentQuizItem.id, option: this.currentQuizOption})
       this.syncService.chooseOption(this.currentQuizItem, this.currentQuizOption)
     }
   }

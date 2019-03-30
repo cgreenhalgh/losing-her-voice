@@ -93,6 +93,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       if (this.currentState && this.currentState.allowMenu) {
         //this.showMenu = true
       } else {
+        if (this.showMenu)
+          this.syncService.log('hidemenu', undefined)
         this.showMenu = false
       }
       if (this.allMenuItems) {
@@ -105,6 +107,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.flickerImage = null
       this.updateFlicker(false)
       if (this.currentState && this.currentState.forceView) {
+        if (this.showMenu)
+          this.syncService.log('hidemenu', undefined)
         // force a view
         this.showMenu = false
         this.audioDelaySeconds = 0
@@ -141,10 +145,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         }
       } else {
         if (this.view) {
-          this.syncService.log('view',{})
+          this.syncService.log('noview',undefined)
           // stop forcing any view
           if (this.view.defaultMenuId) {
             this.navigate(this.view.defaultMenuId)
+            if (this.showMenu)
+              this.syncService.log('hidemenu', undefined)
             this.showMenu = false
           } 
           this.view = null
@@ -170,6 +176,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           (url.length<6 || url.substring(url.length-6) != '/posts')) {
         console.log(`url = ${url}`)
         this.showNotifyPopup = true
+        this.syncService.log('popup', undefined)
       }
       if (this.options.notifySound && (!this.options.noSoundInShow || !this.view) && !this.showLanding) {
         this.playNotification()
@@ -196,6 +203,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     try {
       let success = this.window.navigator.vibrate(200)
       if (success) {
+        this.syncService.log('vibrate', undefined)
         console.log(`vibrate said success`)
       } else {
         console.log(`vibrate said failure`)
@@ -209,11 +217,17 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
   onShowMenuItem(menuItem:MenuItem):void {
     console.log(`show menu item`, menuItem)
+    if (this.showMenu)
+      this.syncService.log('hidemenu', undefined)
     this.showMenu = false
     this.navigate(menuItem.id)
   }
   onShowMenu():void {
     this.showMenu = !this.showMenu
+    if (this.showMenu)
+      this.syncService.log('showmenu', undefined)
+    else
+      this.syncService.log('hidemenu', undefined)
   }
   onToggleEditProfile() :void {
     this.editProfile = !this.editProfile
@@ -227,6 +241,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (!this.audio)
       return
     let audio = this.audio.nativeElement
+    if (audio.paused)
+      this.syncService.log('pause', undefined)
     audio.pause()
     if (!this.view || !this.view.audioFile)
       return
@@ -276,9 +292,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
     // TODO past end?
     console.log(`play audio from ${elapsed}`)
+    this.syncService.log('play', {src: audio.src, currentTime: audio.currentTime})
     audio.play()
       .then(() => { console.log('play audio ok') })
       .catch((err) => { 
+        this.syncService.log('playfailed', undefined)
         console.log(`play audio error ${err.messsage}`, err);
         // not interacted??
         this.showPlay = true
@@ -302,6 +320,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
   onPlayAudio():void {
     console.log(`play (button)`)
+    this.syncService.log('tapplay', undefined)
     this.playAudio()
   }
   ngOnDestroy() {
@@ -318,6 +337,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     //this.playAudio()
   }
   onDismissLanding($event:Event) {
+    this.syncService.log('taptostart', undefined)
     $event.preventDefault()
     this.showLanding = false;
     this.playAudio()
@@ -330,6 +350,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       let audio = this.audioNotification.nativeElement
       audio.pause()
       audio.currentTime = 0
+      this.syncService.log('playnotification', undefined)
       audio.play()
         .then(() => { console.log('play notification ok') })
         .catch((err) => { 
@@ -364,6 +385,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       console.log(`Error: attempt to share unconfirmed selfie`)
       return
     }
+    this.syncService.log('shareselfie', undefined)
     this.selfieSent = true 
     this.syncService.sendSelfie()
   }

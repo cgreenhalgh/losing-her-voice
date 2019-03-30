@@ -131,12 +131,13 @@ client log events, all with
 Events (msg) {info fields}:
 - path {path} - app path change
 - item {id,itemType} - item change
-- view {id,showItems} - forced view change (or null)
+- view {id,showItems} - forced view change 
+- noview
 - name {user_name} - name change
-
-todo:
+- load
 - visible - web page
 - hidden - web page
+- taptostart
 - takeselfie - choose file
 - consent1 - selfie
 - consent2 - selfie
@@ -149,14 +150,16 @@ todo:
 - clearuserdata
 - showmenu
 - hidemenu
-- taptostart
 - tapplay
 - play {src,currentTime}
-- pause
-- vibrate
-- popup - notification
-- playnotification - sound
 - playfailed
+- playnotification - sound
+- pause
+- vibrate - successfullly
+- popup - notification
+
+todo:
+- beforeleave ??
 
 ## To do
 

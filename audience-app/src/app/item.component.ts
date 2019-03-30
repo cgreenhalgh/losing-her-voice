@@ -46,6 +46,7 @@ export class ItemComponent {
       }
   }
   openUrl() {
+      this.syncService.log('link', {url: this.menuItem.url})
       this.window.open(this.menuItem.url, "_blank");
   }
 }

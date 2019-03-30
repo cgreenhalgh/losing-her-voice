@@ -18,6 +18,7 @@ export class ResetComponent {
   onReset() {
     this.syncService.resetApp()
     this.isReset = true
+    this.syncService.log('clearuserdata', undefined)
     this.router.navigate([`/home`])
   }
 }

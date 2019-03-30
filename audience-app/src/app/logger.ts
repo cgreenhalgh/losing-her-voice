@@ -43,16 +43,18 @@ export class Logger {
         private performanceid:string,
         private http: HttpClient,
         private serverUrl:string,
-        private baseHrefPath:string
+        private baseHrefPath:string,
+        private document: any,
+        private window: Window,
     ) {
         localforage.config({name: (EVENT_STORE + this.performanceid) })
         this.localforage = localforage
         this.initLog()
+        this.monitorVisible()
     }
     initLog() {
         console.log(`init log`)
-        // TODO remove test log
-        this.log({ time: (new Date()).toISOString(), msg: 'test' })
+        this.log({ time: (new Date()).toISOString(), msg: 'load' })
 
         this.localforage.getItem(NEXT_EVENT)
             .then((value) => {
@@ -120,7 +122,9 @@ export class Logger {
     }
     log(event: Event) {
         console.log('event', event)
-        // TODO special events which force-start a post?
+        // special events which force-start a post?
+        if ((event.msg == 'visible' && this.nextEvent > this.postedEvent+1) || event.msg == 'hidden' || event.msg == 'link')
+            this.postWhenReady = true
         
         if (this.logState == LogState.STARTING) {
             // can't persist when we don't know nextEvent etc.
@@ -129,6 +133,8 @@ export class Logger {
         }
         let logPost = this.persistEvents([event])
         this.postEventLogs.push(logPost)
+        if (this.postWhenReady)
+            this.startPost()
     }
     reloadEvents() {
         this.logState = LogState.RELOADING
@@ -253,11 +259,73 @@ export class Logger {
                       this.schedulePost(false)
               },
               (error) => {
+                  if (error.status == 400) {
+                      // don't retry that
+                      console.log(`bad request posting log ${postingEvent} - ignore log`, error)
+                      this.postedEvent = postingEvent
+                      this.localforage.setItem(POSTED_EVENT, this.postedEvent)
+                      this.checkDelete()
+                      // this will be async :-)
+                      this.logState = LogState.RUNNING
+                      if (this.postWhenReady)
+                          this.startPost()
+                      else
+                          this.schedulePost(false)
+                      return
+                  }
                   console.log(`error posting log ${postingEvent}: ${error.message}`, error)
                   this.postEventLogs.splice(0, 0, logPost)
                   this.logState = LogState.RUNNING
                   this.schedulePost(true)
               }
            )
+    }
+    monitorVisible(){
+        //https://stackoverflow.com/questions/1060008/is-there-a-way-to-detect-if-a-browser-window-is-not-currently-active
+        let hidden = "hidden";
+        let self = this
+            
+        function onchange(evt) {
+            let v = "visible", h = "hidden",
+                evtMap = {
+                    focus: v, focusin: v, pageshow: v, blur: h, focusout: h, pagehide: h
+                };
+
+            evt = evt || window.event;
+            let res = null;
+            if (evt.type in evtMap)
+                res = evtMap[evt.type];
+            else
+                res = this[hidden] ? "hidden" : "visible";
+
+            console.log('visible?? ' + res);
+            let time = (new Date()).getTime();
+            if (res == 'visible') {
+                self.log({msg:'visible', time:(new Date()).toISOString()})
+            } else if (res == 'hidden') {
+                self.log({msg:'hidden', time:(new Date()).toISOString()})
+            }
+        }
+        // Standards:
+        if (hidden in this.document)
+            this.document.addEventListener("visibilitychange", onchange);
+        else if ((hidden = "mozHidden") in this.document)
+            this.document.addEventListener("mozvisibilitychange", onchange);
+        else if ((hidden = "webkitHidden") in this.document)
+            this.document.addEventListener("webkitvisibilitychange", onchange);
+        else if ((hidden = "msHidden") in this.document)
+            this.document.addEventListener("msvisibilitychange", onchange);
+        // IE 9 and lower:
+        else if ("onfocusin" in this.document)
+            this.document.onfocusin = this.document.onfocusout = onchange;
+        // All others:
+        else
+            this.window.onfocus = this.window.onblur = onchange;
+        // and anyway (but don't seem to get to fire usefully on chrome)
+        this.window.onpageshow = this.window.onpagehide = onchange
+
+        // set the initial state (but only if browser supports the Page Visibility API)
+        if (this.document[hidden] !== undefined)
+            onchange({type: this.document[hidden] ? "blur" : "focus"});    
     }
 }
