@@ -82,9 +82,9 @@ export class SyncService {
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.selfieSent = new BehaviorSubject(this.getSelfieSent())
     this.item = new BehaviorSubject(null)
+    this.checkServerUrl() // NB before initPerofrmanceid
+    this.initPerformanceid() // NB before initClientId
     this.initClientId()
-    this.checkServerUrl()
-    this.initPerformanceid()
     this.startupState = StartupState.WAIT_CONFIG;
     this.logger = new Logger(this.clientId, this.runId, this.performanceid, this.http, this.socketioServer, this.baseHrefPath, this.document, this.window)
     this.http.get<Configuration>('assets/audience-config.json')
@@ -98,13 +98,19 @@ export class SyncService {
           }
        )
   }
+  makeKey(key:string):string {
+    if (this.performanceid)
+      return key + ':' + this.performanceid
+    console.log(`error: can't make key ${key} without performanceid`)
+    return key
+  }
   initClientId() {
     this.runId = uuidv4()
-    this.clientId = this.storage.get(CLIENT_ID_KEY)
+    this.clientId = this.storage.get(this.makeKey(CLIENT_ID_KEY))
     if (!this.clientId) {
       this.clientId = uuidv4()
       console.log(`generating new clientId ${this.clientId}`)
-      this.storage.set(CLIENT_ID_KEY, this.clientId)
+      this.storage.set(this.makeKey(CLIENT_ID_KEY), this.clientId)
     }
     console.log(`clientId ${this.clientId}, runId ${this.runId}`)
   }
@@ -112,7 +118,7 @@ export class SyncService {
     console.log(`got configuration`);
     if (configuration.nameParts) {
       for (let np of configuration.nameParts) {
-        np.value = this.storage.get(NAME_KEY_PREFIX+np.title)
+        np.value = this.storage.get(this.makeKey(NAME_KEY_PREFIX+np.title))
       }
     }
     this.configuration.next(configuration)
@@ -120,7 +126,7 @@ export class SyncService {
     if (!this.performanceid) {
         return;
     }
-    if (this.storage.get(SELFIE_CONFIRMED_KEY) && !this.storage.get(SELFIE_IMAGE_POSTED_KEY)) {
+    if (this.storage.get(this.makeKey(SELFIE_CONFIRMED_KEY)) && !this.storage.get(this.makeKey(SELFIE_IMAGE_POSTED_KEY))) {
         console.log(`re-post selfie image - confirmed by not posted`)
         this.postSelfieImage()
     }
@@ -511,38 +517,38 @@ export class SyncService {
         name += ' '
       if (np.value)
         name += np.value
-      this.storage.set(NAME_KEY_PREFIX+np.title, np.value)
+      this.storage.set(this.makeKey(NAME_KEY_PREFIX+np.title), np.value)
       console.log(`save name ${np.title} ${np.value}`)
     }
     name = name.trim()
     console.log(`name = ${name}`)
     this.log('name',{user_name:name})
-    this.storage.set(NAME_KEY_PREFIX, name)
+    this.storage.set(this.makeKey(NAME_KEY_PREFIX), name)
     this.profileName.next(name)
   }
   getName(): string {
-    return this.storage.get(NAME_KEY_PREFIX)
+    return this.storage.get(this.makeKey(NAME_KEY_PREFIX))
   }
   getNameObservable(): Observable<string> {
     return this.profileName
   }
   getSelfieConfirmed(): boolean {
-    return !!this.storage.get(SELFIE_CONFIRMED_KEY)
+    return !!this.storage.get(this.makeKey(SELFIE_CONFIRMED_KEY))
   }
   getSelfieConfirmedObservable(): Observable<boolean> {
     return this.selfieConfirmed
   }
   getSelfieSent(): boolean {
-    return !!this.storage.get(SELFIE_SENT_KEY)
+    return !!this.storage.get(this.makeKey(SELFIE_SENT_KEY))
   }
   getSelfieSentObservable(): Observable<boolean> {
     return this.selfieSent
   }
   getSelfiePresent(): boolean {
-    return !!this.storage.get(IMAGE_KEY)
+    return !!this.storage.get(this.makeKey(IMAGE_KEY))
   }
   setSelfieConfirmed(): void {
-    this.storage.set(SELFIE_CONFIRMED_KEY, 'true')
+    this.storage.set(this.makeKey(SELFIE_CONFIRMED_KEY), 'true')
     this.selfieConfirmed.next(true)
     this.postSelfieImage()
   }
@@ -567,7 +573,7 @@ export class SyncService {
       .subscribe(
           (ok:boolean) => {
               console.log(`post selfie OK`)
-              this.storage.set(SELFIE_IMAGE_POSTED_KEY, 'true')
+              this.storage.set(this.makeKey(SELFIE_IMAGE_POSTED_KEY), 'true')
               alert(`Thank you - your selfie has been sent`)
           },
           (error) => {
@@ -577,7 +583,7 @@ export class SyncService {
        )
   }
   sendSelfie(): void {
-    this.storage.set(SELFIE_SENT_KEY, 'true')
+    this.storage.set(this.makeKey(SELFIE_SENT_KEY), 'true')
     this.selfieSent.next(true)
     let dataurl:string = this.getSelfieImage()
     console.log(`send selfie`)
@@ -600,23 +606,23 @@ export class SyncService {
       console.log(`error: trying to emit selfie with no socket.io`)
   }
   getSelfieImage(): string {
-    return this.storage.get(IMAGE_KEY)
+    return this.storage.get(this.makeKey(IMAGE_KEY))
   }
   setSelfieImage(dataurl:string): void {
-    this.storage.remove(SELFIE_CONFIRMED_KEY)
+    this.storage.remove(this.makeKey(SELFIE_CONFIRMED_KEY))
     this.selfieConfirmed.next(false)
-    this.storage.set(IMAGE_KEY, dataurl)
+    this.storage.set(this.makeKey(IMAGE_KEY), dataurl)
   }
   resetApp():void {
     console.log(`reset app state`)
-    this.storage.remove(SELFIE_CONFIRMED_KEY)
-    this.storage.remove(SELFIE_IMAGE_POSTED_KEY)
-    this.storage.remove(SELFIE_SENT_KEY)
-    this.storage.remove(IMAGE_KEY)
-    this.storage.remove(NAME_KEY_PREFIX)
+    this.storage.remove(this.makeKey(SELFIE_CONFIRMED_KEY))
+    this.storage.remove(this.makeKey(SELFIE_IMAGE_POSTED_KEY))
+    this.storage.remove(this.makeKey(SELFIE_SENT_KEY))
+    this.storage.remove(this.makeKey(IMAGE_KEY))
+    this.storage.remove(this.makeKey(NAME_KEY_PREFIX))
     if (this.configuration.value && this.configuration.value.nameParts) {
       for (let np of this.configuration.value.nameParts) {
-        this.storage.remove(NAME_KEY_PREFIX+np.title)
+        this.storage.remove(this.makeKey(NAME_KEY_PREFIX+np.title))
       }
     }
     this.profileName.next(null)

@@ -260,18 +260,18 @@ Audience app:
 - [x] submit selfie image over http rather than socket.io (for use well in advance)
 - [x] disable communication before and after event ?! (or otherwise limit traffic)
 - [x] define nginx redirects for performances
+- [x] log usage
+- [x] server logs
+- [x] save app logs to server
 
 - [ ] iphone troubleshoot/fix audio non-playing (https??)
-- [ ] try indexeddb (localForage??) for client persistence (and test on ios vs home)
-- [ ] log usage
-- [ ] server logs
-- [ ] save app logs to server
 - [ ] research subject ID allocate and view?
 - [ ] check app disconnect warning?
 - [ ] increase file des limit to 2048 in nginx
 - [ ] privacy notice link?!
 
 probably not...
+- [ ] ? try indexeddb (localForage??) for client persistence (and test on ios vs home)
 - [ ] ? app smoother reconnect support
 - [ ] ? add ServiceWorker support
 - [ ] ? specific user guidance for in-browser vs PWA/home screen
