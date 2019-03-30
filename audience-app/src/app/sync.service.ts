@@ -74,6 +74,9 @@ export class SyncService {
     @Inject('Window') private window: Window,
     private http: HttpClient,
   ) {
+    this.checkServerUrl() // NB before initPerofrmanceid
+    this.initPerformanceid() // NB before initClientId
+    this.initClientId()
     // loading state...
     this.currentState = new BehaviorSubject(null)
     this.configuration = new BehaviorSubject(null)
@@ -82,9 +85,6 @@ export class SyncService {
     this.selfieConfirmed = new BehaviorSubject(this.getSelfieConfirmed())
     this.selfieSent = new BehaviorSubject(this.getSelfieSent())
     this.item = new BehaviorSubject(null)
-    this.checkServerUrl() // NB before initPerofrmanceid
-    this.initPerformanceid() // NB before initClientId
-    this.initClientId()
     this.startupState = StartupState.WAIT_CONFIG;
     this.logger = new Logger(this.clientId, this.runId, this.performanceid, this.http, this.socketioServer, this.baseHrefPath, this.document, this.window)
     this.http.get<Configuration>('assets/audience-config.json')
