@@ -144,6 +144,7 @@ sudo docker build -t audience-app --network=internal audience-app
 sudo docker run --rm --network=internal \
   -v `pwd`/html/2/:/root/work/static/ \
   audience-app
+sudo sh 
 sed s/default/test1/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/test1/index.html
 sed s/default/show1/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/show1/index.html
 sed s/default/show2/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/show2/index.html
