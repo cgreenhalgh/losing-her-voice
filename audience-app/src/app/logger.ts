@@ -1,4 +1,4 @@
-import { CURRENT_VERSION, LogPost, Event } from './types';
+import { CURRENT_VERSION, LogPost, Event, LogResponse } from './types';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import * as localforage from "localforage";
 //import { LocalForage } from "localforage";
@@ -240,13 +240,13 @@ export class Logger {
             this.postWhenReady = true
         let url = this.serverUrl+(this.baseHrefPath ? this.baseHrefPath : '/')+'api/log'
         console.log(`log (${logPost.events.length} events) to ${url}`, logPost)
-        this.http.post<boolean>(url, logPost, {
+        this.http.post<LogResponse>(url, logPost, {
             headers: new HttpHeaders({
               'Content-Type':  'application/json',
             })
           })
           .subscribe(
-              (ok:boolean) => {
+              (lr:LogResponse) => {
                   console.log(`post log ${postingEvent} OK`)
                   this.postedEvent = postingEvent
                   this.localforage.setItem(POSTED_EVENT, this.postedEvent)
@@ -255,8 +255,14 @@ export class Logger {
                   this.logState = LogState.RUNNING
                   if (this.postWhenReady)
                       this.startPost()
-                  else
+                  else {
                       this.schedulePost(false)
+                      if (lr.serverVersion && lr.serverVersion > CURRENT_VERSION) {
+                          console.log(`log: version out of date - version ${lr.serverVersion} currently ${CURRENT_VERSION}; reloading...`)
+                          alert(`Version ${lr.serverVersion} of this app is now available (currently ${CURRENT_VERSION}); reloading...`)
+                          this.window.location.reload(true)
+                      }
+                  }
               },
               (error) => {
                   if (error.status == 400) {

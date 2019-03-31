@@ -9,7 +9,7 @@ export const MSG_ANNOUNCE_ITEM = 'lhva.announce.item'
 export const MSG_FEEDBACK = 'lhva.feedback'
 
 // protocol version number
-export const CURRENT_VERSION:number = 14
+export const CURRENT_VERSION:number = 15
 
 export interface ClientTiming {
   clientSendTime:number
@@ -193,4 +193,7 @@ export interface LogPost {
   runId:string
   clientVersion:number
   events:Event[]
+}
+export interface LogResponse {
+  serverVersion:number
 }

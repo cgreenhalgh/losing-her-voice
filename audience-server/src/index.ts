@@ -16,7 +16,7 @@ import { MSG_CLIENT_HELLO, CURRENT_VERSION, ClientHello,
   MSG_CURRENT_STATE, CurrentState, CurrentStateMsg, 
   ServerTiming, ClientTiming, MSG_ANNOUNCE_ITEM, 
   AnnounceItem, MSG_FEEDBACK, FeedbackMsg, FeedbackPost, LogPost,
-} from './types'
+  LogResponse } from './types'
 import { REDIS_CHANNEL_ANNOUNCE, Item, REDIS_CHANNEL_FEEDBACK, Announce,
   REDIS_LIST_FEEDBACK, ItemType, Feedback } from './socialtypes'
 import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
@@ -65,14 +65,12 @@ app.post('/api/feedback', (req, res) => {
   }
   log.debug({}, `post feedback`)
   relayFeedback(fb.feedback, 'http')
-  res.status(200).send("true");
+  res.status(200).json("true");
 })
 app.post('/api/log', (req, res) => {
   let lp = req.body as LogPost
   if (CURRENT_VERSION != lp.clientVersion) {
-    log.error({}, `post log, client version ${lp.clientVersion} vs server version ${CURRENT_VERSION}`)
-    res.status(400).send(`Client version ${lp.clientVersion} vs server version ${CURRENT_VERSION}`)
-    return
+    log.warn({}, `post log, client version ${lp.clientVersion} vs server version ${CURRENT_VERSION}`)
   }
   if (!lp.events) {
     log.error({lp:lp}, `error: post log missing events`)
@@ -84,7 +82,10 @@ app.post('/api/log', (req, res) => {
   }
   log.debug({}, `post log`)
   log.info(lp, 'client.log')
-  res.status(200).send("true");
+  let lr:LogResponse = {
+    serverVersion: CURRENT_VERSION
+  }
+  res.status(200).json(lr);
 })
 
 // Catch all other routes and return the index file

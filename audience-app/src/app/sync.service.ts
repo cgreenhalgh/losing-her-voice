@@ -304,6 +304,11 @@ export class SyncService {
         serverStartTime:0,
       })
       this.outOfDate = true
+      if (msg.serverVersion && msg.serverVersion > CURRENT_VERSION) {
+        console.log(`log: version out of date - version ${msg.serverVersion} currently ${CURRENT_VERSION}; reloading...`)
+        alert(`Version ${msg.serverVersion} of this app is now available (currently ${CURRENT_VERSION}); reloading...`)
+        this.window.location.reload(true)
+      }
     })
   }
   getParams(): any {
