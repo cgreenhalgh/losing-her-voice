@@ -46,8 +46,8 @@
 			and for your picture to be included in any recordings of the performance.
 			These recordings may be publicly accessible after the show.
 		</div>
-		<div *ngIf="!selfiePosted" class="text">
-			You can't change or withdraw the picture now.
+		<div class="row">
+			<div class="selfie_button" (click)="openPrivacyNotice()">View GDPR Privacy Notice...</div>
 		</div>
 	</div>
 </div>

@@ -2,6 +2,8 @@ import { Component, ViewChild, ElementRef, AfterViewInit, Inject } from '@angula
 import { SyncService } from './sync.service';
 import { NamePart } from './types';
 
+const PRIVACY_NOTICE_URL = 'http://music-mrl.nott.ac.uk/2/gdpr/LHV-audience.htm'
+
 @Component({
   selector: 'selfie-view',
   templateUrl: './selfie.component.html',
@@ -19,6 +21,7 @@ export class SelfieComponent implements AfterViewInit {
   
   constructor(
     private syncService:SyncService,
+    @Inject('Window') private window: Window,
   ) {
     this.selfieConfirmed = this.syncService.getSelfieConfirmed()
     this.selfiePresent = this.syncService.getSelfiePresent()
@@ -170,5 +173,9 @@ export class SelfieComponent implements AfterViewInit {
       }
       img.src = url;
       //this.imageRef.nativeElement.src = url
+  }
+  openPrivacyNotice() {
+      this.syncService.log('link', {url: PRIVACY_NOTICE_URL})
+      this.window.open(PRIVACY_NOTICE_URL, "_blank");
   }
 }

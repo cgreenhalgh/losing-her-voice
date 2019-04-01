@@ -12,9 +12,9 @@
 
 Develop
 
-- [ ] D1 app privacy notice / link (for selfie)
-- [ ] D1? app logging warning
-- [ ] D1? app extra text on social media page 
+- [x] D1 app privacy notice / link (for selfie)
+- [x] D1? app logging warning
+- [x] D1? app extra text on social media page 
 
 - [ ] D2 libretto tool support for multi-line output
 
