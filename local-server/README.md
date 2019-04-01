@@ -316,10 +316,10 @@ Adrian...
 
 Networking
 
-- [ ] SSID w PSK if possible 
-- [ ] instructions / flyer
-- [ ] MAC addresses & datapoint ID -> IS
+- [x] SSID w PSK if possible 
+- [x] MAC addresses & datapoint ID -> IS
 
+- [ ] instructions / flyer
 
 To don't:
 - [x] reposter names
