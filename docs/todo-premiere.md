@@ -11,6 +11,7 @@ Develop
 - [ ] app check app disconnect warning?
 - [ ] app privacy notice / link (for selfie)
 - [ ] app logging warning
+- [ ] app extra text on social media page 
 
 - [ ] libretto tool support for multi-line output
 
@@ -18,6 +19,8 @@ Deploy
 
 - [ ] app server increase file des limit to 2048 in nginx
 
+- [ ] app update post-show content page / images
+- [ ] app make some post-act 1 images wider
 - [ ] app deploy updated content (including images)
 
 - [ ] libretto detailed formatting
