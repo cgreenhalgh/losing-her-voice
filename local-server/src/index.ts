@@ -11,6 +11,7 @@ import * as socketio from 'socket.io'
 //import * as bodyParser from 'body-parser'
 import * as redis from 'redis'
 import { OSCBridge } from './osc-bridge'
+import { startPing } from './utils'
 
 import { SelfieStore } from './moderation'
 import { UgcStore } from './ugc'
@@ -42,7 +43,7 @@ let oscBridge = new OSCBridge()
 function startRedisPubSub() {
   // redis set-up
   let redis_host = process.env.REDIS_HOST || '127.0.0.1';
-  let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+  let redis_config = { host: redis_host, port: 6379, auth_pass:null, retry_unfulfilled_commands: true };
   if (process.env.REDIS_PASSWORD) {
     redis_config.auth_pass = process.env.REDIS_PASSWORD;
   }
@@ -53,6 +54,7 @@ function startRedisPubSub() {
   redisPub.on("error", function (err) {
     log.error({err:err}, `redis publisher error ${err.message}`);
   });
+  startPing(redisPub)
   redisPub.on("connect", function() {
     log.debug({}, "redis published connected")
   });
@@ -62,6 +64,7 @@ function startRedisPubSub() {
   redisSub.on("error", function (err) {
     log.error({err:err}, `redis subscriber error ${err.message}`);
   });
+  startPing(redisSub)
   redisSub.on("connect", function() {
     log.debug({}, "redis subscriber connected")
   });

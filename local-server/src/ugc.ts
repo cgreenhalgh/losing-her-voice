@@ -1,6 +1,7 @@
 // ugc, i.e. reposts and selfies (not images)
 import { log } from './logging'
 import * as redis from 'redis'
+import { startPing } from './utils'
 
 import { ShareItem, ShareSelfie } from './socialtypes'
 
@@ -18,7 +19,7 @@ export class UgcStore {
 
   constructor() {
     let redis_host = process.env.STORE_HOST || '127.0.0.1';
-    let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+    let redis_config = { host: redis_host, port: 6379, auth_pass:null, retry_unfulfilled_commands: true };
     if (process.env.STORE_PASSWORD) {
       redis_config.auth_pass = process.env.STORE_PASSWORD;
     }
@@ -28,7 +29,8 @@ export class UgcStore {
     this.store.on('error', function (err) {
       log.error({err:err}, `image store: ${err.message}`)
     })
-  }
+    startPing(this.store)
+   }
   clearPerformance(performanceid:string) {
     log.info({}, `Note: clear UGC for performance ${performanceid}`)
     this.deletePrefix(`${SHARE_ITEMS_PREFIX}${performanceid}:`)

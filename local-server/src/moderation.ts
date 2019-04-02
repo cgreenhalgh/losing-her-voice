@@ -4,6 +4,7 @@ import * as redis from 'redis'
 import * as fs from 'fs'
 import * as path from 'path'
 import { createHash } from 'crypto'
+import { startPing } from './utils'
 
 import { SelfieImage, SelfieItem } from './socialtypes'
 
@@ -17,7 +18,7 @@ export class SelfieStore {
   
   constructor() {
     let redis_host = process.env.STORE_HOST || '127.0.0.1';
-    let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+    let redis_config = { host: redis_host, port: 6379, auth_pass:null, retry_unfulfilled_commands: true };
     if (process.env.STORE_PASSWORD) {
       redis_config.auth_pass = process.env.STORE_PASSWORD;
     }
@@ -27,7 +28,8 @@ export class SelfieStore {
     this.store.on('error', function (err) {
       log.error({err:err}, `image store: ${err.message}`)
     })
-  }
+    startPing(this.store)
+   }
   
   addImage(si:SelfieImage, cb:AddImageCallback) {
     let hasher = createHash('sha256')

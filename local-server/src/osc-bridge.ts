@@ -3,11 +3,13 @@ import * as OSC from 'osc-js'
 import * as redis from 'redis'
 import * as dgram from 'dgram'
 import { REDIS_CHANNEL_VIEW_STATE, ViewState } from './statetypes'
+import { startPing } from './utils'
+
 let PORT = 9123
 
 // redis set-up
 let redis_host = process.env.REDIS_HOST || '127.0.0.1';
-let redis_config = { host: redis_host, port: 6379, auth_pass:null };
+let redis_config = { host: redis_host, port: 6379, auth_pass:null, retry_unfulfilled_commands: true };
 if (process.env.REDIS_PASSWORD) {
   redis_config.auth_pass = process.env.REDIS_PASSWORD;
 }
@@ -32,7 +34,8 @@ export class OSCBridge {
       redisPub.on("error", function (err) {
         log.error({err:err}, `osc bridge redis error ${err.message}`);
       });
-    
+      startPing(redisPub)
+      
       // debugging - OK now (was docker & vagrant config issues)
       /*
       const socket = dgram.createSocket('udp4')

@@ -20,11 +20,14 @@ Develop
 
 - [no] D2? applescipt to open and resize CEF?!
 
-- [ ] D3.1 local server redis subscription network change detection -> re-connect (on IP change, not just kill server)
+- [ ? ] D3.1 local server redis subscription network change detection -> re-connect (on IP change, not just kill server)
 
 - [x] D3.1 app iphone troubleshoot/fix audio non-playing (https??)
 - [no] D3.1 app research subject ID allocate and view?
 - [x] D3.1 app check app disconnect warning?
+
+- [x] D3 social media jumping (hopefully :-)
+- [ ] redeploy local-server
 
 Deploy
 
@@ -34,7 +37,7 @@ Deploy
 - [x] D3.1 app make some post-act 1 images wider
 - [x] D3.2 app update cast content page / images
 
-- [ ] D2? libretto detailed formatting - adrian
+- [(x)] D2? libretto detailed formatting - operator...
 
 - [ ] D4 collect/collate selfie images
 
