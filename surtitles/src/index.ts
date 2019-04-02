@@ -155,6 +155,31 @@ mammoth.convertToHtml({path: path}, options)
     })
     .then((lines) => {
         console.log(`read ${lines.length} lines`)
+        // line continuations
+        let joined:Item[] = []
+        let lastItem:Item = null
+        for (let item of lines) {
+            // chop out comments
+            if (item.itemType == ItemType.SURTITLE) {
+                if (lastItem) {
+                    lastItem.text = lastItem.text.substring(0, lastItem.text.length-1) + '\n' + item.text
+                    if (item.text.length>0 && item.text.substring(item.text.length-1) == '\\')
+                        continue
+                    lastItem = null
+                    continue
+                }
+                if (item.text.length>0 && item.text.substring(item.text.length-1) == '\\') {
+                    lastItem = item
+                }
+            } else {
+                lastItem = null
+            }
+            joined.push(item)
+        }
+        return joined
+    })
+    .then((lines) => {
+        //console.log(`read ${lines.length} lines`)
         let items:Item[] = []
         let lastSurtitleBlank = false
       

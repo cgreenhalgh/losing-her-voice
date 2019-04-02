@@ -16,7 +16,7 @@ Develop
 - [x] D1? app logging warning
 - [x] D1? app extra text on social media page 
 
-- [ ] D2 libretto tool support for multi-line output
+- [x] D2 libretto tool support for multi-line output
 
 - [no] D2? applescipt to open and resize CEF?!
 
