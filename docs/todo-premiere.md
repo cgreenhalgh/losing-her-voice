@@ -18,7 +18,7 @@ Develop
 
 - [ ] D2 libretto tool support for multi-line output
 
-- [ ] D2? applescipt to open and resize CEF?!
+- [no] D2? applescipt to open and resize CEF?!
 
 - [ ] D3.1 local server redis subscription network change detection -> re-connect (on IP change, not just kill server)
 
@@ -32,6 +32,7 @@ Deploy
 
 - [ ] D3.2 app update post-show content page / images
 - [ ] D3.1 app make some post-act 1 images wider
+- [ ] D3.2 app update cast content page / images
 
 - [ ] D2? libretto detailed formatting
 
@@ -40,19 +41,24 @@ Deploy
 
 Phsyical
 
-- [ ] D1 app/network instructions / flyer - design
+- [x] D1 app email instructions
+- [x] D1 app/network instructions / flyer - text
+- [ ] D1 app/network instructions / flyer - design - barret
 - [ ] D3 app/network instructions / flyer - print
 - [ ] D4 app/network instructions / flyer - distribute
 
 - [ ] D3 questionnaire - update
+- [ ] D3 questionnaire - check w Elizabeth
 - [ ] D3 questionnaire - print
 - [ ] D4 questionnaire - distribute
 
 - [ ] D3 ethics print
 - [ ] D4 ethics distribute
 
-- [ ] D4 helper's lanyard / name badges
+- [x] D4 helper's lanyard / name badges
 
+- [ ] D2.x set up chorus phones
+- [ ] D2.x,D3,D4 charge chorus phones
 - [ ] D4 power packs - charge
 - [ ] D3 chargers - agree locations
 - [ ] D4 chargers - deploy
