@@ -82,13 +82,13 @@ export class LiveComponent implements AfterViewInit {
                     let i = this.items[ix].item
                     if (i.id == item.id) {
                         console.log(`update item ${item.id} [${ix}]`, item)
-                        this.items.splice(ix, 1, {item:item, show:true})
+                        this.items.splice(ix, 1, {item:item, show: this.items[ix].show})
                         for (let ix2 = 0; ix2 < this.items.length; ix2++) {
                             let i2 = this.items[ix2].item
                             if (i2.itemType==ItemType.REPOST && (i2 as RepostItem).item.id == item.id) {
                                 (i2 as RepostItem).item = item;
                                 // nasty force change
-                                this.items.splice(ix2, 1, {item:JSON.parse(JSON.stringify(i2)), show:true})
+                                this.items.splice(ix2, 1, {item:JSON.parse(JSON.stringify(i2)), show: this.items[ix2].show})
                                 //console.log(`- updates repost ${i2.id}`)
                             }
                         }
@@ -101,7 +101,15 @@ export class LiveComponent implements AfterViewInit {
                 console.log(`add item ${item.id} (${this.items.length} items already)`)
                 let itemHolder = {item:item, show:false}
                 this.items.splice(0, 0, itemHolder)
-                setTimeout(() => { itemHolder.show = true; console.log(`show item ${item.id}`) }, 10)
+                setTimeout(() => { 
+                    let ih = this.items.find((ih) => ih.item.id == item.id) 
+                    if (ih) {
+                        ih.show = true; 
+                        console.log(`show item ${item.id}`) 
+                    } else {
+                        console.log(`error: could not find item ${item.id} to show`)
+                    }
+                }, 100)
                 if (this.feedChild && this.itemsChild)
                     this.update()
                 if (this.videoState && this.videoState.mode == VideoMode.SELFIES && item.itemType == ItemType.SELFIE) {
