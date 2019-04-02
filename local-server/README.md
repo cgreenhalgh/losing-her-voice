@@ -263,12 +263,12 @@ Audience app:
 - [x] log usage
 - [x] server logs
 - [x] save app logs to server
+- [x] iphone troubleshoot/fix audio non-playing (https??)
+- [x] privacy notice link?!
 
-- [ ] iphone troubleshoot/fix audio non-playing (https??)
 - [ ] research subject ID allocate and view?
 - [ ] check app disconnect warning?
 - [ ] increase file des limit to 2048 in nginx
-- [ ] privacy notice link?!
 
 probably not...
 - [ ] ? try indexeddb (localForage??) for client persistence (and test on ios vs home)

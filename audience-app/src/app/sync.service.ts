@@ -201,7 +201,7 @@ export class SyncService {
                   postPerformance:false,
                   prePerformance:false,
                   inPerformance:false,
-                  error:'Sorry, trying to connect...',
+                  error:'trying to connect...',
                   serverSendTime:0,
                   serverStartTime:0,
               })
@@ -271,7 +271,7 @@ export class SyncService {
           postPerformance:false,
           prePerformance:false,
           inPerformance:false,
-          error:`Sorry, trying to re-connect...`,
+          error:`trying to re-connect...`,
           serverSendTime:0,
           serverStartTime:0,
         })

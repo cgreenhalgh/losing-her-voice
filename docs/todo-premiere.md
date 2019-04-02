@@ -22,7 +22,7 @@ Develop
 
 - [ ] D3.1 local server redis subscription network change detection -> re-connect (on IP change, not just kill server)
 
-- [ ] D3.1 app iphone troubleshoot/fix audio non-playing (https??)
+- [x] D3.1 app iphone troubleshoot/fix audio non-playing (https??)
 - [ ] D3.1 app research subject ID allocate and view?
 - [ ] D3.1 app check app disconnect warning?
 
@@ -43,7 +43,7 @@ Phsyical
 
 - [x] D1 app email instructions
 - [x] D1 app/network instructions / flyer - text
-- [ ] D1 app/network instructions / flyer - design - barret
+- [x] D1 app/network instructions / flyer - design - barret
 - [ ] D3 app/network instructions / flyer - print
 - [ ] D4 app/network instructions / flyer - distribute
 

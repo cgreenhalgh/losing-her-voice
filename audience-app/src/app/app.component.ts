@@ -21,7 +21,6 @@ function getDefault(value:number, def:number) : number {
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('audio') audio: ElementRef
-  @ViewChild('audioNotification') audioNotification: ElementRef
   @ViewChild('flickerImg') flickerImg: ElementRef
   @ViewChild('flickerDiv') flickerDiv: ElementRef
   loading:boolean = true
@@ -37,6 +36,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   showPlay:boolean
   playWhenReady:boolean
   audioTimeout:any = null
+  playingNotification:boolean = false
   showLanding:boolean = true
   landingTouched:boolean = false
   profileName:string
@@ -179,7 +179,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.syncService.log('popup', undefined)
       }
       if (this.options.notifySound && (!this.options.noSoundInShow || !this.view) && !this.showLanding) {
-        this.playNotification()
+        this.playNotification(false)
       }
     })
     this.router.events.subscribe((event:RouterEvent) => {
@@ -241,9 +241,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (!this.audio)
       return
     let audio = this.audio.nativeElement
-    if (audio.paused)
+    if (!audio.paused)
       this.syncService.log('pause', undefined)
     audio.pause()
+    this.playingNotification = false
     if (!this.view || !this.view.audioFile)
       return
     console.log(`play audio ${this.view.audioFile}`)
@@ -255,11 +256,20 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       volume = 1
     audio.volume = volume
     audio.load()
-    this.playAudio()
+    this.playAudio(false)
   }
-  playAudio() {
-    if (!this.audio || !this.audio.nativeElement || !this.view || !this.view.audioFile) 
+  playAudio(notifyIfSilent:boolean) {
+    if (!this.audio || !this.audio.nativeElement || !this.view || !this.view.audioFile) {
+      if (notifyIfSilent)
+        this.playNotification(true)
       return
+    }
+    if (this.playingNotification) {
+      // hard reset audio play
+      this.playingNotification = false
+      this.updateAudio() // will call us back :-)
+      return
+    }
     this.showPlay = false
     this.playWhenReady = false
     this.clearAudioTimeout()
@@ -272,7 +282,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       elapsed -= this.audioDelaySeconds
     if (elapsed < 0) {
       console.log(`delay audio ${-elapsed}`)
-      this.audioTimeout = setTimeout(() => this.playAudio(), -1000*elapsed)
+      this.audioTimeout = setTimeout(() => this.playAudio(false), -1000*elapsed)
+      if (notifyIfSilent)
+        this.playNotification(true)
       return
     } else if (elapsed > SMALL_DELAY) {
       if (audio.readyState < 1) {
@@ -284,12 +296,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }
       if (elapsed > audio.duration) {
         console.log(`audio has finished (elapsed ${elapsed} vs duration ${audio.duration})`)
+        if (notifyIfSilent)
+          this.playNotification(true)
         return
       }
       audio.currentTime = elapsed
     } else {
       audio.currentTime = 0
-    }
+     }
     // TODO past end?
     console.log(`play audio from ${elapsed}`)
     this.syncService.log('play', {src: audio.src, currentTime: audio.currentTime})
@@ -306,22 +320,22 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // why isn't this called in chrome??
     console.log(`audio readystate change to ${this.audio.nativeElement.readyState}`)
     if (this.playWhenReady)
-      this.playAudio()
+      this.playAudio(false)
   }
   onCanPlay():void {
     console.log(`audio canplay, readyState ${this.audio.nativeElement.readyState}`)
     if (this.playWhenReady)
-      this.playAudio()
+      this.playAudio(false)
   }
   onLoad():void {
     console.log(`audio load, readyState ${this.audio.nativeElement.readyState}`)
     if (this.playWhenReady)
-      this.playAudio()
+      this.playAudio(false)
   }
   onPlayAudio():void {
     console.log(`play (button)`)
     this.syncService.log('tapplay', undefined)
-    this.playAudio()
+    this.playAudio(false)
   }
   ngOnDestroy() {
     this.clearAudioTimeout()
@@ -334,22 +348,28 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
   onTouchLanding() {
     this.landingTouched = true
-    //this.playAudio()
   }
   onDismissLanding($event:Event) {
     this.syncService.log('taptostart', undefined)
     $event.preventDefault()
     this.showLanding = false;
-    this.playAudio()
-    this.playNotification()
+    this.playAudio(true)
     // dodgy?!
     this.toggleFullScreen()
   }
-  playNotification() {
-    if (this.audioNotification) {
-      let audio = this.audioNotification.nativeElement
+  playNotification(force:boolean) {
+    if (this.view && this.view.audioFile && !force)
+        // don't trample view's audioFile
+        return
+    if (this.audio) {
+      let audio = this.audio.nativeElement
       audio.pause()
-      audio.currentTime = 0
+      audio.setAttribute('src', 'assets/pageflip.mp3')
+      this.playingNotification = true
+      audio.volume = 1
+      audio.load()
+      try { audio.currentTime = 0 } 
+      catch (err) { console.log(`notify audio currentTime=0 failed: ${err.message}`) }
       this.syncService.log('playnotification', undefined)
       audio.play()
         .then(() => { console.log('play notification ok') })

@@ -52,8 +52,7 @@
   <div class="mediaSpacer"></div>
   <posts ></posts>
 </div>
-<audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()"></audio>
-<audio #audioNotification src="assets/pageflip.mp3"></audio>
+<audio #audio (readystatechange)="onAudioReadyStateChange()" (canplay)="onCanPlay()" (load)="onLoad()" src="assets/pageflip.mp3"></audio>
 
 <div *ngIf="showLanding" [ngClass]="{landing: true, touched: landingTouched}" (click)="onDismissLanding($event)">
  <div>
