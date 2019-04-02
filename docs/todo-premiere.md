@@ -47,11 +47,11 @@ Phsyical
 - [x] D1 app email instructions
 - [x] D1 app/network instructions / flyer - text
 - [x] D1 app/network instructions / flyer - design - barret
-- [ ] D3 app/network instructions / flyer - print
+- [...] D3 app/network instructions / flyer - print
 - [ ] D4 app/network instructions / flyer - distribute
 
 - [x] D3 questionnaire - update
-- [ ] D3 questionnaire - check w Elizabeth
+- [...] D3 questionnaire - check w Elizabeth
 - [ ] D3 questionnaire - print
 - [ ] D4 questionnaire - distribute
 
