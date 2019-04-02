@@ -34,7 +34,7 @@ Deploy
 - [ ] D3.1 app make some post-act 1 images wider
 - [ ] D3.2 app update cast content page / images
 
-- [ ] D2? libretto detailed formatting
+- [ ] D2? libretto detailed formatting - adrian
 
 - [ ] D4 collect/collate selfie images
 
