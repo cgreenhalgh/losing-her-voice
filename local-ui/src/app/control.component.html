@@ -1,6 +1,14 @@
+<div class="status">
+	<p *ngIf="redisStatus" class="redisStatus">Internet: was
+		<span *ngIf="redisStatus.ok">OK</span>
+		<span *ngIf="redisStatus.error" class="redisError">ERROR: {{redisStatus.error}}</span>
+		at {{redisStatus.datetime}} ({{age}} seconds ago)
+	</p>
+</div>
 <div class='control'>
 	<h1>Control view</h1>
 	<p>Views: <a [routerLink]="['/live']">Live</a> <a [routerLink]="['/moderate']">Moderation</a></p>
+	<p *ngIf="!redisStatus" class="redisStatus">Waiting for internet connection status</p>
 	<div *ngIf="!configuration">Waiting for configuration...</div>
 	<div *ngIf="configuration">
 		<div>

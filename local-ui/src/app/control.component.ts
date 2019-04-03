@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Configuration, ScheduleItem, Performance, OscCommand,
-  OSC_RESET, OSC_GO, OSC_PLAYHEAD_STAR } from './types';
+  OSC_RESET, OSC_GO, OSC_PLAYHEAD_STAR, RedisStatus } from './types';
 import { Item, ItemType, SimpleItem, RepostItem, ShareItem, ShareSelfie } from './socialtypes';
 
 import { StoreService } from './store.service';
@@ -19,8 +19,17 @@ export class ControlComponent {
     nextPerformanceId:string = null
     currentPerformance:Performance
     playheadIx:number = 0
+    redisStatus:RedisStatus
+    date:Date
+    age:string
     
     constructor(private store:StoreService) {
+        setInterval(() => {
+          this.date = new Date()
+          if (this.redisStatus && this.redisStatus.datetime) 
+            this.age = String(Math.floor((this.date.getTime() - (new Date(this.redisStatus.datetime)).getTime())/1000))
+        }, 1000)
+        this.store.getRedisStatus().subscribe((status) => this.redisStatus = status )
         this.store.getConfiguration().subscribe((config) => this.configuration = config)
         this.store.getPerformance().subscribe((performance) => {
             this.currentPerformance = performance;

@@ -11,7 +11,7 @@ import { MSG_CLIENT_HELLO, ClientHello, LOCAL_PROTOCOL_VERSION,
   Performance, MSG_MAKE_ITEM, MakeItem, MSG_ANNOUNCE_SHARE_ITEM,
   AnnounceShareItem, MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie,
   MSG_OSC_COMMAND, OscCommand, MSG_EXPORT_SELFIE_IMAGES,
-  ExportSelfieImages } from './types';
+  ExportSelfieImages, MSG_REDIS_STATUS, RedisStatus } from './types';
 import { Item, SelfieImage, ShareItem, ShareSelfie, ItemType } from './socialtypes';
 import * as io from 'socket.io-client';
 
@@ -29,6 +29,7 @@ export class StoreService {
     outOfDate:boolean = false
     selfieImages:ReplaySubject<SelfieImage>
     oscCommands:Subject<OscCommand> = new Subject()
+    redisStatus:BehaviorSubject<RedisStatus>
   
     constructor() {
         this.items = new ReplaySubject()
@@ -38,6 +39,7 @@ export class StoreService {
         this.configuration = new BehaviorSubject(null)
         this.videoState= new BehaviorSubject(null)
         this.selfieImages = new ReplaySubject()
+        this.redisStatus = new BehaviorSubject(null)
         console.log(`say hello to socket.io on ${SOCKET_IO_SERVER}`)
         this.socket = io(SOCKET_IO_SERVER)
         this.socket.on('connect', () => {
@@ -58,6 +60,11 @@ export class StoreService {
           let report = `client/server version incompatiable ${LOCAL_PROTOCOL_VERSION} vs ${msg.serverVersion}`
           console.log(report)
           alert(report)
+        })
+        this.socket.on(MSG_REDIS_STATUS, (data) => {
+          let msg = data as RedisStatus
+          console.log(`redis status ok ${data.ok}, error ${data.error}`)
+          this.redisStatus.next(msg)
         })
         this.socket.on(MSG_ANNOUNCE_PERFORMANCE, (data) => {
           let msg = data as AnnouncePerformance
@@ -125,7 +132,9 @@ export class StoreService {
             this.oscCommands.next(msg)
         })
     }
-
+    getRedisStatus(): Observable<RedisStatus> {
+        return this.redisStatus
+    }
     getItems() : Observable<Item> {
         return this.items;
     }

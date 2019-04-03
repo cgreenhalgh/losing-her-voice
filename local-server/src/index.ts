@@ -27,7 +27,7 @@ import { CONFIGURATION_FILE_VERSION, Configuration, MSG_CLIENT_HELLO,
   MSG_ANNOUNCE_SHARE_ITEM, AnnounceShareItem,
   MSG_ANNOUNCE_SHARE_SELFIE, AnnounceShareSelfie, OSC_GO, OSC_RESET, 
   OSC_PLAYHEAD_STAR, MSG_OSC_COMMAND, OscCommand, MSG_EXPORT_SELFIE_IMAGES,
-  ExportSelfieImages } from './types';
+  ExportSelfieImages, MSG_REDIS_STATUS, RedisStatus } from './types';
 import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
   QuizOrPollItem, QuizOption, ItemType, REDIS_CHANNEL_ANNOUNCE,
   REDIS_CHANNEL_FEEDBACK, Feedback, Announce, REDIS_LIST_FEEDBACK,
@@ -35,6 +35,7 @@ import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem,
 } from './socialtypes'
 
 
+const PING_INTERVAL_MS  = 5000
 /** 
  * OSC bridge
  */
@@ -53,8 +54,14 @@ function startRedisPubSub() {
   let redisPub = redis.createClient(redis_config);
   redisPub.on("error", function (err) {
     log.error({err:err}, `redis publisher error ${err.message}`);
+    publishRedisStatus(false, err.message)
   });
-  startPing(redisPub)
+  //startPing(redisPub)
+  redisPing(redisPub)
+  setInterval(() => { 
+    //console.log(`ping ${redisClient}`)
+    redisPing(redisPub)
+  }, PING_INTERVAL_MS)
   redisPub.on("connect", function() {
     log.debug({}, "redis published connected")
   });
@@ -126,6 +133,33 @@ let io = socketio(server, {
   // increase timeout because of throttled client thread timers
   pingTimeout: 20000
 })
+
+let redisStatus:RedisStatus = {
+  datetime: (new Date()).toUTCString(),
+  error: 'unknown',
+  ok: false
+}
+function redisPing(redisPub) {
+  redisPub.ping(true, (err, reply) => {
+    if(err) {
+      log.error({err:err}, `ping: ${err.message}`)
+      publishRedisStatus(false, err.message)
+      return
+    }
+    publishRedisStatus(true, null)
+  })
+}
+
+function publishRedisStatus(ok:boolean, error:string) {
+  let date = (new Date()).toUTCString()
+  let msg:RedisStatus = {
+    ok: ok,
+    error: error,
+    datetime: date
+  }
+  redisStatus = msg
+  io.to(ITEM_ROOM).emit(MSG_REDIS_STATUS, msg)
+}
 
 let configFile = path.join(__dirname, '..', 'data', 'local-config.json');
 const SCHEDULE_ID_PREFIX = '_schedule_'
@@ -477,6 +511,7 @@ io.on('connection', function (socket) {
           socket.emit(MSG_SELFIE_IMAGE, si)
         })
         socket.join(ITEM_ROOM)
+        socket.emit(MSG_REDIS_STATUS, msg)
     });
     socket.on(MSG_START_PERFORMANCE, (data) => {
         let msg = data as StartPerformance

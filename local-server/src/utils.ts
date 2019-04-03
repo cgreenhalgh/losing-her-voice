@@ -1,4 +1,4 @@
-const PING_INTERVAL_MS = 20000
+export const PING_INTERVAL_MS = 20000
 
 export function startPing(redisClient) {
     setInterval(() => { 

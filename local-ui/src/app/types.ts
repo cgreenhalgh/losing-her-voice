@@ -63,12 +63,19 @@ export interface Performance {
   timezone?:string
 }
 
+// actually for audience app config
+export interface NamePart {
+  title:string
+  options:string[]
+}
+
 export interface Configuration {
   metadata:ConfigurationMetadata
   performances:Performance[]
   scheduleItems:ScheduleItem[]
   selfies:SelfieItem[]
   reposters:Reposter[]
+  nameParts?:NamePart[]
 }
 
 export const MSG_CLIENT_HELLO = 'lhr.client.hello'
@@ -88,8 +95,9 @@ export const MSG_ANNOUNCE_SHARE_ITEM = 'lhr.announce.share_item'
 export const MSG_ANNOUNCE_SHARE_SELFIE = 'lhr.announce.share_selfie'
 export const MSG_EXPORT_SELFIE_IMAGES = 'lhr.export.selfie.images'
 export const MSG_OSC_COMMAND = 'lhr.osc.command'
+export const MSG_REDIS_STATUS = 'lhr.redis.status'
 
-export const LOCAL_PROTOCOL_VERSION = 12
+export const LOCAL_PROTOCOL_VERSION = 13
 
 export interface ClientHello {
   version:number
@@ -142,4 +150,10 @@ export const OSC_PLAYHEAD_STAR = "/lhva/playhead/*"
 
 export interface OscCommand {
   command:string
+}
+
+export interface RedisStatus {
+  datetime: string
+  ok: boolean
+  error: string
 }
