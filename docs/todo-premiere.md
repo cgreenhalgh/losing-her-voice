@@ -16,6 +16,9 @@ Develop
 - [x] D1? app logging warning
 - [x] D1? app extra text on social media page 
 
+- [ ] D3 change poll/quiz UI to auto-send ?!
+- [ ] D3 large like button if not sharing
+
 - [x] D2 libretto tool support for multi-line output
 
 - [no] D2? applescipt to open and resize CEF?!
@@ -34,6 +37,7 @@ Deploy
 - [ ] D3.1 app server increase file des limit to 2048 in nginx
 
 - [ ] D3.2 app update post-show content page / images
+
 - [x] D3.1 app make some post-act 1 images wider
 - [x] D3.2 app update cast content page / images
 
@@ -41,6 +45,7 @@ Deploy
 
 - [ ] D4 collect/collate selfie images
 
+- [ ] D3 update like/toAudience for posts - Adrian
 
 Phsyical
 
