@@ -3,6 +3,8 @@ import { Component, Inject } from '@angular/core';
 import { SyncService } from './sync.service';
 import { Item, SimpleItem, ItemType, QuizOrPollItem, RepostItem } from './socialtypes';
 
+const AUTO_SEND = true
+
 @Component({
   selector: 'posts',
   templateUrl: './posts.component.html',
@@ -20,7 +22,8 @@ export class PostsComponent {
   currentItemSent:boolean
   currentItemIsBlank:boolean
   profileName:string
-
+  autoSend:boolean = AUTO_SEND
+  
   constructor(
       private syncService:SyncService,
   ){
@@ -93,6 +96,8 @@ export class PostsComponent {
         this.currentItemSelected = true
         this.currentQuizOption = optionIndex
         this.syncService.log('choose.select', {id: this.currentQuizItem.id, option: optionIndex})
+        if (this.autoSend)
+          this.onSendCurrentItem()
       }
     }
   }

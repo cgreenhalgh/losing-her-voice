@@ -16,8 +16,8 @@ Develop
 - [x] D1? app logging warning
 - [x] D1? app extra text on social media page 
 
-- [ ] D3 change poll/quiz UI to auto-send ?!
-- [ ] D3 large like button if not sharing
+- [x] D3 change poll/quiz UI to auto-send ?!
+- [x] D3 large like button if not sharing
 
 - [x] D2 libretto tool support for multi-line output
 
@@ -34,7 +34,7 @@ Develop
 
 Deploy
 
-- [ ] D3.1 app server increase file des limit to 2048 in nginx
+- [x] D3.1 app server increase file des limit to 2048 in nginx
 
 - [ ] D3.2 app update post-show content page / images
 
@@ -60,7 +60,7 @@ Phsyical
 - [ ] D3 questionnaire - print
 - [ ] D4 questionnaire - distribute
 
-- [ ] D3 ethics print
+- [x] D3 ethics print
 - [ ] D4 ethics distribute
 
 - [x] D4 helper's lanyard / name badges - lakeside

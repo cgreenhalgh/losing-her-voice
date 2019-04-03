@@ -154,6 +154,10 @@ div.half {
 	width:50%;
 	float:left;
 }
+div.full {
+	width:100%;
+	float:left;
+}
 /* like etc. */
 div.item_like {
 	display: block;
