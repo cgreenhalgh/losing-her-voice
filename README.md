@@ -141,6 +141,7 @@ Build angular2 web app and copy to ../audience-server/static/ for serving.
 
 ```
 sudo docker build -t audience-app --network=internal audience-app
+sudo rm -rf html/2/losing-her-voice
 sudo docker run --rm --network=internal \
   -v `pwd`/html/2/:/root/work/static/ \
   audience-app
