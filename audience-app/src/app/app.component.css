@@ -94,6 +94,26 @@ p.coverText {
 .profile_name {
 	font-family: "CATChilds", Times, serif;
 }
+div.errorDialog {
+	z-index: 9;
+	position: fixed;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: black;
+	color: white;
+	/*border: 3px solid #333;*/
+	/*height: 823px;*/
+	overflow: scroll;
+	padding: 1em;
+	text-align: center;
+}
+div.errorText {
+	font-align: center;
+	font-size: 14pt;
+	margin: 1em;
+}
 .menuItem {
 	font-family: "CATChilds", Times, serif;
 	/*margin-top: 0.4em;

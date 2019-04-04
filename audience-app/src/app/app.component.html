@@ -19,11 +19,14 @@
 	<span (click)="toggleFullScreen()" class="toggleFullscreen"><mat-icon>fullscreen</mat-icon><!-- (toggle fullscreen) --></span>
 </h1>
 
-<div *ngIf="loading" padding>
-  Loading...
-</div>
-<div *ngIf="currentState && currentState.error" padding>
-  Sorry, {{currentState.error}}
+<div class='errorDialog' *ngIf="loading || (currentState && currentState.error)" >
+	<h1 class="title">Losing Her Voice </h1>
+	<div *ngIf="loading" padding class='errorText'>
+	  Connecting to server...
+	</div>
+	<div *ngIf="currentState && currentState.error" padding class='errorText'>
+	  Sorry, {{currentState.error}}
+	</div>
 </div>
 
 <div class="flickerDiv" #flickerDiv>
