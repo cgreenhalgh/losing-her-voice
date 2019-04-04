@@ -30,7 +30,7 @@ Develop
 - [x] D3.1 app check app disconnect warning?
 
 - [x] D3 social media jumping (hopefully :-)
-- [ ] redeploy local-server
+- [x] redeploy local-server
 
 Deploy
 
@@ -45,7 +45,7 @@ Deploy
 
 - [ ] D4 collect/collate selfie images
 
-- [ ] D3 update like/toAudience for posts - Adrian
+- [x] D3 update like/toAudience for posts - Adrian
 
 Phsyical
 
@@ -67,7 +67,7 @@ Phsyical
 
 - [ ] D2.x set up chorus phones
 - [ ] D2.x,D3,D4 charge chorus phones
-- [ ] D4 power packs - charge
+- [x] D4 power packs - charge
 - [ ] D3 chargers - agree locations
 - [ ] D4 chargers - deploy
 

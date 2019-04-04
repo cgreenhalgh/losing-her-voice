@@ -269,12 +269,12 @@ div.viewDivider > img {
 }
 
 div.notifyPopup {
-  height: 60px;
+  height: 120px;
   width: 100%;
   position: fixed;
   z-index: 5;
   left: 0;
-  bottom: -60px;
+  bottom: -220px;
   overflow-x: hidden;
   transition: 0.2s;
 /*	bottom: 0px;
@@ -303,9 +303,12 @@ div.notifyL > img {
 }
 div.notifyM {
 	width: 80%;
+	/*height: 150px;*/
 	display: inline-block;
 	text-align: center;
-	vertical-align: middle;
+	/*vertical-align: middle;*/
+	position: relative;
+	top: 30px;
 /*  white-space: nowrap; 
   overflow: hidden;
   text-overflow: ellipsis; */
