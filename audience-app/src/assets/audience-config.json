@@ -280,8 +280,8 @@
       "cards":[
         { "html": "<p>Please turn up the media volume on your phone!</p>" }
       ],
-      "audioFile": "habanera-short.mp3",
-      "audioDelaySeconds": 1
+      "audioFile": "habanera-short-2.mp3",
+      "audioDelaySeconds": 17.86
     },
     {
       "id":"act2.scene5c",
