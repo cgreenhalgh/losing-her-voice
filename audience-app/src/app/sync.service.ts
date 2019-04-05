@@ -87,7 +87,7 @@ export class SyncService {
     this.item = new BehaviorSubject(null)
     this.startupState = StartupState.WAIT_CONFIG;
     this.logger = new Logger(this.clientId, this.runId, this.performanceid, this.http, this.socketioServer, this.baseHrefPath, this.document, this.window)
-    this.http.get<Configuration>('assets/audience-config.json')
+    this.http.get<Configuration>('assets/nocache/audience-config.json')
       .subscribe(
           (configuration:Configuration) => {
               this.handleConfig(configuration)
