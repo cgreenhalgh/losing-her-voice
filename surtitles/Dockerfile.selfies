@@ -7,10 +7,13 @@ COPY package.json /root/work/
 COPY package-lock.json /root/work
 RUN npm install --no-bin-links
 
-VOLUME /root/work/data/
+VOLUME /root/work/selfies/stock
+VOLUME /root/work/selfies/donated
+VOLUME /root/work/selfies/show
+VOLUME /root/work/selfies/output
 
 COPY tsconfig.json /root/work/
 COPY src/ /root/work/src/
 RUN tsc
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["node","dist/selfies.js","selfies/stock","selfies/donated","selfies/show","selfies/output","140"]

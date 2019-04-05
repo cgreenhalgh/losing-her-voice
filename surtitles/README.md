@@ -44,6 +44,32 @@ So preferred usage is:
 - Feel free to use Heading 1 and Heading 2 within page content
 - Check that (apart from around the page headings) you have empty lines where you’d like dividers to appear
 
+## selfie collator
+
+Selfie images are named 'imgN.jpeg'.
+Three input folders - stock (1), donated (2), show (3); one output folder.
+
+```
+sudo docker build --network=internal -f Dockerfile.selfies -t selfies .
+docker run --rm \
+  -v `pwd`/../selfies/stock:/root/work/selfies/stock \
+  -v `pwd`/../selfies/donated:/root/work/selfies/donated \
+  -v `pwd`/../selfies:/root/work/selfies/show \
+  -v `pwd`/../selfies/output:/root/work/selfies/output \
+  selfies
+docker run --rm \
+  -v `pwd`/data/selfies/stock:/root/work/selfies/stock \
+  -v `pwd`/data/selfies/donated:/root/work/selfies/donated \
+  -v `pwd`/data/selfies/show:/root/work/selfies/show \
+  -v `pwd`/data/selfies/output:/root/work/selfies/output \
+  selfies
+```
+
+Dev
+```
+node dist/selfies.js data/selfies/stock data/selfies/donated data/selfies/show data/selfies/output 136
+```
+
 ## To do
 
 - [x] handle LHV libretto format
