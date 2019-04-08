@@ -3,7 +3,6 @@
       "id":"test1",
       "title":"test performance no.1",
       "startDatetime":"2019-03-24T17:30:00Z",
-      "durationSeconds": 1209600,
       "isPublic":false
     },
     "finished": false
