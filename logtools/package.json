@@ -1,0 +1,30 @@
+{
+	"name": "losing-her-voice-audience-server",
+	"version": "0.1.0",
+	"description": "losing her voice - audience app sync server",
+	"directories": {
+		"doc": "docs"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch & nodemon dist",
+		"tsc": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cgreenhalgh/losing-her-voice.git"
+	},
+	"author": "Chris Greenhalgh",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/cgreenhalgh/losing-her-voice/issues"
+	},
+	"homepage": "https://github.com/cgreenhalgh/losing-her-voice/#readme",
+	"dependencies": {
+		"@types/node": "^10.11.7",
+		"bunyan": "^1.8.12",
+		"dateformat": "^3.0.3",
+		"express": "^4.16.4"
+	}
+}
