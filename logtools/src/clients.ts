@@ -46,7 +46,9 @@ enum Msg {
 	CLIENT_LOG = "client.log",
 	TAKESELFIE = "takeselfie",
 	CONSENT2 = "consent2",
-	PLAY = "play"
+	PLAY = "play",
+    LIKE = "like",
+    CHOOSE = "choose"
 }
 let userActions:string[] = [
   Msg.PATH, //? not alwyas
@@ -58,10 +60,10 @@ let userActions:string[] = [
   Msg.CONSENT2,
   Msg.TAPTOSTART,
   "link",
-  "like",
+  Msg.LIKE,
   "share",
   "choose.select",
-  "choose",
+  Msg.CHOOSE,
   "clearuserdata"
 ]
 
@@ -112,6 +114,27 @@ class Client {
 	pathShowItems?:boolean // path '/.../posts'
 	itemId?:string
   itemType?:string
+    currentView:ViewInfo
+    currentItemView:ViewInfo
+    views:ViewInfo[] = []
+    itemActions:ItemAction[] = []
+}
+
+interface ViewInfo {
+    id:string
+    onloadscreen?:boolean
+    viewId?:string
+    path?:string
+    startTime?:number
+    visibleTime?:number
+}
+interface ItemAction {
+    performanceId:string
+    itemId:string
+    itemType:string
+    seen?:boolean
+    liked?:boolean
+    choose?:boolean
 }
 
 interface ClientMap {
@@ -220,6 +243,8 @@ logEntry?:LogEntry */
   return JSON.stringify(ev2)
 }
 
+let outputClients:Client[] = []
+
 for (let performanceId in performances) {
 	console.log(`*** Performance ${performanceId} ***`)
 	let performance = performances[performanceId]
@@ -260,6 +285,7 @@ for (let performanceId in performances) {
 	console.log(`takeselfies: ${pclients.filter((client)=>client.takeselfie).length}, consent2 ${pclients.filter((client)=>client.consent2).length}`)
   for (let client of pclients) {
     console.log(`- client ${client.clientId} (performance ${client.performanceId}):`)
+    outputClients.push(client)
     client.events.sort(sortbyn)
     let levent:ClientEvent = null
     let lev2:ClientEvent = null
@@ -323,12 +349,17 @@ for (let performanceId in performances) {
     	  // default paths
     	  if ((!client.path && event.info.path == '/'+client.performanceId) || (client.path == '/'+client.performanceId && event.info.path == '/'+client.performanceId+'/home'))
     	  	userAction = false
-    		client.path = event.info.path
-    		client.pathShowItems = new RegExp("^\/[^\/]*\/posts$").test(client.path)
+            let pix = event.info.path.lastIndexOf('/')
+    		client.path = event.info.path.substring(pix+1)
+    		client.pathShowItems = 'posts'==client.path
     	} else if (event.msg == Msg.ITEM) {
     		if (!client.onloadscreen && client.itemId != event.info.id && ((client.viewId && client.viewShowItems) || (!client.viewId && client.pathShowItems)))
     			visibleChange = true
-    		client.itemId = event.info.id
+            if (event.info.itemType == 'blank' || event.info.itemType=='reset') {
+                client.itemId = null
+            } else {
+        		client.itemId = event.info.id
+            }
     		client.itemType = event.info.itemType
     	} else if (event.msg == Msg.VIEW) {
     		if (!client.onloadscreen && client.viewId != event.info.id)
@@ -346,6 +377,26 @@ for (let performanceId in performances) {
     			visibleChange = true
     	}
     	
+        let viewId = client.onloadscreen ? 'loadscreen' : (client.viewId ? 'view:'+client.viewId : (client.path ? 'path:'+client.path : 'unknown'))
+        let view:ViewInfo = client.views.find((v) => v.id == viewId)
+        if (!view) {
+            view = {
+                id: viewId,
+                onloadscreen: client.onloadscreen,
+                startTime: time
+            }
+            if (!client.onloadscreen)
+              view.viewId = client.viewId
+            if(!client.onloadscreen && !client.viewId) 
+              view.path = client.path
+        }
+        if (client.currentView && client.visible) {
+            if (client.currentView.visibleTime === undefined)
+                client.currentView.visibleTime = 0
+            client.currentView.visibleTime += (time - client.currentView.startTime)
+        }
+        view.startTime = time
+       
     	if (event.msg == Msg.VISIBLE) {
     		visibleChange = !client.visible
     		userAction = !client.visible
@@ -357,7 +408,38 @@ for (let performanceId in performances) {
     	} else if (userAction && !client.visible) {
     		hiddenUserAction = true    		
     	}
-    	
+        let itemAction:ItemAction = null
+        let showItems = client.onloadscreen ? false : (client.viewId ? client.viewShowItems : client.pathShowItems)
+        if (client.itemId && (showItems || event.msg == Msg.LIKE || event.msg == Msg.CHOOSE)) {
+            // TODO map item ID to global ID
+            let itemId = view.id+':'+client.itemType+':'+client.itemId
+            itemAction = client.itemActions.find((ia) => ia.itemId == itemId)
+            if (!itemAction) {
+                itemAction = {
+                    itemId: itemId,
+                    itemType: client.itemType,
+                    performanceId: performanceId
+                }
+                client.itemActions.push(itemAction)
+            }
+        }
+        if (client.visible && event.msg != Msg.HIDDEN) {
+            if (!client.views.find((v) => v.id == view.id)) {
+                client.views.push(view)
+            }
+            client.currentView = view
+            if (showItems && itemAction) {
+                itemAction.seen = true
+            }
+        } else {
+            client.currentView = null
+        }
+        if (itemAction && event.msg == Msg.LIKE) {
+            itemAction.liked = true
+        }
+        if (itemAction && event.msg == Msg.CHOOSE) {
+            itemAction.choose = true
+        }
     	let date = event.time
     	let delta = new Date(event.time).getTime() - startTime
     	if (delta> -60*60*1000 && delta<0)
@@ -372,7 +454,6 @@ for (let performanceId in performances) {
          	console.log(`  [${date} ${event.msg} ${event.info ? JSON.stringify(event.info) : ''}]`)
       } else {
         let state = client.onloadscreen ? 'loadscreen' : (client.viewId ? `view ${client.viewId}` : `page ${client.path}`)
-     	  let showItems = client.viewId ? client.viewShowItems : client.pathShowItems
      	  if (showItems)
      		  state = state + ` item ${client.itemType} ${client.itemId}`
      		let showInfo = event.info && event.msg != Msg.VIEW && event.msg != Msg.PATH && event.msg != Msg.ITEM
@@ -387,3 +468,92 @@ for (let performanceId in performances) {
     }
   }
 }
+
+function escapeCsv(text:string): string {
+    if (!text)
+        return '';
+    text = String(text);
+    if (text.indexOf('"')>=0 || text.indexOf(',')>=0 || text.indexOf('\n')>=0) {
+        var out = '"';
+        for (var i=0; i<text.length; i++) {
+            var c = text.substring(i,i+1);
+            if ('"'==c) {
+                out = out + '""';           
+            } else if ('\n'==c){
+                out = out + '\n';
+            } else {
+                out = out + c;
+            }
+        }
+        out = out + '"';
+        return out;
+    }
+    return text;
+}
+
+let keys:string[] = []
+keys.push('clientId')
+keys.push('selfie')
+keys.push('posts')
+keys.push('like')
+keys.push('choose')
+let rows = []
+let viewIds:string[] = []
+let itemIds:string[] = []
+for (let client of outputClients) {
+    let row = {}
+    row['clientId'] = client.clientId
+    
+    row['selfie'] = client.consent2 ? 'Y' : ''
+    row['posts'] = client.itemActions.filter((ia) => ia.seen).length
+    row['like'] = client.itemActions.filter((ia) => ia.liked).length
+    row['choose'] = client.itemActions.filter((ia) => ia.choose).length
+    
+    for (let view of client.views) {
+        if (viewIds.indexOf(view.id) < 0) 
+            viewIds.push(view.id)
+        if (view.visibleTime!==undefined)
+            row[view.id] = 0.001*view.visibleTime
+    }
+    for (let itemAction of client.itemActions) {
+        if (itemIds.indexOf(itemAction.itemId) < 0)
+            itemIds.push(itemAction.itemId)
+        if (itemAction.choose || itemAction.liked || itemAction.seen)
+            row[itemAction.itemId] = itemAction.choose ? 3 : (itemAction.liked ? 2 : 1 )
+    }
+    rows.push(row)
+    console.log(`client ${client.clientId}`, row)
+}
+viewIds.sort((a,b) => a.localeCompare(b))
+for (let viewId of viewIds) 
+  keys.push(viewId)
+itemIds.sort((a,b) => { 
+  let n1 = Number(a.substring(a.lastIndexOf('_')+1))
+  let n2 = Number(b.substring(b.lastIndexOf('_')+1))
+  return n1==n2 ? a.localeCompare(b) : n1-n2
+})
+for (let itemId of itemIds) 
+  keys.push(itemId)
+
+let out = ''
+for (let key of keys) {
+    if (out.length>0)
+        out += ','
+    out += escapeCsv(key)
+}
+out += '\n'
+for (let row of rows) {
+    let line = ''
+    for (let key of keys) {
+        if (line.length>0)
+            line += ','
+        line += escapeCsv(row[key]!==undefined ? String(row[key]) : undefined)
+    }
+    line += '\n'
+    out += line
+}
+
+let outfilename = 'data/clients.csv'
+console.log(`write to ${outfilename}`)
+fs.writeFileSync(outfilename, out, {encoding:'utf8'})
+
