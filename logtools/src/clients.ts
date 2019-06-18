@@ -16,6 +16,8 @@ interface ClientEvent {
 	msg:string
 	time:string
 	info?:any
+	n?:number
+	logEntry?:ClientLogEntry
 }
   	
 interface LogEntry {
@@ -65,6 +67,7 @@ let userActions:string[] = [
 
 let entries:LogEntry[] = []
 
+		
 for (let logfile of logfiles) {
 	let file = fs.readFileSync(logfile, 'utf-8')
 	let newlines:string[] = file.split('\n')
@@ -81,6 +84,8 @@ for (let logfile of logfiles) {
 	}
 }
 
+let sortbyn = (e1:ClientEvent, e2:ClientEvent) => (e1.time == e2.time) ? ((e1.n!==undefined && e2.n!==undefined) ? e1.n - e2.n : 0) : e1.time.localeCompare(e2.time)
+
 let sortbytime = (e1:LogEntry, e2:LogEntry) => e1.time.localeCompare(e2.time)
 entries = entries.sort(sortbytime)
 
@@ -89,6 +94,7 @@ class Client {
 		public clientId:string,
 		public performanceId:string
 	) {}
+	runIds:string[] = []
 	minTime:number
 	maxTime:number
 	events:ClientEvent[] = []
@@ -146,6 +152,16 @@ for (let entry of entries) {
     	//console.log(`added client ${clientId} to ${client.performanceId} at ${centry.time}`)
     	newFlag = true
     }
+    // only newest run id?!
+    let runIx = client.runIds.indexOf(centry.runId)
+    if (runIx<0) {
+    	runIx = client.runIds.length
+    	client.runIds.push(centry.runId)
+    }
+    if (runIx < client.runIds.length-1) {
+    	console.log(`warning: ignore log from old runId ${centry.runId} vs current ${client.runIds[client.runIds.length-1]} for client ${client.clientId}`)
+    	continue
+    }
     for (let event of centry.events) {
     	let time = new Date(event.time).getTime()
     	if (newFlag || time<client.minTime)
@@ -153,6 +169,7 @@ for (let entry of entries) {
       if (newFlag || time>client.maxTime)
       	client.maxTime = time
       newFlag = false
+      event.logEntry = centry
       client.events.push(event)
     }
 	}
@@ -163,6 +180,45 @@ const SHOW_TIME_MS = 3*60*60*1000 // 3 hours (including interval and some time a
 const TIME_FORMAT = 'H:MM:ss'
 const FIRST_PATH_TIME_MS = 300
 const SHOW_HIDDEN_EVENTS = false
+
+function dumpClientEvent (ev:ClientEvent): string {
+	/*   msg:string
+time:string
+name:string
+hostname:string
+pid:number
+level:number
+clientId:string
+performanceId:string
+runId:string
+events:ClientEvent[]
+	*/
+	let le:ClientLogEntry = {
+			time: ev.logEntry.time,
+			msg: ev.logEntry.msg,
+			hostname: ev.logEntry.hostname,
+			name: ev.logEntry.name,
+			level: ev.logEntry.level,
+			pid: ev.logEntry.pid,
+			clientId: ev.logEntry.clientId,
+			performanceId: ev.logEntry.performanceId,
+			runId: ev.logEntry.runId,
+			events: []
+	}
+/* 	msg:string
+time:string
+info?:any
+n?:number
+logEntry?:LogEntry */
+  let ev2:ClientEvent = {
+		time: ev.time,
+		msg: ev.msg,
+		info: ev.info,
+		n: ev.n,
+		logEntry: le
+  }
+  return JSON.stringify(ev2)
+}
 
 for (let performanceId in performances) {
 	console.log(`*** Performance ${performanceId} ***`)
@@ -204,8 +260,40 @@ for (let performanceId in performances) {
 	console.log(`takeselfies: ${pclients.filter((client)=>client.takeselfie).length}, consent2 ${pclients.filter((client)=>client.consent2).length}`)
   for (let client of pclients) {
     console.log(`- client ${client.clientId} (performance ${client.performanceId}):`)
-    client.events.sort(sortbytime)
-    
+    client.events.sort(sortbyn)
+    let levent:ClientEvent = null
+    let lev2:ClientEvent = null
+    for (let ei=0; ei<client.events.length; ei++) {
+    	let event = client.events[ei]
+  		let ev2:ClientEvent = {
+ 					time: event.time,
+ 					msg: event.msg,
+ 					info: event.info,
+ 					n: event.n,
+  		}
+    	if (levent) {
+    		if (!event.n) {
+    			//console.log(`warning: event without n: ${dumpClientEvent(event)}`)
+    		}
+    		if (event.n && levent.n) {
+    			if (event.n == levent.n) {
+      			// ignore equal for now; happens sometimes
+    			} else if (event.n < levent.n) {
+         		console.log(`Warning: event ${levent.n} -> ${event.n} for client ${client.clientId}: ${dumpClientEvent(levent)} -> ${dumpClientEvent(event)}`)
+       		}
+    		}
+      	if (JSON.stringify(ev2) == JSON.stringify(lev2)) {
+      		//console.log(`duplicate event ${event.n} for client ${client.clientId}: ${dumpClientEvent(levent)} -> ${dumpClientEvent(event)}`)
+    	  	client.events.splice(ei, 1)
+    		  ei--
+    	  } 
+    	  if (event.time.localeCompare(levent.time) <0) {
+    	  	console.log(`Warning: time reversal ${levent.time} -> ${event.time} for ${client.clientId}: ${dumpClientEvent(levent)} -> ${dumpClientEvent(event)}`)
+    	  }
+    	}
+    	levent = event
+    	lev2 = ev2
+    }    
     for (let event of client.events) {
     	let time = new Date(event.time).getTime()
     	let visibleChange = false
@@ -288,7 +376,10 @@ for (let performanceId in performances) {
      	  if (showItems)
      		  state = state + ` item ${client.itemType} ${client.itemId}`
      		let showInfo = event.info && event.msg != Msg.VIEW && event.msg != Msg.PATH && event.msg != Msg.ITEM
-    	  console.log(`${hiddenUserAction ? '?' : (userAction ? '*' : ' ')} ${date} ${event.msg} ${state} ${showInfo ? JSON.stringify(event.info) : ''}`)
+     		if (event.msg == Msg.HIDDEN)
+     			console.log(`${hiddenUserAction ? '?' : (userAction ? '*' : ' ')} ${date} ${event.msg}`)
+     		else
+     			console.log(`${hiddenUserAction ? '?' : (userAction ? '*' : ' ')} ${date} ${event.msg} ${state} ${showInfo ? JSON.stringify(event.info) : ''}`)
     	  if (event.msg == Msg.HIDDEN) {
      	  	client.visible = false
      	  }     
