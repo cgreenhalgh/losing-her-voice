@@ -3,13 +3,58 @@
 import * as fs from 'fs' 
 import * as dateFormat from 'dateformat'
 
-if (process.argv.length < 3) {
-  console.log("usage: node dist/clients.js <audience-logfile> ...")
+if (process.argv.length < 4) {
+  console.log("usage: node dist/clients.js <local-config.json> <audience-logfile> ...")
   process.exit(-1)
 }
 
+let configfile = process.argv[2]
+console.log(`read local config ${configfile}`)
+let configjson = fs.readFileSync(configfile, {encoding: 'utf8'})
+
+import { Configuration, ScheduleItem } from './types';
+import { Item, SelfieImage, SimpleItem, SelfieItem, RepostItem, 
+  QuizOrPollItem, QuizOption, ItemType, ShareItem, 
+} from './socialtypes'
+
+let config:Configuration = JSON.parse(configjson) as Configuration
+
+interface ItemInfo {
+  itemNumber?:string
+  itemType:ItemType
+  description?:string
+  content?:string	
+  showIds:string[]
+}
+let items:ItemInfo[] = []
+for (let si of config.scheduleItems) {
+	if (si.item && si.item.toAudience && si.itemType == ItemType.SIMPLE) {
+		let simple:SimpleItem = si.item as SimpleItem
+		let item:ItemInfo = {
+			itemNumber: si.itemNumber,
+			itemType: si.itemType,
+			description: si.description,
+			content: simple.content,
+			showIds: []
+		}
+	  console.log(`simple item ${item.itemNumber}, ${item.description}: ${item.content}`)
+  	items.push(item)
+	} else if (si.item && si.item.toAudience && (si.itemType == ItemType.QUIZ || si.itemType == ItemType.POLL)) {
+		let quiz:QuizOrPollItem = si.item as QuizOrPollItem
+		let item:ItemInfo = {
+			itemNumber: si.itemNumber,
+			itemType: si.itemType,
+			description: si.description,
+			content: quiz.content,
+			showIds: []
+		}
+	  console.log(`quiz/poll item ${item.itemNumber}, ${item.description}: ${item.content}`)
+		items.push(item)
+  }
+}
+  
 let logfiles:string[] = []
-for (let i=2; i<process.argv.length; i++) {
+for (let i=3; i<process.argv.length; i++) {
 	logfiles.push(process.argv[i])
 }	
 interface ClientEvent {
@@ -27,6 +72,8 @@ interface LogEntry {
   hostname:string
   pid:number
   level:number
+  performanceid?:string
+  item?:Item
 }
 interface ClientLogEntry extends LogEntry {
   clientId:string
@@ -48,13 +95,15 @@ enum Msg {
 	CONSENT2 = "consent2",
 	PLAY = "play",
     LIKE = "like",
-    CHOOSE = "choose"
+    CHOOSE = "choose",
+    NAME = "name",
+    ANNOUNCE_ITEM = "announce.item",
 }
 let userActions:string[] = [
   Msg.PATH, //? not alwyas
   Msg.VISIBLE, //duplicates?!
   Msg.HIDDEN,
-  "name",
+  Msg.NAME,
   Msg.TAKESELFIE, 
   "consent1", 
   Msg.CONSENT2,
@@ -67,6 +116,8 @@ let userActions:string[] = [
   "clearuserdata"
 ]
 
+let EPOCHS:number[] = [ -60*60*1000, 0.5*60*60*1000, 1.5*60*60*1000, 3*60*60*1000 ]
+	
 let entries:LogEntry[] = []
 
 		
@@ -125,6 +176,7 @@ interface ViewInfo {
     onloadscreen?:boolean
     viewId?:string
     path?:string
+    epoch?:number
     startTime?:number
     visibleTime?:number
 }
@@ -135,6 +187,7 @@ interface ItemAction {
     seen?:boolean
     liked?:boolean
     choose?:boolean
+    count?:number
 }
 
 interface ClientMap {
@@ -158,7 +211,32 @@ let performances:PerformanceMap = {
 let clients:Client[] = []
 let clientMap:ClientMap = {}
 
+const PRE_SHOW_TIME_MS = 1*60*60*1000 // 1 hour
+const SHOW_TIME_MS = 3*60*60*1000 // 3 hours (including interval and some time after)
+
 for (let entry of entries) {
+	if (entry.msg == Msg.ANNOUNCE_ITEM && entry.item && entry.performanceid) {
+		let simple:SimpleItem = entry.item as SimpleItem
+		if (simple.itemType == ItemType.SIMPLE || simple.itemType == ItemType.QUIZ || simple.itemType == ItemType.POLL) {
+			let time = new Date(entry.time).getTime()
+			let performance = performances[entry.performanceid]
+			if (performance) {
+				let delta = time - new Date(performance.startTime).getTime()
+				if (delta > -PRE_SHOW_TIME_MS && delta < SHOW_TIME_MS) {
+  				let ii = items.find((ii) => ii.itemType == simple.itemType && ii.content == simple.content)
+  				if (!ii) {
+  					console.log(`Warning: cannot find ${entry.performanceid} ${simple.itemType} item ${simple.content}`)
+  				} else {
+  					let showId = entry.performanceid+':'+simple.id
+  					if (ii.showIds.indexOf(showId) < 0) {
+  						ii.showIds.push(showId)
+  						console.log(`Found ${ii.itemType} ${ii.itemNumber} as ${showId}`)
+  					}
+  				}
+				}
+			}
+		}
+	}
 	if (entry.msg == Msg.CLIENT_LOG) {
 		let centry = entry as ClientLogEntry
     let clientId = centry.clientId
@@ -198,8 +276,6 @@ for (let entry of entries) {
 	}
 }
 
-const PRE_SHOW_TIME_MS = 1*60*60*1000 // 1 hour
-const SHOW_TIME_MS = 3*60*60*1000 // 3 hours (including interval and some time after)
 const TIME_FORMAT = 'H:MM:ss'
 const FIRST_PATH_TIME_MS = 300
 const SHOW_HIDDEN_EVENTS = false
@@ -358,7 +434,14 @@ for (let performanceId in performances) {
             if (event.info.itemType == 'blank' || event.info.itemType=='reset') {
                 client.itemId = null
             } else {
-        		client.itemId = event.info.id
+            	let showId = client.performanceId+':'+event.info.id
+            	let ii = items.find((ii) => ii.showIds.indexOf(showId)>=0)
+            	if (ii) { 
+            		client.itemId = ii.description+'-'+event.info.itemType+'_'+ii.itemNumber
+            	} else {
+            		console.log(`Warning: cannot find ${client.performanceId} ${event.info.itemType} item ${event.info.id}`)
+              	client.itemId = event.info.id
+            	}
             }
     		client.itemType = event.info.itemType
     	} else if (event.msg == Msg.VIEW) {
@@ -376,8 +459,17 @@ for (let performanceId in performances) {
     		if (client.visible || client.onloadscreen)
     			visibleChange = true
     	}
-    	
-        let viewId = client.onloadscreen ? 'loadscreen' : (client.viewId ? 'view:'+client.viewId : (client.path ? 'path:'+client.path : 'unknown'))
+
+    	let date = event.time
+    	let delta = new Date(event.time).getTime() - startTime
+    	if (delta> -60*60*1000 && delta<0)
+    		date = '-'+dateFormat(new Date(-delta), TIME_FORMAT)
+    	else if (delta>=0 && delta< 24*60*60*1000)
+    		date = '+'+dateFormat(new Date(delta), TIME_FORMAT)
+
+    		let epoch = EPOCHS.filter((t) => (delta > t)).length
+
+        let viewId = (client.viewId ? 'view:'+client.viewId : (client.path ? 'path:'+epoch+':'+client.path : 'unknown')) + (client.onloadscreen ? ':loadscreen' : '')
         let view:ViewInfo = client.views.find((v) => v.id == viewId)
         if (!view) {
             view = {
@@ -385,10 +477,12 @@ for (let performanceId in performances) {
                 onloadscreen: client.onloadscreen,
                 startTime: time
             }
-            if (!client.onloadscreen)
-              view.viewId = client.viewId
-            if(!client.onloadscreen && !client.viewId) 
+            //if (!client.onloadscreen)
+            view.viewId = client.viewId
+            if(/*!client.onloadscreen &&*/ !client.viewId) {
               view.path = client.path
+              view.epoch = epoch
+            }
         }
         if (client.currentView && client.visible) {
             if (client.currentView.visibleTime === undefined)
@@ -413,10 +507,10 @@ for (let performanceId in performances) {
         if (client.itemId && (showItems || event.msg == Msg.LIKE || event.msg == Msg.CHOOSE)) {
             // TODO map item ID to global ID
             let itemId = view.id+':'+client.itemType+':'+client.itemId
-            itemAction = client.itemActions.find((ia) => ia.itemId == itemId)
+            itemAction = client.itemActions.find((ia) => ia.itemId == client.itemId) // itemId
             if (!itemAction) {
                 itemAction = {
-                    itemId: itemId,
+                    itemId: client.itemId, //itemId,
                     itemType: client.itemType,
                     performanceId: performanceId
                 }
@@ -440,13 +534,21 @@ for (let performanceId in performances) {
         if (itemAction && event.msg == Msg.CHOOSE) {
             itemAction.choose = true
         }
-    	let date = event.time
-    	let delta = new Date(event.time).getTime() - startTime
-    	if (delta> -60*60*1000 && delta<0)
-    		date = '-'+dateFormat(new Date(-delta), TIME_FORMAT)
-    	else if (delta>=0 && delta< 24*60*60*1000)
-    		date = '+'+dateFormat(new Date(delta), TIME_FORMAT)
-      
+        if (event.msg == Msg.NAME || event.msg == Msg.CONSENT2) {
+        	// page-based user actions
+        	let itemId = 'user:'+viewId+':'+event.msg
+          itemAction = client.itemActions.find((ia) => ia.itemId == itemId)
+          if (!itemAction) {
+              itemAction = {
+                  itemId: itemId,
+                  itemType: event.msg,
+                  performanceId: performanceId,
+                  count: 0
+              }
+              client.itemActions.push(itemAction)
+          }
+        	itemAction.count++
+        }
     		
       if (!hiddenUserAction && !userAction && (!client.visible || !visibleChange)) {
       	// remove?
@@ -493,33 +595,66 @@ function escapeCsv(text:string): string {
 
 let keys:string[] = []
 keys.push('clientId')
+keys.push('performance')
 keys.push('selfie')
 keys.push('posts')
 keys.push('like')
 keys.push('choose')
+keys.push('on')
+for (let epoch=0; epoch<=EPOCHS.length; epoch++) {
+	keys.push('pages:'+epoch)
+}
+for (let act=1; act<=2; act++) {
+	keys.push('views:act'+act)
+}
 let rows = []
 let viewIds:string[] = []
 let itemIds:string[] = []
 for (let client of outputClients) {
     let row = {}
     row['clientId'] = client.clientId
+    row['performance'] = client.performanceId
     
     row['selfie'] = client.consent2 ? 'Y' : ''
-    row['posts'] = client.itemActions.filter((ia) => ia.seen).length
+    row['posts'] = client.itemActions.filter((ia) => ia.seen || ia.liked || ia.choose).length
     row['like'] = client.itemActions.filter((ia) => ia.liked).length
     row['choose'] = client.itemActions.filter((ia) => ia.choose).length
     
+    let total = 0
+    let totals:number[] = []
+    for (let epoch=0; epoch<=EPOCHS.length; epoch++) {
+    	totals[epoch] = 0
+    }
+    let vtotals:number[] = []
+    for (let act=1; act<=2; act++) {
+    	vtotals[act] = 0
+    }
     for (let view of client.views) {
         if (viewIds.indexOf(view.id) < 0) 
             viewIds.push(view.id)
-        if (view.visibleTime!==undefined)
+        if (view.visibleTime!==undefined) {
+        	  total += 0.001*view.visibleTime
             row[view.id] = 0.001*view.visibleTime
+            if (view.path)
+            	totals[view.epoch] += 0.001*view.visibleTime
+            if (view.id.substring(0,8)=='view:act')
+            	vtotals[Number(view.id.substring(8,9))] += 0.001*view.visibleTime
+        }
+    }
+    row['on'] = total
+    for (let epoch=0; epoch<=EPOCHS.length; epoch++) {
+    	row['pages:'+epoch] = totals[epoch]
+    }
+    for (let act=1; act<=2; act++) {
+    	row['views:act'+act] = vtotals[act]    	
     }
     for (let itemAction of client.itemActions) {
         if (itemIds.indexOf(itemAction.itemId) < 0)
             itemIds.push(itemAction.itemId)
         if (itemAction.choose || itemAction.liked || itemAction.seen)
             row[itemAction.itemId] = itemAction.choose ? 3 : (itemAction.liked ? 2 : 1 )
+            else if (itemAction.count)
+            	row[itemAction.itemId] = itemAction.count
     }
     rows.push(row)
     console.log(`client ${client.clientId}`, row)
@@ -527,7 +662,13 @@ for (let client of outputClients) {
 viewIds.sort((a,b) => a.localeCompare(b))
 for (let viewId of viewIds) 
   keys.push(viewId)
-itemIds.sort((a,b) => { 
+itemIds.sort((a,b) => {
+	if (a.substring(0,4)=='user' || b.substring(0,4)=='user')
+		return a.localeCompare(b)
+	else if (a.substring(0,4)=='user')
+		return -1
+	else if (b.substring(0,4)=='user')
+    return 1
   let n1 = Number(a.substring(a.lastIndexOf('_')+1))
   let n2 = Number(b.substring(b.lastIndexOf('_')+1))
   return n1==n2 ? a.localeCompare(b) : n1-n2

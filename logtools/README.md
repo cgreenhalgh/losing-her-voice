@@ -19,7 +19,8 @@ Client actions -> `client.hello`, `client.disconnect` (socket.io), `client.log` 
 
 ```
 tsc
-node dist/clients.js data/20190331T204912101Z.log \
+node dist/clients.js data/local-config.json \
+  data/20190331T204912101Z.log \
   data/20190402T135622633Z.log \
   data/20190404T162124104Z.log \
   data/20190405T194340515Z.log \
