@@ -169,6 +169,7 @@ class Client {
     currentItemView:ViewInfo
     views:ViewInfo[] = []
     itemActions:ItemAction[] = []
+    user_name?:string
 }
 
 interface ViewInfo {
@@ -549,6 +550,9 @@ for (let performanceId in performances) {
           }
         	itemAction.count++
         }
+      	if (event.msg == Msg.NAME) {
+      		client.user_name = event.info.user_name
+      	}
     		
       if (!hiddenUserAction && !userAction && (!client.visible || !visibleChange)) {
       	// remove?
@@ -596,6 +600,9 @@ function escapeCsv(text:string): string {
 let keys:string[] = []
 keys.push('clientId')
 keys.push('performance')
+keys.push('minTime')
+keys.push('maxTime')
+keys.push('user_name')
 keys.push('selfie')
 keys.push('posts')
 keys.push('like')
@@ -614,6 +621,9 @@ for (let client of outputClients) {
     let row = {}
     row['clientId'] = client.clientId
     row['performance'] = client.performanceId
+    row['minTime'] = client.minTime ? new Date(client.minTime).toISOString() : ''
+    row['maxTime'] = client.maxTime ? new Date(client.maxTime).toISOString() : ''
+    row['user_name']  = client.user_name
     
     row['selfie'] = client.consent2 ? 'Y' : ''
     row['posts'] = client.itemActions.filter((ia) => ia.seen || ia.liked || ia.choose).length
