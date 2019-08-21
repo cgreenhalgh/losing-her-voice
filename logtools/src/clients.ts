@@ -116,6 +116,7 @@ let userActions:string[] = [
   "clearuserdata"
 ]
 
+// time breaks for normal app use (only) - 1 hour before, middle of act1 and act2, 1 hour after
 let EPOCHS:number[] = [ -60*60*1000, 0.5*60*60*1000, 1.5*60*60*1000, 3*60*60*1000 ]
 	
 let entries:LogEntry[] = []
