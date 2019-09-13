@@ -22,7 +22,7 @@
 	},
 	"homepage": "https://github.com/cgreenhalgh/losing-her-voice/#readme",
 	"dependencies": {
-		"@types/node": "^10.11.7",
+		"@types/node": "^12.7.5",
 		"bunyan": "^1.8.12",
 		"bunyan-debug-stream": "^2.0.0",
 		"dateformat": "^3.0.3",
