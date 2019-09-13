@@ -1,0 +1,11 @@
+{
+	"performance": {
+      "id":"am2019",
+      "title":"Audio Mostly 2019",
+      "startDatetime":"2019-09-13T09:00:00Z",
+      "isPublic":true,
+      "durationSeconds":691200,
+      "timezone":"+01:00"
+    },
+    "finished": false
+}

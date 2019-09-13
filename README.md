@@ -149,6 +149,7 @@ sudo sh
 sed s/default/test1/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/test1/index.html
 sed s/default/show1/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/show1/index.html
 sed s/default/show2/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/show2/index.html
+sed s/default/am2019/ html/2/losing-her-voice/index.html > html/2/losing-her-voice/am2019/index.html
 ```
 
 dev

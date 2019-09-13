@@ -1,4 +1,4 @@
-FROM node:8.12.0-stretch
+FROM node:10.16.3-stretch
 
 
 WORKDIR /root/work
