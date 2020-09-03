@@ -8,6 +8,12 @@
   },
   "performances": [
     {
+      "id":"replay",
+      "title":"LHV Replay",
+      "startDatetime":"2018-12-19T14:43:00Z",
+      "isPublic":false
+    },
+    {
       "id":"test1",
       "title":"test performance no.1",
       "startDatetime":"2018-12-19T14:43:00Z",

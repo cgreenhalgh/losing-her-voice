@@ -1,0 +1,9 @@
+{
+	"performance": {
+      "id":"replay",
+      "title":"LHV Replay",
+      "startDatetime":"2019-03-24T17:30:00Z",
+      "isPublic":false
+    },
+    "finished": false
+}

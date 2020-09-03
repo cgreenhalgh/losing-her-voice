@@ -26,7 +26,8 @@
               { "glob": "**/*", "input": "./src/test1/", "output": "./test1/" },
               { "glob": "**/*", "input": "./src/show1/", "output": "./show1/" },
               { "glob": "**/*", "input": "./src/show2/", "output": "./show2/" },
-	      { "glob": "**/*", "input": "./src/am2019/", "output": "./am2019/" }
+	      { "glob": "**/*", "input": "./src/am2019/", "output": "./am2019/" },
+              { "glob": "**/*", "input": "./src/replay/", "output": "./replay/" }
             ],
             "styles": [
               "src/styles.css"
