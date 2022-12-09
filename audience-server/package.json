@@ -27,7 +27,7 @@
 		"bunyan": "^1.8.12",
 		"bunyan-debug-stream": "^2.0.0",
 		"dateformat": "^3.0.3",
-		"express": "^4.16.4",
+		"express": "^4.17.3",
 		"redis": "^2.8.0",
 		"socket.io": "^2.1.1"
 	}
